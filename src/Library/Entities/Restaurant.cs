@@ -1,0 +1,28 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Library.Entities;
+
+public class Restaurant
+{
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+
+    [MaxLength(70)]
+    public string Name { get; set; } = string.Empty;
+
+    [MaxLength(200)]
+    public string Description { get; set; } = string.Empty;
+
+    [ForeignKey("RestaurantCategoryId")]
+    public RestaurantCategory RestaurantCategory { get; set; } = default!;
+    public int RestaurantCategoryId { get; set; }
+
+    public ICollection<Product>? Products { get; set; }
+
+    public ICollection<Order>? Orders { get; set; }
+
+    public ICollection<RestaurantReview>? Reviews { get; set; }
+
+}
