@@ -20,8 +20,4 @@
     <ProjectReference Include="..\Library\Library.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Api\Models\" />
-  </ItemGroup>
-
 </Project>

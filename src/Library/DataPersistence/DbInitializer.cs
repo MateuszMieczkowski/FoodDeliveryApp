@@ -30,7 +30,9 @@ namespace Library.DataPersistence
                 dbContext.RestaurantCategories.AddRange(RestaurantCategories.Select(r => r.Value));
             }
 
-            List<Restaurant> restaurants = new()
+            if(!dbContext.Restaurants.Any())
+            {
+                List<Restaurant> restaurants = new()
             {
                 new()
                 {
@@ -58,8 +60,10 @@ namespace Library.DataPersistence
                 }
             };
 
-            dbContext.Restaurants.AddRange(restaurants);
-            dbContext.SaveChanges();
+                dbContext.Restaurants.AddRange(restaurants);
+                dbContext.SaveChanges();
+            }
+           
         }
     }
 }

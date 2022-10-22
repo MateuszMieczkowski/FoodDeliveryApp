@@ -1,7 +1,11 @@
 using Library.DataPersistence;
+using Library.Repositories;
+using Library.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -37,9 +41,9 @@ app.UseEndpoints(endpoints => endpoints.MapControllers());
 
 app.MapRazorPages();
 
-using(var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
-   var context =  scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     DbInitializer.Seed(context);
 }
 
