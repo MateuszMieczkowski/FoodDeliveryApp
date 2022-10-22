@@ -18,8 +18,6 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
-
         modelBuilder.Entity<Restaurant>(entity =>
         {
             entity.HasMany(r => r.Products)
@@ -68,12 +66,6 @@ public class ApplicationDbContext : DbContext
                     .HasOne(r => r.Restaurant)
                     .WithMany(r => r.Reviews)
                     .OnDelete(DeleteBehavior.Restrict);
-
-
-
-
-
-
 
     }
 }
