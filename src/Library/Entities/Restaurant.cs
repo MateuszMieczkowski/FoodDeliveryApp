@@ -15,9 +15,10 @@ public class Restaurant
     [MaxLength(200)]
     public string Description { get; set; } = string.Empty;
 
-    [ForeignKey("RestaurantCategoryId")]
+    [ForeignKey("RestaurantCategoryName")]
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
-    public int RestaurantCategoryId { get; set; }
+
+    public string RestaurantCategoryName { get; set; } = string.Empty;
 
     public ICollection<Product>? Products { get; set; }
 

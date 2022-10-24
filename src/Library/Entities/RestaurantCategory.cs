@@ -5,10 +5,10 @@ namespace Library.Entities;
 
 public sealed class RestaurantCategory
 {
+   
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
     [MaxLength(20)]
     public string Name { get; set; } = string.Empty;
+
+    public ICollection<Restaurant>? Restaurants { get; set; }
 }
