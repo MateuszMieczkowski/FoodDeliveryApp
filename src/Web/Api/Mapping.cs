@@ -1,6 +1,6 @@
 ﻿using Library.Entities;
 using System.Runtime.CompilerServices;
-using Web.Api.Models;
+using Web.Api.Models.RestaurantDtos;
 
 namespace Web.Api;
 
@@ -13,7 +13,7 @@ public static class MappingExtensions
         restaurant.Name = restaurantDto.Name;
         restaurant.Description = restaurantDto.Description;
         restaurant.RestaurantCategory = restaurantDto.RestaurantCategory;
-        restaurant.RestaurantCategoryId = restaurant.RestaurantCategory.Id;
+        restaurant.RestaurantCategoryName = restaurant.RestaurantCategory.Name;
         restaurant.Products = restaurantDto.Products;
         restaurant.Orders = restaurantDto.Orders;
         restaurant.Reviews = restaurantDto.Reviews;
