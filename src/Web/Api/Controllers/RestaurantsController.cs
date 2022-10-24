@@ -52,7 +52,7 @@ namespace Web.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<RestaurantDto>> CreateRestaurant(RestaurantForCreationDto restaurantForCreationDto)
+        public async Task<ActionResult<RestaurantDto>> CreateRestaurant(RestaurantForCreationAndUpdateDto restaurantForCreationDto)
         {
             if (!ModelState.IsValid)
             {
@@ -74,6 +74,25 @@ namespace Web.Api.Controllers
 
             return CreatedAtRoute("GetRestaurant", new { id = newRestaurant.Id }, newRestaurant.ToDto());
         }
+        [HttpPut("{id}")]
+        public async Task<ActionResult<RestaurantDto>> UpdateRestaurant(int id, RestaurantForCreationAndUpdateDto restaurantDto)
+        {
+            var restaurantToUpdate = await _restaurantRepository.GetRestaurantAsync(id);
+            if(restaurantToUpdate is null)
+            {
+                return NotFound();
+            }
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            restaurantToUpdate.Name = restaurantDto.Name;
+            restaurantToUpdate.Description = restaurantDto.Description;
+            restaurantToUpdate.RestaurantCategory = restaurantDto.RestaurantCategory;
+            restaurantToUpdate.RestaurantCategoryName = restaurantDto.RestaurantCategory.Name;
+
+            return NoContent();
+        }
     }
 }
