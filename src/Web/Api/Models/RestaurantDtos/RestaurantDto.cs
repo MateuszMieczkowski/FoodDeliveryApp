@@ -2,16 +2,14 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Web.Api.Models;
+namespace Web.Api.Models.RestaurantDtos;
 
 public class RestaurantDto
 {
     public int Id { get; set; }
 
-    [MaxLength(70)]
     public string Name { get; set; } = string.Empty;
 
-    [MaxLength(200)]
     public string Description { get; set; } = string.Empty;
 
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
