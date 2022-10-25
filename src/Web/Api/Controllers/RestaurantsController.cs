@@ -1,5 +1,6 @@
 ﻿using Library.Entities;
 using Library.Repositories.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Web.Api.Models.RestaurantDtos;
 
@@ -91,6 +92,29 @@ namespace Web.Api.Controllers
             restaurantToUpdate.Description = restaurantDto.Description;
             restaurantToUpdate.RestaurantCategory = restaurantDto.RestaurantCategory;
             restaurantToUpdate.RestaurantCategoryName = restaurantDto.RestaurantCategory.Name;
+            
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<RestaurantDto>> UpdateRestaurant(int id, JsonPatchDocument<RestaurantForCreationAndUpdateDto> jsonPatchDocument)
+        {
+            var restaurantToUpdate = await _restaurantRepository.GetRestaurantAsync(id);
+            if (restaurantToUpdate is null)
+            {
+                return NotFound();
+            }
+            var newRestaurantForUpdateDto = new RestaurantForCreationAndUpdateDto();
+            jsonPatchDocument.ApplyTo(newRestaurantForUpdateDto, ModelState);
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            restaurantToUpdate.Name = newRestaurantForUpdateDto.Name;
+            restaurantToUpdate.Description = newRestaurantForUpdateDto.Description;
+            restaurantToUpdate.RestaurantCategory = newRestaurantForUpdateDto.RestaurantCategory;
+            restaurantToUpdate.RestaurantCategoryName = restaurantToUpdate.RestaurantCategory.Name;
 
             return NoContent();
         }
