@@ -37,4 +37,9 @@ public class RestaurantRepository : IRestaurantRepository
         var restaurant = await _dbContext.Restaurants.FindAsync(id);
         return restaurant;
     }
+
+    public async Task<int> SaveChangesAsync()
+    {
+        return await _dbContext.SaveChangesAsync();
+    }
 }

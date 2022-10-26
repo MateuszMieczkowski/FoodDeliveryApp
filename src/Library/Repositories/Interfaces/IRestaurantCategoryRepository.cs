@@ -4,8 +4,10 @@ namespace Library.Repositories.Interfaces;
 
 public interface IRestaurantCategoryRepository
 {
-    public IEnumerable<RestaurantCategory> Categories { get; set; }
-    public Task AddCategoryAsync(RestaurantCategory category);
-    public Task DeleteCategoryAsync(RestaurantCategory category);
-    public Task<RestaurantCategory?> GetRestaurantCategory(string name);
+    IEnumerable<RestaurantCategory> Categories { get; set; }
+    Task AddCategoryAsync(RestaurantCategory category);
+    Task DeleteCategoryAsync(RestaurantCategory category);
+    Task<RestaurantCategory?> GetRestaurantCategory(string name);
+    Task<int> SaveChangesAsync();
+
 }
