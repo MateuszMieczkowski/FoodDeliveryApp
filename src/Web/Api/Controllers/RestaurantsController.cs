@@ -2,6 +2,7 @@
 using Library.Repositories.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using Web.Api.Models.RestaurantDtos;
 
 namespace Web.Api.Controllers
@@ -21,8 +22,15 @@ namespace Web.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<RestaurantDto>> GetRestaurants()
         {
-            IEnumerable<RestaurantDto> restaurantDtos = _restaurantRepository.AllRestaurants.Select(r => r.ToDto());
-            return Ok(restaurantDtos);
+            IEnumerable<RestaurantDto> restaurants = _restaurantRepository.AllRestaurants.Select(r => r.ToDto());
+            return Ok(restaurants);
+        }
+
+        [HttpGet("category/{category}")]
+        public ActionResult<IEnumerable<RestaurantDto>> GetRestaurants(string category)
+        {
+            var restaurants = _restaurantRepository.AllRestaurants.Where(r => r.RestaurantCategoryName.ToLower() == category).Select(r => r.ToDto());
+            return Ok(restaurants);
         }
 
         [HttpGet("{id}", Name = "GetRestaurant")]
@@ -53,17 +61,19 @@ namespace Web.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<RestaurantDto>> CreateRestaurant(RestaurantForCreationAndUpdateDto restaurantForCreationDto)
+        public async Task<ActionResult> CreateRestaurant(RestaurantForCreationAndUpdateDto restaurantForCreationDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantForCreationDto.RestaurantCategory.Name);
             if(category is null)
             {
                 category = new RestaurantCategory() { Name = restaurantForCreationDto.RestaurantCategory.Name };
             }
+
             var newRestaurant = new Restaurant()
             {
                 Name = restaurantForCreationDto.Name,
@@ -76,10 +86,10 @@ namespace Web.Api.Controllers
             return CreatedAtRoute("GetRestaurant", new { id = newRestaurant.Id }, newRestaurant.ToDto());
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult<RestaurantDto>> UpdateRestaurant(int id, RestaurantForCreationAndUpdateDto restaurantDto)
+        public async Task<ActionResult> UpdateRestaurant(int id, RestaurantForCreationAndUpdateDto restaurantDto)
         {
-            var restaurantToUpdate = await _restaurantRepository.GetRestaurantAsync(id);
-            if(restaurantToUpdate is null)
+            var restaurant = await _restaurantRepository.GetRestaurantAsync(id);
+            if(restaurant is null)
             {
                 return NotFound();
             }
@@ -88,33 +98,67 @@ namespace Web.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            restaurantToUpdate.Name = restaurantDto.Name;
-            restaurantToUpdate.Description = restaurantDto.Description;
-            restaurantToUpdate.RestaurantCategory = restaurantDto.RestaurantCategory;
-            restaurantToUpdate.RestaurantCategoryName = restaurantDto.RestaurantCategory.Name;
-            
+            var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantDto.RestaurantCategory.Name);
+
+            if(category is null)
+            {
+                category = new RestaurantCategory() { Name = restaurantDto.Name };
+                await _restaurantCategoryRepository.AddCategoryAsync(category);
+            }
+
+            restaurant.Name = restaurantDto.Name;
+            restaurant.Description = restaurantDto.Description;
+            restaurant.RestaurantCategory = category;
+            restaurant.RestaurantCategoryName = category.Name;
+
+            await _restaurantRepository.SaveChangesAsync();
+            await _restaurantCategoryRepository.SaveChangesAsync();
+
             return NoContent();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<RestaurantDto>> UpdateRestaurant(int id, JsonPatchDocument<RestaurantForCreationAndUpdateDto> jsonPatchDocument)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> UpdateRestaurant(int id, JsonPatchDocument<RestaurantForCreationAndUpdateDto> jsonPatchDocument)
         {
-            var restaurantToUpdate = await _restaurantRepository.GetRestaurantAsync(id);
-            if (restaurantToUpdate is null)
+            var restaurant = await _restaurantRepository.GetRestaurantAsync(id);
+
+            if (restaurant is null)
             {
                 return NotFound();
             }
-            var newRestaurantForUpdateDto = new RestaurantForCreationAndUpdateDto();
-            jsonPatchDocument.ApplyTo(newRestaurantForUpdateDto, ModelState);
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            restaurantToUpdate.Name = newRestaurantForUpdateDto.Name;
-            restaurantToUpdate.Description = newRestaurantForUpdateDto.Description;
-            restaurantToUpdate.RestaurantCategory = newRestaurantForUpdateDto.RestaurantCategory;
-            restaurantToUpdate.RestaurantCategoryName = restaurantToUpdate.RestaurantCategory.Name;
+            var updatedRestaurantDto = new RestaurantForCreationAndUpdateDto()
+            {
+                Name = restaurant.Name,
+                Description = restaurant.Description,
+                RestaurantCategory = restaurant.RestaurantCategory
+            };
+
+            jsonPatchDocument.ApplyTo(updatedRestaurantDto);
+
+            if(!TryValidateModel(updatedRestaurantDto))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var category = await _restaurantCategoryRepository.GetRestaurantCategory(updatedRestaurantDto.RestaurantCategory.Name);
+            if (category is null)
+            {
+                category = new RestaurantCategory() { Name = updatedRestaurantDto.Name };
+                await _restaurantCategoryRepository.AddCategoryAsync(category);
+            }
+
+            restaurant.Name = updatedRestaurantDto.Name;
+            restaurant.Description = updatedRestaurantDto.Description;
+            restaurant.RestaurantCategory = category;
+            restaurant.RestaurantCategoryName = category.Name;
+
+            await _restaurantRepository.SaveChangesAsync();
+            await _restaurantCategoryRepository.SaveChangesAsync();
 
             return NoContent();
         }
