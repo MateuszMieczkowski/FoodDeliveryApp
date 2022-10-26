@@ -8,7 +8,7 @@ using Web.Api.Models.RestaurantDtos;
 namespace Web.Api.Controllers
 {
     [ApiController]
-    [Route("/api/restaurants")]
+    [Route("/api/restaurant")]
     public class RestaurantsController : ControllerBase
     {
         private readonly IRestaurantRepository _restaurantRepository;
