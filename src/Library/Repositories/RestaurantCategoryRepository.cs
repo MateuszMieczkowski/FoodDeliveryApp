@@ -35,7 +35,7 @@ public class RestaurantCategoryRepository : IRestaurantCategoryRepository
 
     public async Task<RestaurantCategory?> GetRestaurantCategory(string name)
     {
-        return await _dbcontext.RestaurantCategories.SingleOrDefaultAsync(r => r.Name == name);
+        return await _dbcontext.RestaurantCategories.Include(r=>r.Restaurants).SingleOrDefaultAsync(r => r.Name == name);
     }
 
     public async Task<int> SaveChangesAsync()
