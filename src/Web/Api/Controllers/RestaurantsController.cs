@@ -69,7 +69,7 @@ public class RestaurantsController : ControllerBase
         }
 
         var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantForCreationDto.RestaurantCategory.Name);
-        if(category is null)
+        if (category is null)
         {
             category = new RestaurantCategory() { Name = restaurantForCreationDto.RestaurantCategory.Name };
         }
@@ -89,18 +89,18 @@ public class RestaurantsController : ControllerBase
     public async Task<ActionResult> UpdateRestaurant(int id, RestaurantForCreationAndUpdateDto restaurantDto)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(id);
-        if(restaurant is null)
+        if (restaurant is null)
         {
             return NotFound();
         }
-        if(!ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
         var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantDto.RestaurantCategory.Name);
 
-        if(category is null)
+        if (category is null)
         {
             category = new RestaurantCategory() { Name = restaurantDto.Name };
             await _restaurantCategoryRepository.AddCategoryAsync(category);
@@ -138,9 +138,17 @@ public class RestaurantsController : ControllerBase
             RestaurantCategory = restaurant.RestaurantCategory
         };
 
-        jsonPatchDocument.ApplyTo(updatedRestaurantDto);
+        try
+        {
+            jsonPatchDocument.ApplyTo(updatedRestaurantDto);
+        }
+        catch (Exception)
+        {
+            return BadRequest();
+        }
+       
 
-        if(!TryValidateModel(updatedRestaurantDto))
+        if (!TryValidateModel(updatedRestaurantDto))
         {
             return BadRequest(ModelState);
         }
