@@ -12,6 +12,12 @@ public class RestaurantForCreationAndUpdateDto
     [MaxLength(100)]
     public string Description { get; set; } = string.Empty;
 
+    [MaxLength(100)]
+    public string City { get; set; } = string.Empty;
+
+    [MaxLength(200)]
+    public string ImageUrl { get; set; } = string.Empty;
+
     [Required]
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
 

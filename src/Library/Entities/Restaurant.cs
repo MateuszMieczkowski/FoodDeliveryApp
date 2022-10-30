@@ -15,6 +15,9 @@ public class Restaurant
     [MaxLength(200)]
     public string Description { get; set; } = string.Empty;
 
+    [MaxLength(100)]
+    public string City { get; set; } = string.Empty;
+
     [ForeignKey("RestaurantCategoryName")]
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
 
@@ -26,6 +29,7 @@ public class Restaurant
 
     public ICollection<RestaurantReview>? Reviews { get; set; }
 
+    [MaxLength(200)]
     public string ImageUrl { get; set; } = string.Empty;
 
 }

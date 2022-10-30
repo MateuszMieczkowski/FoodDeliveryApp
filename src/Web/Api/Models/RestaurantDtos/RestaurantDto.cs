@@ -11,7 +11,11 @@ public class RestaurantDto
     public string Name { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
+    
+    public string City { get; set; } = string.Empty;
 
+    public string ImageUrl { get; set; } = string.Empty;
+    
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
 
     public ICollection<Product>? Products { get; set; }
@@ -19,4 +23,5 @@ public class RestaurantDto
     public ICollection<Order>? Orders { get; set; }
 
     public ICollection<RestaurantReview>? Reviews { get; set; }
+
 }
