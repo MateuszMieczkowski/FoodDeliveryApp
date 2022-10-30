@@ -20,8 +20,6 @@ public sealed class Product
 
     public bool InStock { get; set; }
 
-    public ProductSize ProductSize { get; set; }
-
     [ForeignKey("CategoryId")]
     public ProductCategory Category { get; set; } = default!;
 
@@ -33,4 +31,6 @@ public sealed class Product
     public int RestaurantId { get; set; }
 
     public ICollection<OrderItem>? OrderItems { get; set; }
+
+    public string ImageUrl { get; set; } = string.Empty;
 }

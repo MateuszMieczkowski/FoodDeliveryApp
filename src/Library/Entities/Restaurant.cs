@@ -26,4 +26,6 @@ public class Restaurant
 
     public ICollection<RestaurantReview>? Reviews { get; set; }
 
+    public string ImageUrl { get; set; } = string.Empty;
+
 }
