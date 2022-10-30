@@ -10,4 +10,12 @@ public class Enums
         Medium,
         Small
     }
+
+    public enum OrderStatus
+    {
+        InPreparation,
+        InDelivery,
+        ReadyToPickUp,
+        Completed
+    }
 }

@@ -33,10 +33,15 @@ public class ApplicationDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<Order>()
-                    .HasMany(r => r.OrderItems)
-                    .WithOne(r => r.Order)
-                    .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasMany(r => r.OrderItems)
+                  .WithOne(r => r.Order)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(e => e.Status)
+                   .HasConversion(v => v.ToString(), v => (OrderStatus)Enum.Parse(typeof(OrderStatus), v));
+        });
+                   
 
         modelBuilder.Entity<OrderItem>()
                     .HasOne(r => r.Product)
@@ -52,9 +57,6 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(r => r.Category)
                   .WithMany(r => r.Products)
                   .OnDelete(DeleteBehavior.Restrict);
-
-            entity.Property(e => e.ProductSize)
-                    .HasConversion(v => v.ToString(), v => (ProductSize)Enum.Parse(typeof(ProductSize), v));
         });
 
         modelBuilder.Entity<ProductCategory>()

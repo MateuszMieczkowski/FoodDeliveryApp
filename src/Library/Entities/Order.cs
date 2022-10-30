@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using static Library.Enums.Enums;
 
 namespace Library.Entities;
 
@@ -13,6 +14,8 @@ public class Order
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public DateTime Created { get; set; }
+
+    public OrderStatus Status { get; set; }
 
     [ForeignKey("RestaurantId")]
     public Restaurant Restaurant { get; set; } = default!;
