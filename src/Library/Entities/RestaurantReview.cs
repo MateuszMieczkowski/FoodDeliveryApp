@@ -10,12 +10,15 @@ public class RestaurantReview
     public int Id { get; set; }
 
     [MaxLength(50)]
-    public string? Title { get; set; }
+    [Required]
+    public string Title { get; set; } = string.Empty;
 
     [MaxLength(500)]
-    public string? Description { get; set; }
+    [Required]
+    public string Description { get; set; } = string.Empty;
 
     [Range(0,5)]
+    [Required]
     public int Rating { get; set; }
 
     [ForeignKey("RestaurantId")]
