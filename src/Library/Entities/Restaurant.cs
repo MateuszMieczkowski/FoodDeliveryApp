@@ -29,6 +29,19 @@ public class Restaurant
 
     public ICollection<RestaurantReview>? Reviews { get; set; }
 
+    [NotMapped]
+    public double Rating
+    {
+        get
+        {
+            if(Reviews is null || Reviews.Count == 0)
+            {
+                return 0.0;
+            }
+            return Reviews.Average(r => r.Rating);
+        }
+    }
+
     [MaxLength(200)]
     public string ImageUrl { get; set; } = string.Empty;
 
