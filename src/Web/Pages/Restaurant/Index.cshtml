@@ -1,0 +1,10 @@
+﻿@page
+@model IndexModel
+@{
+	ViewData["Title"] = "Home page";
+
+}
+@foreach (var restaurant in Model.HomeViewModel.Restaurants)
+{
+	<partial name="_RestaurantCard" model="@restaurant"></partial>
+}
