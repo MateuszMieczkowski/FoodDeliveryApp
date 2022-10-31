@@ -8,7 +8,7 @@ public static class MappingExtensions
 {
     public static Restaurant ToEntity(this RestaurantDto restaurantDto)
     {
-        Restaurant restaurant = new ();
+        var restaurant = new Restaurant();
         restaurant.Id = restaurantDto.Id;
         restaurant.Name = restaurantDto.Name;
         restaurant.Description = restaurantDto.Description;
@@ -17,13 +17,14 @@ public static class MappingExtensions
         restaurant.Products = restaurantDto.Products;
         restaurant.Orders = restaurantDto.Orders;
         restaurant.Reviews = restaurantDto.Reviews;
-
+        restaurant.City = restaurantDto.City;
+        restaurant.ImageUrl = restaurantDto.ImageUrl;
         return restaurant;
     }
 
     public static RestaurantDto ToDto(this Restaurant restaurant)
     {
-        RestaurantDto restaurantDto = new();
+        var restaurantDto = new RestaurantDto();
         restaurantDto.Id = restaurant.Id;
         restaurantDto.Name = restaurant.Name;
         restaurantDto.Description = restaurant.Description;
@@ -31,7 +32,9 @@ public static class MappingExtensions
         restaurantDto.Products = restaurant.Products;
         restaurantDto.Orders = restaurant.Orders;
         restaurantDto.Reviews = restaurant.Reviews;
-
+        restaurantDto.City = restaurant.City;
+        restaurantDto.ImageUrl = restaurant.ImageUrl;
         return restaurantDto;
     }
+
 }
