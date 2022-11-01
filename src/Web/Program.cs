@@ -1,8 +1,7 @@
+using Library;
 using Library.DataPersistence;
-using Library.Repositories;
-using Library.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,26 +12,10 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
-
-
 // Add services to the container.
-builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
-builder.Services.AddScoped<IRestaurantCategoryRepository, RestaurantCategoryRepository>();
+builder.Services.AddWebServices();
+builder.Services.AddLibraryServices(builder.Configuration);
 
-builder.Services.AddRazorPages();
-
-builder.Services.AddControllers(options =>
-{
-    options.ReturnHttpNotAcceptable = true;
-}).AddNewtonsoftJson(options =>
-    {
-        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-    });
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
-});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
