@@ -43,7 +43,7 @@ public class ReviewsController : ControllerBase
             Description = reviewDto.Description,
             Rating = reviewDto.Rating
         };
-        restaurant.Reviews.Add(newReview);
+        restaurant.Reviews?.Add(newReview);
         await _restaurantRepository.SaveChangesAsync();
 
         return Ok();
