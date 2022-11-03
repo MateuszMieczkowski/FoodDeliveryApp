@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using Web.Api.Models.RestaurantDtos;
 using Web.ViewModels;
 
@@ -18,22 +19,29 @@ public class IndexModel : PageModel
         _logger = logger;
     }
 
-    public IActionResult OnGet()
-    {
+ 
 
-        return RedirectToPage("Start");
-    }
-
-    public async Task<IActionResult> OnGetCity(string city)
+    public async Task<IActionResult> OnGet()
     {
+        var city = HttpContext?.Session?.GetString("City");
+        if (city is null)
+        {
+            return RedirectToPage("Start");
+        }
+
         var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync("http://localhost:5007/api/restaurant");
+        var response = await httpClient.GetAsync("http://localhost:5007/api/restaurants");
         if (!response.IsSuccessStatusCode)
         {
             return RedirectToPage("Error");
         }
         string responseBody = await response.Content.ReadAsStringAsync();
-        var restaurants = JsonConvert.DeserializeObject<IEnumerable<RestaurantDto>>(responseBody)?.Where(r=>r.City.ToLower() == city.ToLower());
+        IEnumerable<RestaurantDto>? restaurants = JsonConvert.DeserializeObject<IEnumerable<RestaurantDto>>(responseBody);
+        
+        if(city is not null)
+        {
+            restaurants = restaurants?.Where(r => r.City == city);
+        }
         HomeViewModel = new HomeViewModel(restaurants);
         return Page();
     }

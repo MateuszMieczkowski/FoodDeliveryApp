@@ -9,7 +9,7 @@ public class StartModel : PageModel
     [BindProperty]
     [Required]
     [MaxLength(30)]
-    public string City { get; set; }
+    public string City { get; set; } = string.Empty;
     public void OnGet()
     {
     }
@@ -20,7 +20,7 @@ public class StartModel : PageModel
         {
             return Page();
         }
-
-        return RedirectToPage("Index", "City", new{ City });
+        HttpContext?.Session?.SetString("City", City);
+        return RedirectToPage("Index");
     }
 }
