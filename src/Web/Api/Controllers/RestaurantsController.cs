@@ -2,13 +2,12 @@
 using Library.Repositories.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
 using Web.Api.Models.RestaurantDtos;
 
 namespace Web.Api.Controllers;
 
 [ApiController]
-[Route("/api/restaurant")]
+[Route("/api/restaurants")]
 public class RestaurantsController : ControllerBase
 {
     private readonly IRestaurantRepository _restaurantRepository;
@@ -33,10 +32,10 @@ public class RestaurantsController : ControllerBase
         return Ok(restaurants);
     }
 
-    [HttpGet("{id}", Name = "GetRestaurant")]
-    public async Task<ActionResult<RestaurantDto>> GetRestaurant(int id)
+    [HttpGet("{restaurantId}", Name = "GetRestaurant")]
+    public async Task<ActionResult<RestaurantDto>> GetRestaurant(int restaurantId)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(id);
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
 
         if (restaurant is null)
         {
@@ -47,10 +46,10 @@ public class RestaurantsController : ControllerBase
         return Ok(restaurantDto);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteRestaurant(int id)
+    [HttpDelete("{restaurantId}")]
+    public async Task<ActionResult> DeleteRestaurant(int restaurantId)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(id);
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
         {
             return NotFound();
@@ -83,12 +82,12 @@ public class RestaurantsController : ControllerBase
         };
         await _restaurantRepository.AddRestaurantAsync(newRestaurant);
 
-        return CreatedAtRoute("GetRestaurant", new { id = newRestaurant.Id }, newRestaurant.ToDto());
+        return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurant.ToDto());
     }
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateRestaurant(int id, RestaurantForCreationAndUpdateDto restaurantDto)
+    [HttpPut("{restaurantId}")]
+    public async Task<ActionResult> UpdateRestaurant(int restaurantId, RestaurantForCreationAndUpdateDto restaurantDto)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(id);
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
         {
             return NotFound();
@@ -117,10 +116,10 @@ public class RestaurantsController : ControllerBase
         return NoContent();
     }
 
-    [HttpPatch("{id}")]
-    public async Task<ActionResult> UpdateRestaurant(int id, JsonPatchDocument<RestaurantForCreationAndUpdateDto> jsonPatchDocument)
+    [HttpPatch("{restaurantId}")]
+    public async Task<ActionResult> UpdateRestaurant(int restaurantId, JsonPatchDocument<RestaurantForCreationAndUpdateDto> jsonPatchDocument)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(id);
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
 
         if (restaurant is null)
         {
