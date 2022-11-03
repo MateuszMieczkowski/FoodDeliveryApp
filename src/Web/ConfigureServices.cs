@@ -15,5 +15,7 @@ internal static class ConfigureServices
         {
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
         });
+        services.AddDistributedMemoryCache();
+        services.AddSession();
     }
 }

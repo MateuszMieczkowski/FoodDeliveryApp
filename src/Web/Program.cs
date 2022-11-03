@@ -35,6 +35,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseSession();
+
 app.UseEndpoints(endpoints => endpoints.MapControllers());
 
 app.MapRazorPages();
