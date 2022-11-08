@@ -17,7 +17,7 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RestaurantReviewDto>>> GetReviews(int restaurantId)
+    public async Task<ActionResult<IEnumerable<RestaurantReview>>> GetReviews(int restaurantId)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if(restaurant is null)

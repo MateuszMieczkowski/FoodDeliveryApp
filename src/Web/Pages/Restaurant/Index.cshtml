@@ -11,7 +11,7 @@
 }
 else
 {
-	@foreach (var restaurant in Model.HomeViewModel.Restaurants)
+	@foreach (var restaurant in Model.HomeViewModel.Restaurants!)
 {
 	<partial name="_RestaurantCard" model="@restaurant"></partial>
 }

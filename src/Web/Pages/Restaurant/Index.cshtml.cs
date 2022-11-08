@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using Web.Api.Models.RestaurantDtos;
 using Web.ViewModels;
-
+using Library.Entities;
 namespace Web.Pages.Restaurant;
 
 public class IndexModel : PageModel
@@ -36,7 +34,7 @@ public class IndexModel : PageModel
             return RedirectToPage("Error");
         }
         string responseBody = await response.Content.ReadAsStringAsync();
-        IEnumerable<RestaurantDto>? restaurants = JsonConvert.DeserializeObject<IEnumerable<RestaurantDto>>(responseBody);
+        IEnumerable<Library.Entities.Restaurant>? restaurants = JsonConvert.DeserializeObject<IEnumerable<Library.Entities.Restaurant>>(responseBody);
         
         if(city is not null)
         {

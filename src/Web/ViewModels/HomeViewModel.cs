@@ -1,12 +1,13 @@
-﻿using Web.Api.Models.RestaurantDtos;
+﻿using Library.Entities;
+using Web.Api.Models.RestaurantDtos;
 
 namespace Web.ViewModels
 {
     public class HomeViewModel
     {
-        public IEnumerable<RestaurantDto>? Restaurants { get; set; }
+        public IEnumerable<Restaurant>? Restaurants { get; set; }
 
-        public HomeViewModel(IEnumerable<RestaurantDto>? restaurants)
+        public HomeViewModel(IEnumerable<Restaurant>? restaurants)
         {
             Restaurants = restaurants;
         }

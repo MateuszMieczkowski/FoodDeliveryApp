@@ -19,21 +19,21 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<RestaurantDto>> GetRestaurants()
+    public ActionResult<IEnumerable<Restaurant>> GetRestaurants()
     {
-        IEnumerable<RestaurantDto> restaurants = _restaurantRepository.AllRestaurants.Select(r => r.ToDto());
+        IEnumerable<Restaurant> restaurants = _restaurantRepository.AllRestaurants;
         return Ok(restaurants);
     }
 
     [HttpGet("category/{category}")]
-    public ActionResult<IEnumerable<RestaurantDto>> GetRestaurants(string category)
+    public ActionResult<IEnumerable<Restaurant>> GetRestaurants(string category)
     {
-        var restaurants = _restaurantRepository.AllRestaurants.Where(r => r.RestaurantCategoryName.ToLower() == category).Select(r => r.ToDto());
+        var restaurants = _restaurantRepository.AllRestaurants.Where(r => r.RestaurantCategoryName.ToLower() == category);
         return Ok(restaurants);
     }
 
     [HttpGet("{restaurantId}", Name = "GetRestaurant")]
-    public async Task<ActionResult<RestaurantDto>> GetRestaurant(int restaurantId)
+    public async Task<ActionResult<Restaurant>> GetRestaurant(int restaurantId)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
 
@@ -41,9 +41,7 @@ public class RestaurantsController : ControllerBase
         {
             return NotFound();
         }
-
-        var restaurantDto = restaurant.ToDto();
-        return Ok(restaurantDto);
+        return Ok(restaurant);
     }
 
     [HttpDelete("{restaurantId}")]
@@ -82,7 +80,7 @@ public class RestaurantsController : ControllerBase
         };
         await _restaurantRepository.AddRestaurantAsync(newRestaurant);
 
-        return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurant.ToDto());
+        return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurant);
     }
     [HttpPut("{restaurantId}")]
     public async Task<ActionResult> UpdateRestaurant(int restaurantId, RestaurantForCreationAndUpdateDto restaurantDto)
