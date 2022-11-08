@@ -36,7 +36,10 @@ public class ReviewsController : ControllerBase
         {
             return NotFound();
         }
-
+        if(!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
         var newReview = new RestaurantReview()
         {
             Title = reviewDto.Title,
