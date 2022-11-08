@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using static Library.Enums.Enums;
+using Newtonsoft.Json;
 
 namespace Library.Entities;
 
@@ -20,6 +21,7 @@ public class Order
     [ForeignKey("RestaurantId")]
     public Restaurant Restaurant { get; set; } = default!;
 
+    [JsonIgnore]
     public int RestaurantId { get; set; } 
 
     [NotMapped]

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace Library.Entities;
 
@@ -11,6 +12,8 @@ public class OrderItem
 
     [ForeignKey("OrderId")]
     public Order Order { get; set; } = default!;
+
+    [JsonIgnore]
     public Guid OrderId { get; set; }
 
     public int ProductQuantity { get; set; }
@@ -18,5 +21,6 @@ public class OrderItem
     [ForeignKey("ProductId")]
     public Product Product { get; set; } = default!;
 
+    [JsonIgnore]
     public int ProductId { get; set; }
 }

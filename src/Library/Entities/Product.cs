@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static Library.Enums.Enums;
 
@@ -23,11 +24,13 @@ public sealed class Product
     [ForeignKey("CategoryId")]
     public ProductCategory Category { get; set; } = default!;
 
+    [JsonIgnore]
     public int CategoryId { get; set; }
 
     [ForeignKey("RestaurantId")]
     public Restaurant Restaurant { get; set; } = default!;
-
+    
+    [JsonIgnore]
     public int RestaurantId { get; set; }
 
     public ICollection<OrderItem>? OrderItems { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.Entities;
@@ -20,7 +21,8 @@ public class Restaurant
 
     [ForeignKey("RestaurantCategoryName")]
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
-
+   
+    [JsonIgnore]
     public string RestaurantCategoryName { get; set; } = string.Empty;
 
     public ICollection<Product>? Products { get; set; }
