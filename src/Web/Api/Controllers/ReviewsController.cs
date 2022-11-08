@@ -6,7 +6,7 @@ using Web.Api.Models.RestaurantDtos;
 namespace Web.Api.Controllers;
 
 [ApiController]
-[Route("/api/restaurant/{restaurantId}/review")]
+[Route("/api/restaurants/{restaurantId}/review")]
 public class ReviewsController : ControllerBase
 {
     private readonly IRestaurantRepository _restaurantRepository;
