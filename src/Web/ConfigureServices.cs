@@ -6,10 +6,14 @@ internal static class ConfigureServices
 {
     public static void AddWebServices(this IServiceCollection services)
     {
-        services.AddRazorPages();
+        services.AddRazorPages().AddRazorPagesOptions(options =>
+        {
+            options.Conventions.AddPageRoute("/restaurant/start", "/");
+        });
 
         services.AddControllers(options =>
         {
+            
             options.ReturnHttpNotAcceptable = true;
         }).AddNewtonsoftJson(options =>
         {
