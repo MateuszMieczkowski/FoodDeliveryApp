@@ -4,16 +4,22 @@
 	ViewData["Title"] = "Home page";
 
 }
-@if(Model.HomeViewModel.Restaurants!.Count() == 0)
+@if (!Model.HomeViewModel.Restaurants.Any())
 {
-	<h2 class="text-center">Did not found any restaurants in that location!</h2>
-	<a asp-page="Start" class="text-cener">Click here to provide city</a>
+	<div>
+		<div class="row mt-4">
+			<h2 class="text-center">Did not found any restaurants in that location.</h2>
+		</div>
+		<div class="row mt-2">
+			<a asp-page="Start" class="text-center">Click here to provide city</a>
+		</div>
+	</div>
 }
 else
 {
 	@foreach (var restaurant in Model.HomeViewModel.Restaurants!)
-{
-	<partial name="_RestaurantCard" model="@restaurant"></partial>
-}
+	{
+		<partial name="_RestaurantCard" model="@restaurant"></partial>
+	}
 }
 

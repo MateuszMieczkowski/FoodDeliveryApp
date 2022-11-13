@@ -10,9 +10,6 @@ public class StartModel : PageModel
     [Required]
     [MaxLength(30)]
     public string City { get; set; } = string.Empty;
-    public void OnGet()
-    {
-    }
 
     public IActionResult OnPost()
     {
@@ -20,7 +17,6 @@ public class StartModel : PageModel
         {
             return Page();
         }
-        HttpContext?.Session?.SetString("City", City);
-        return RedirectToPage("Index");
+        return RedirectToPage("Index", "City", new { city = City });
     }
 }

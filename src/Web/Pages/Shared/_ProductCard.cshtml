@@ -1,4 +1,4 @@
-﻿@model Restaurant
+﻿@model Product
 <div class="row mt-3 justify-content-center">
 	<div class="col">
 		<div class="card mb-3 mx-auto" style="max-width: 600px;">
@@ -9,8 +9,9 @@
 				<div class="col-md-8">
 					<div class="card-body">
 						<h5 class="card-title">@Model.Name</h5>
-						<p class="card-text">@Model.RestaurantCategory.Name</p>
-						<p class="card-text"><i class="bi-star-fill"></i>@Model.Rating.ToString("0.##") (@Model.Reviews.Count)</p>
+						<p class="card-text">@Model.Description</p>
+						<h6> class="card-text">@Model.Price.ToString("c")</h6>
+						<a class="card-link btn btn-outline-primary">Add to cart</a>
 					</div>
 				</div>
 			</div>

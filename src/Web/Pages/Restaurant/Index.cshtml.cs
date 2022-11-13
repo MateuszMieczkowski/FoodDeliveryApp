@@ -19,27 +19,30 @@ public class IndexModel : PageModel
 
  
 
-    public async Task<IActionResult> OnGet()
+    public async Task<IActionResult> OnGet(string? searchQuery)
     {
-        var city = HttpContext?.Session?.GetString("City");
-        if (city is null)
-        {
-            return RedirectToPage("Start");
-        }
-
         var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync("http://localhost:5007/api/restaurants");
+        var response = await httpClient.GetAsync($"http://localhost:5007/api/restaurants?&searchQuery={searchQuery}");
         if (!response.IsSuccessStatusCode)
         {
             return RedirectToPage("Error");
         }
         string responseBody = await response.Content.ReadAsStringAsync();
         IEnumerable<Library.Entities.Restaurant>? restaurants = JsonConvert.DeserializeObject<IEnumerable<Library.Entities.Restaurant>>(responseBody);
-        
-        if(city is not null)
+        HomeViewModel = new HomeViewModel(restaurants);
+        return Page();
+    }
+
+    public async Task<IActionResult> OnGetCity(string? city)
+    {
+        var httpClient = new HttpClient();
+        var response = await httpClient.GetAsync($"http://localhost:5007/api/restaurants?&city={city}");
+        if (!response.IsSuccessStatusCode)
         {
-            restaurants = restaurants?.Where(r => r.City == city);
+            return RedirectToPage("Error");
         }
+        string responseBody = await response.Content.ReadAsStringAsync();
+        IEnumerable<Library.Entities.Restaurant>? restaurants = JsonConvert.DeserializeObject<IEnumerable<Library.Entities.Restaurant>>(responseBody);
         HomeViewModel = new HomeViewModel(restaurants);
         return Page();
     }
