@@ -26,4 +26,9 @@ public class ProductsController : ControllerBase
 
 		return Ok(restuarant.Products);
 	}
+	//[HttpPost]
+	//public async Task<ActionResult> CreateProduct()
+	//{
+
+	//}
 }

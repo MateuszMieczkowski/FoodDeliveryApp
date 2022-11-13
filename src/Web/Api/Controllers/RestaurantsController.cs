@@ -1,7 +1,9 @@
-﻿using Library.Entities;
+﻿using AutoMapper;
+using Library.Entities;
 using Library.Repositories.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Web.Api.Models.RestaurantDtos;
 
 namespace Web.Api.Controllers;
@@ -12,6 +14,7 @@ public class RestaurantsController : ControllerBase
 {
     private readonly IRestaurantRepository _restaurantRepository;
     private readonly IRestaurantCategoryRepository _restaurantCategoryRepository;
+   
     public RestaurantsController(IRestaurantRepository restaurantRepository, IRestaurantCategoryRepository restaurantCategoryRepository)
     {
         _restaurantRepository = restaurantRepository;
@@ -19,16 +22,9 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Restaurant>> GetRestaurants()
+    public async Task<ActionResult<IEnumerable<Restaurant>>> GetRestaurants(string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize)
     {
-        IEnumerable<Restaurant> restaurants = _restaurantRepository.AllRestaurants;
-        return Ok(restaurants);
-    }
-
-    [HttpGet("category/{category}")]
-    public ActionResult<IEnumerable<Restaurant>> GetRestaurants(string category)
-    {
-        var restaurants = _restaurantRepository.AllRestaurants.Where(r => r.RestaurantCategoryName.ToLower() == category);
+        var restaurants = await _restaurantRepository.GetRestaurantsAsync(name, city, category, searchQuery, pageNumber, pageSize);
         return Ok(restaurants);
     }
 
@@ -45,7 +41,7 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpDelete("{restaurantId}")]
-    public async Task<ActionResult> DeleteRestaurant(int restaurantId)
+    public async Task<IActionResult> DeleteRestaurant(int restaurantId)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
@@ -58,7 +54,7 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateRestaurant(RestaurantForCreationAndUpdateDto restaurantForCreationDto)
+    public async Task<IActionResult> CreateRestaurant(RestaurantForUpdateDto restaurantForCreationDto)
     {
         if (!ModelState.IsValid)
         {
@@ -77,13 +73,15 @@ public class RestaurantsController : ControllerBase
             Description = restaurantForCreationDto.Description,
             RestaurantCategory = category,
             RestaurantCategoryName = category.Name,
+            City = restaurantForCreationDto.City,
+            ImageUrl = restaurantForCreationDto.ImageUrl
         };
         await _restaurantRepository.AddRestaurantAsync(newRestaurant);
 
         return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurant);
     }
     [HttpPut("{restaurantId}")]
-    public async Task<ActionResult> UpdateRestaurant(int restaurantId, RestaurantForCreationAndUpdateDto restaurantDto)
+    public async Task<IActionResult> UpdateRestaurant(int restaurantId, RestaurantForUpdateDto restaurantDto)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
@@ -115,7 +113,7 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpPatch("{restaurantId}")]
-    public async Task<ActionResult> UpdateRestaurant(int restaurantId, JsonPatchDocument<RestaurantForCreationAndUpdateDto> jsonPatchDocument)
+    public async Task<IActionResult> UpdateRestaurant(int restaurantId, JsonPatchDocument<RestaurantForUpdateDto> jsonPatchDocument)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
 
@@ -128,12 +126,13 @@ public class RestaurantsController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var updatedRestaurantDto = new RestaurantForCreationAndUpdateDto()
+        var updatedRestaurantDto = new RestaurantForUpdateDto()
         {
             Name = restaurant.Name,
             Description = restaurant.Description,
             RestaurantCategory = restaurant.RestaurantCategory
         };
+
 
         try
         {
@@ -143,7 +142,7 @@ public class RestaurantsController : ControllerBase
         {
             return BadRequest();
         }
-       
+
 
         if (!TryValidateModel(updatedRestaurantDto))
         {
