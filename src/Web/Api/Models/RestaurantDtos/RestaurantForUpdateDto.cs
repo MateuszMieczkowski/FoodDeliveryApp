@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.Api.Models.RestaurantDtos;
 
-public class RestaurantForCreationAndUpdateDto
+public class RestaurantForUpdateDto
 {
     [Required]
     [MaxLength(70)]
@@ -12,9 +12,11 @@ public class RestaurantForCreationAndUpdateDto
     [MaxLength(100)]
     public string Description { get; set; } = string.Empty;
 
+    [Required]
     [MaxLength(100)]
     public string City { get; set; } = string.Empty;
 
+    [Required]
     [MaxLength(200)]
     public string ImageUrl { get; set; } = string.Empty;
 
