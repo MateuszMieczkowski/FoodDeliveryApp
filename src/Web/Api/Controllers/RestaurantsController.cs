@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Library.Entities;
+﻿using Library.Entities;
 using Library.Repositories.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
