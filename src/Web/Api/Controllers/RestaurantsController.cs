@@ -103,7 +103,6 @@ public class RestaurantsController : ControllerBase
         restaurant.Name = restaurantDto.Name;
         restaurant.Description = restaurantDto.Description;
         restaurant.RestaurantCategory = category;
-        restaurant.RestaurantCategoryName = category.Name;
 
         await _restaurantRepository.SaveChangesAsync();
 
@@ -148,7 +147,6 @@ public class RestaurantsController : ControllerBase
         restaurant.Name = updatedRestaurantDto.Name;
         restaurant.Description = updatedRestaurantDto.Description;
         restaurant.RestaurantCategory = category;
-        restaurant.RestaurantCategoryName = category.Name;
         restaurant.ImageUrl = updatedRestaurantDto.ImageUrl;
         await _restaurantRepository.SaveChangesAsync();
 

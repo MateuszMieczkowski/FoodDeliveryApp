@@ -7,11 +7,11 @@ namespace Web.Api.Controllers;
 
 [ApiController]
 [Route("/api/category")]
-public class CategoryController : ControllerBase
+public class RestaurantCategoryController : ControllerBase
 {
     private readonly IRestaurantCategoryRepository _restaurantCategoryRepository;
 
-    public CategoryController(IRestaurantCategoryRepository restaurantCategoryRepository)
+    public RestaurantCategoryController(IRestaurantCategoryRepository restaurantCategoryRepository)
     {
         _restaurantCategoryRepository = restaurantCategoryRepository;
     }
