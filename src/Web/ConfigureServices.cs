@@ -22,5 +22,6 @@ internal static class ConfigureServices
         services.AddDistributedMemoryCache();
         services.AddSession();
         services.AddSwaggerGen();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     }
 }

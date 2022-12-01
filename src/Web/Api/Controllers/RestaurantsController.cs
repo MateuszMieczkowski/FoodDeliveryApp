@@ -1,4 +1,5 @@
-﻿using Library.Entities;
+﻿using AutoMapper;
+using Library.Entities;
 using Library.Repositories.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -13,22 +14,26 @@ public class RestaurantsController : ControllerBase
 {
     private readonly IRestaurantRepository _restaurantRepository;
     private readonly IRestaurantCategoryRepository _restaurantCategoryRepository;
-   
-    public RestaurantsController(IRestaurantRepository restaurantRepository, IRestaurantCategoryRepository restaurantCategoryRepository)
+    private readonly IMapper _mapper;
+
+    public RestaurantsController(IRestaurantRepository restaurantRepository, IRestaurantCategoryRepository restaurantCategoryRepository, IMapper mapper)
     {
         _restaurantRepository = restaurantRepository;
         _restaurantCategoryRepository = restaurantCategoryRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Restaurant>>> GetRestaurants(string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize)
+    public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetRestaurants
+        (string? name, string? city, string? category,  string? searchQuery, int pageNumber, int pageSize)
     {
         var restaurants = await _restaurantRepository.GetRestaurantsAsync(name, city, category, searchQuery, pageNumber, pageSize);
-        return Ok(restaurants);
+        var restaurantDtos = _mapper.Map<IEnumerable<Restaurant>, IEnumerable<RestaurantDto>>(restaurants);
+        return Ok(restaurantDtos);
     }
 
     [HttpGet("{restaurantId}", Name = "GetRestaurant")]
-    public async Task<ActionResult<Restaurant>> GetRestaurant(int restaurantId)
+    public async Task<ActionResult<RestaurantDto>> GetRestaurant(int restaurantId)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
 
@@ -36,7 +41,8 @@ public class RestaurantsController : ControllerBase
         {
             return NotFound();
         }
-        return Ok(restaurant);
+        var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
+        return Ok(restaurantDto);
     }
 
     [HttpDelete("{restaurantId}")]
@@ -48,7 +54,7 @@ public class RestaurantsController : ControllerBase
             return NotFound();
         }
         await _restaurantRepository.DeleteRestaurantAsync(restaurant);
-
+        await _restaurantRepository.SaveChangesAsync();
         return NoContent();
     }
 
@@ -66,16 +72,11 @@ public class RestaurantsController : ControllerBase
             category = new RestaurantCategory() { Name = restaurantForCreationDto.RestaurantCategory.Name };
         }
 
-        var newRestaurant = new Restaurant()
-        {
-            Name = restaurantForCreationDto.Name,
-            Description = restaurantForCreationDto.Description,
-            RestaurantCategory = category,
-            RestaurantCategoryName = category.Name,
-            City = restaurantForCreationDto.City,
-            ImageUrl = restaurantForCreationDto.ImageUrl
-        };
+        var newRestaurant = _mapper.Map<Restaurant>(restaurantForCreationDto);
+        newRestaurant.RestaurantCategory = category;
+
         await _restaurantRepository.AddRestaurantAsync(newRestaurant);
+        await _restaurantRepository.SaveChangesAsync();
 
         return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurant);
     }
@@ -96,8 +97,7 @@ public class RestaurantsController : ControllerBase
 
         if (category is null)
         {
-            category = new RestaurantCategory() { Name = restaurantDto.Name };
-            await _restaurantCategoryRepository.AddCategoryAsync(category);
+            category = new RestaurantCategory() { Name = restaurantDto.RestaurantCategory.Name };
         }
 
         restaurant.Name = restaurantDto.Name;
@@ -106,7 +106,6 @@ public class RestaurantsController : ControllerBase
         restaurant.RestaurantCategoryName = category.Name;
 
         await _restaurantRepository.SaveChangesAsync();
-        await _restaurantCategoryRepository.SaveChangesAsync();
 
         return NoContent();
     }
@@ -125,14 +124,7 @@ public class RestaurantsController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var updatedRestaurantDto = new RestaurantForUpdateDto()
-        {
-            Name = restaurant.Name,
-            Description = restaurant.Description,
-            RestaurantCategory = restaurant.RestaurantCategory
-        };
-
-
+        var updatedRestaurantDto = _mapper.Map<RestaurantForUpdateDto>(restaurant);
         try
         {
             jsonPatchDocument.ApplyTo(updatedRestaurantDto);
@@ -142,7 +134,6 @@ public class RestaurantsController : ControllerBase
             return BadRequest();
         }
 
-
         if (!TryValidateModel(updatedRestaurantDto))
         {
             return BadRequest(ModelState);
@@ -151,17 +142,15 @@ public class RestaurantsController : ControllerBase
         var category = await _restaurantCategoryRepository.GetRestaurantCategory(updatedRestaurantDto.RestaurantCategory.Name);
         if (category is null)
         {
-            category = new RestaurantCategory() { Name = updatedRestaurantDto.Name };
-            await _restaurantCategoryRepository.AddCategoryAsync(category);
+            category = new RestaurantCategory() { Name = updatedRestaurantDto.RestaurantCategory.Name };
         }
 
         restaurant.Name = updatedRestaurantDto.Name;
         restaurant.Description = updatedRestaurantDto.Description;
         restaurant.RestaurantCategory = category;
         restaurant.RestaurantCategoryName = category.Name;
-
+        restaurant.ImageUrl = updatedRestaurantDto.ImageUrl;
         await _restaurantRepository.SaveChangesAsync();
-        await _restaurantCategoryRepository.SaveChangesAsync();
 
         return NoContent();
     }

@@ -73,7 +73,7 @@ public class RestaurantRepository : IRestaurantRepository
         }
         if (!string.IsNullOrEmpty(searchQuery))
         {
-            searchQuery = searchQuery.Trim().ToLower();
+            searchQuery = searchQuery.Trim();
             restaurants = restaurants.Where(r => r.Name.Contains(searchQuery) || r.Description.Contains(searchQuery)
             || r.City.Contains(searchQuery) || r.RestaurantCategoryName.Contains(searchQuery));
         }

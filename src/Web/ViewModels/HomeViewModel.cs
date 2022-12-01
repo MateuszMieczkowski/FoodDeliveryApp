@@ -5,9 +5,9 @@ namespace Web.ViewModels
 {
     public class HomeViewModel
     {
-        public IEnumerable<Restaurant>? Restaurants { get; set; }
+        public IEnumerable<RestaurantDto>? Restaurants { get; set; }
 
-        public HomeViewModel(IEnumerable<Restaurant>? restaurants)
+        public HomeViewModel(IEnumerable<RestaurantDto>? restaurants)
         {
             Restaurants = restaurants;
         }
