@@ -67,7 +67,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<RestaurantReview>()
                     .HasOne(r => r.Restaurant)
                     .WithMany(r => r.Reviews)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
 
     }
 }
