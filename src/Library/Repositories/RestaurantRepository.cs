@@ -69,13 +69,13 @@ public class RestaurantRepository : IRestaurantRepository
         if (!string.IsNullOrEmpty(category))
         {
             category = category.Trim();
-            restaurants = restaurants.Where(r => r.RestaurantCategoryName == category);
+            restaurants = restaurants.Where(r => r.RestaurantCategory.Name == category);
         }
         if (!string.IsNullOrEmpty(searchQuery))
         {
             searchQuery = searchQuery.Trim();
             restaurants = restaurants.Where(r => r.Name.Contains(searchQuery) || r.Description.Contains(searchQuery)
-            || r.City.Contains(searchQuery) || r.RestaurantCategoryName.Contains(searchQuery));
+            || r.City.Contains(searchQuery) || r.RestaurantCategory.Name.Contains(searchQuery));
         }
         if(pageSize > maxRestaurantsPageSize)
         {

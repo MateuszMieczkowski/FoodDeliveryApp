@@ -24,13 +24,11 @@ public class RestaurantCategoryRepository : IRestaurantCategoryRepository
             return;
         }
         await _dbcontext.RestaurantCategories.AddAsync(category);
-        await _dbcontext.SaveChangesAsync();
     }
 
-    public async Task DeleteCategoryAsync(RestaurantCategory category)
+    public void DeleteCategory(RestaurantCategory category)
     {
         _dbcontext.RestaurantCategories.Remove(category);
-        await _dbcontext.SaveChangesAsync();
     }
 
     public async Task<RestaurantCategory?> GetRestaurantCategory(string name)
