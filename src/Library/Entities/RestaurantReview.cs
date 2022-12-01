@@ -19,9 +19,5 @@ public class RestaurantReview
     [Range(0,5)]
     public int Rating { get; set; }
 
-    [ForeignKey("RestaurantId")]
     public Restaurant Restaurant { get; set; } = default!;
-
-    [JsonIgnore]
-    public int RestaurantId { get; set; }
 }

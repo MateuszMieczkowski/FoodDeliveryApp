@@ -19,11 +19,7 @@ public class Restaurant
     [MaxLength(100)]
     public string City { get; set; } = string.Empty;
 
-    [ForeignKey("RestaurantCategoryName")]
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
-   
-    [JsonIgnore]
-    public string RestaurantCategoryName { get; set; } = string.Empty;
 
     public ICollection<Product>? Products { get; set; }
 

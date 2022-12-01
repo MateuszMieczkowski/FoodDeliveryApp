@@ -18,11 +18,7 @@ public class Order
 
     public OrderStatus Status { get; set; }
 
-    [ForeignKey("RestaurantId")]
     public Restaurant Restaurant { get; set; } = default!;
-
-    [JsonIgnore]
-    public int RestaurantId { get; set; } 
 
     [NotMapped]
     public decimal Total
