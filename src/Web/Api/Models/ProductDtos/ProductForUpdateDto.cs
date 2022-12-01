@@ -1,10 +1,11 @@
 ﻿using Library.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Web.Api.Models.RestaurantDtos;
 
 namespace Web.Api.Models.ProductDtos;
 
-public class ProductDtoForCreation
+public class ProductForUpdateDto
 {
     [MaxLength(50)]
     public string Name { get; set; } = string.Empty;
@@ -19,10 +20,7 @@ public class ProductDtoForCreation
     public bool InStock { get; set; }
 
     [Required]
-    public ProductCategory Category { get; set; } = default!;
-
-    [Required]
-    public Restaurant Restaurant { get; set; } = default!;
+    public ProductCategoryDto Category { get; set; } = default!;
 
     [Required]
     public string ImageUrl { get; set; } = string.Empty;
