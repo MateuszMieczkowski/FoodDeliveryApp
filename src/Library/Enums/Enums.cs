@@ -2,15 +2,6 @@
 
 public class Enums
 {
-    public enum ProductSize
-    {
-        OneSizeOnly,
-        AllSizes,
-        Big,
-        Medium,
-        Small
-    }
-
     public enum OrderStatus
     {
         InPreparation,
