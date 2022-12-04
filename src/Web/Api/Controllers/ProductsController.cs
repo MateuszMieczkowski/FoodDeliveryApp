@@ -50,16 +50,34 @@ public class ProductsController : ControllerBase
 		}
 		var newProduct = _mapper.Map<Product>(productDto);
 		newProduct.Restaurant = restaurant;
-		var productCategory = await _dbContext.ProductCategories.FirstOrDefaultAsync(r => r.Name == productDto.Category.Name);
+		var productCategory = await _dbContext.ProductCategories.FirstOrDefaultAsync(r => r.Name.ToLower() == productDto.Category.Name.ToLower());
 		if(productCategory is null)
 		{
 			return BadRequest($"There's not such productCategory as { productDto.Category.Name }");
 		}
+		newProduct.Category = productCategory;
 		restaurant.Products!.Add(newProduct);
 		await _restaurantRepository.SaveChangesAsync();
 		return NoContent();
 	}
 
-	
+	[HttpDelete("{productId}")]
+	public async Task<IActionResult> DeleteProduct(int restaurantId, int productId)
+	{
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
+        if (restaurant is null)
+        {
+            return NotFound();
+        }
 
+		var product = restaurant.Products!.SingleOrDefault(r => r.Id == productId);
+		if(product is null)
+		{
+			return NotFound();
+		}
+
+		restaurant.Products!.Remove(product);
+		await _dbContext.SaveChangesAsync();
+		return Ok();
+    }
 }
