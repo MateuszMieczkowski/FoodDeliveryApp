@@ -22,7 +22,5 @@ public class ProductDto
 
     public RestaurantDto Restaurant { get; set; } = default!;
 
-    public ICollection<OrderItemDto>? OrderItems { get; set; }
-
     public string ImageUrl { get; set; } = string.Empty;
 }
