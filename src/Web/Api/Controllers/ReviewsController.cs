@@ -64,7 +64,7 @@ public class ReviewsController : ControllerBase
             return NotFound();
         }
 
-        restaurant.Reviews.Remove(review);
+        restaurant.Reviews!.Remove(review);
         await _restaurantRepository.SaveChangesAsync();
 
         return Ok();
