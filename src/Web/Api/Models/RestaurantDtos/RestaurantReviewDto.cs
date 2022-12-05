@@ -13,7 +13,4 @@ public class RestaurantReviewDto
     public string Description { get; set; } = string.Empty;
 
     public int Rating { get; set; }
-
-    public RestaurantDto Restaurant { get; set; } = default!;
-
 }
