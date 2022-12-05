@@ -29,10 +29,7 @@ public class RestaurantRepository : IRestaurantRepository
 
     public async Task<Restaurant?> GetRestaurantAsync(int id)
     {
-        var restaurant = await _dbContext.Restaurants.Include(r => r.Products)
-                                                     .Include(r => r.Orders)
-                                                     .Include(r => r.Reviews)
-                                                     .Include(r => r.RestaurantCategory)
+        var restaurant = await _dbContext.Restaurants.Include(r => r.RestaurantCategory)
                                                      .FirstOrDefaultAsync(r => r.Id == id);
         return restaurant;
     }
@@ -44,10 +41,7 @@ public class RestaurantRepository : IRestaurantRepository
 
     public async Task<IEnumerable<Restaurant>> GetAllRestaurantsAsync()
     {
-        var restaurants = await _dbContext.Restaurants.Include(r => r.Products)
-                                                      .Include(r => r.Orders)
-                                                      .Include(r => r.Reviews)
-                                                      .Include(r => r.RestaurantCategory)
+        var restaurants = await _dbContext.Restaurants.Include(r => r.RestaurantCategory)
                                                       .ToListAsync();
         return restaurants;
     }
@@ -92,9 +86,6 @@ public class RestaurantRepository : IRestaurantRepository
 
         return await restaurants.Skip(pageSize * (pageNumber - 1))
                                 .Take(pageSize)
-                                .Include(r => r.Products)
-                                .Include(r => r.Orders)
-                                .Include(r => r.Reviews)
                                 .Include(r => r.RestaurantCategory)
                                 .ToListAsync();
     }
