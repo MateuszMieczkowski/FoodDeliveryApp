@@ -22,10 +22,4 @@ public class RestaurantForUpdateDto
 
     [Required]
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
-
-    public ICollection<Product>? Products { get; set; }
-
-    public ICollection<Order>? Orders { get; set; }
-
-    public ICollection<RestaurantReview>? Reviews { get; set; }
 }

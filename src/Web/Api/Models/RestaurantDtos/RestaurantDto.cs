@@ -18,23 +18,7 @@ public class RestaurantDto
 
     public RestaurantCategoryDto RestaurantCategory { get; set; } = default!;
 
-    public ICollection<ProductDto>? Products { get; set; }
-
-    public ICollection<OrderDto>? Orders { get; set; }
-
-    public ICollection<RestaurantReviewDto>? Reviews { get; set; }
-
-    public double Rating
-    {
-        get
-        {
-            if (Reviews is null || Reviews.Count == 0)
-            {
-                return 0.0;
-            }
-            return Reviews.Average(r => r.Rating);
-        }
-    }
+    public double Rating { get; set; }
 
     public string ImageUrl { get; set; } = string.Empty;
 }
