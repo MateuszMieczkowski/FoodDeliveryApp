@@ -48,12 +48,11 @@ public class RestaurantsController : ControllerBase
     [HttpDelete("{restaurantId}")]
     public async Task<IActionResult> DeleteRestaurant(int restaurantId)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
+        bool wasDeleted = await _restaurantRepository.DeleteRestaurantAsync(restaurantId);
+        if(!wasDeleted)
         {
             return NotFound();
         }
-        await _restaurantRepository.DeleteRestaurantAsync(restaurant);
         await _restaurantRepository.SaveChangesAsync();
         return NoContent();
     }
