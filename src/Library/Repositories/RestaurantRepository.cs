@@ -10,27 +10,35 @@ public class RestaurantRepository : IRestaurantRepository
     private readonly ApplicationDbContext _dbContext;
 
     private const int maxRestaurantsPageSize = 30;
+
+    public IEnumerable<Restaurant> Restaurants { get; set; }
+
     public RestaurantRepository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
+        Restaurants = dbContext.Restaurants;
     }
 
     public async Task AddRestaurantAsync(Restaurant restaurant)
     {
         await _dbContext.Restaurants.AddAsync(restaurant);
-        await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteRestaurantAsync(Restaurant restaurant)
+    public async Task<bool> DeleteRestaurantAsync(int restaurantId)
     {
+        var restaurant = await _dbContext.Restaurants.FindAsync(restaurantId);
+        if(restaurant is null)
+        {
+            return false;
+        }
         _dbContext.Restaurants.Remove(restaurant);
-        await _dbContext.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<Restaurant?> GetRestaurantAsync(int id)
+    public async Task<Restaurant?> GetRestaurantAsync(int restaurantId)
     {
         var restaurant = await _dbContext.Restaurants.Include(r => r.RestaurantCategory)
-                                                     .FirstOrDefaultAsync(r => r.Id == id);
+                                                     .FirstOrDefaultAsync(r => r.Id == restaurantId);
         return restaurant;
     }
 
@@ -88,5 +96,10 @@ public class RestaurantRepository : IRestaurantRepository
                                 .Take(pageSize)
                                 .Include(r => r.RestaurantCategory)
                                 .ToListAsync();
+    }
+
+    Task<List<Restaurant>> IRestaurantRepository.GetRestaurantsAsync(string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize)
+    {
+        throw new NotImplementedException();
     }
 }

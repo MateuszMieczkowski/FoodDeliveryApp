@@ -4,10 +4,17 @@ namespace Library.Repositories.Interfaces;
 
 public interface IRestaurantRepository
 {
+    public IEnumerable<Restaurant> Restaurants { get; set; }
+
     Task<IEnumerable<Restaurant>> GetAllRestaurantsAsync();
-    Task<IEnumerable<Restaurant>> GetRestaurantsAsync(string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize);
+
+    Task<List<Restaurant>> GetRestaurantsAsync(string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize);
+
     Task AddRestaurantAsync(Restaurant restaurant);
-    Task DeleteRestaurantAsync(Restaurant restaurant);
-    Task<Restaurant?> GetRestaurantAsync(int id);
+
+    Task<bool> DeleteRestaurantAsync(int restaurantId);
+
+    Task<Restaurant?> GetRestaurantAsync(int restaurantId);
+
     Task<int> SaveChangesAsync();
 }
