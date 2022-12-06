@@ -17,13 +17,14 @@ public class RestaurantCategoryRepository : IRestaurantCategoryRepository
         Categories = dbcontext.RestaurantCategories.Include(r => r.Restaurants);
     }
 
-    public async Task AddCategoryAsync(RestaurantCategory category)
+    public async Task<bool> AddCategoryAsync(RestaurantCategory category)
     {
         if(_dbcontext.RestaurantCategories.Any(r=>r.Name == category.Name))
         {
-            return;
+            return false;
         }
         await _dbcontext.RestaurantCategories.AddAsync(category);
+        return true;
     }
 
     public async Task<bool> DeleteCategory(string categoryName)
