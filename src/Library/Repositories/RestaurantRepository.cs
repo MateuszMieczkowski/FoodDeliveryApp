@@ -47,14 +47,14 @@ public class RestaurantRepository : IRestaurantRepository
         return await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Restaurant>> GetAllRestaurantsAsync()
+    public async Task<List<Restaurant>> GetAllRestaurantsAsync()
     {
         var restaurants = await _dbContext.Restaurants.Include(r => r.RestaurantCategory)
                                                       .ToListAsync();
         return restaurants;
     }
 
-    public async Task<IEnumerable<Restaurant>> GetRestaurantsAsync
+    public async Task<List<Restaurant>> GetRestaurantsAsync
         (string? name, string? city, string? category, string? searchQuery, int pageNumber = 1, int pageSize = 15)
     {
         var restaurants = _dbContext.Restaurants as IQueryable<Restaurant>;
@@ -96,10 +96,5 @@ public class RestaurantRepository : IRestaurantRepository
                                 .Take(pageSize)
                                 .Include(r => r.RestaurantCategory)
                                 .ToListAsync();
-    }
-
-    Task<List<Restaurant>> IRestaurantRepository.GetRestaurantsAsync(string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize)
-    {
-        throw new NotImplementedException();
     }
 }
