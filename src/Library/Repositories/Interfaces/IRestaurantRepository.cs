@@ -6,7 +6,7 @@ public interface IRestaurantRepository
 {
     public IEnumerable<Restaurant> Restaurants { get; set; }
 
-    Task<IEnumerable<Restaurant>> GetAllRestaurantsAsync();
+    Task<List<Restaurant>> GetAllRestaurantsAsync();
 
     Task<List<Restaurant>> GetRestaurantsAsync(string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize);
 
