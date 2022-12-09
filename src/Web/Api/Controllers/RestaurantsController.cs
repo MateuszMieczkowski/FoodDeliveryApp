@@ -48,11 +48,12 @@ public class RestaurantsController : ControllerBase
     [HttpDelete("{restaurantId}")]
     public async Task<IActionResult> DeleteRestaurant(int restaurantId)
     {
-        bool wasDeleted = await _restaurantRepository.DeleteRestaurantAsync(restaurantId);
-        if(!wasDeleted)
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
+        if (restaurant is null)
         {
             return NotFound();
         }
+        _restaurantRepository.DeleteRestaurant(restaurant);
         await _restaurantRepository.SaveChangesAsync();
         return NoContent();
     }
@@ -76,8 +77,8 @@ public class RestaurantsController : ControllerBase
 
         await _restaurantRepository.AddRestaurantAsync(newRestaurant);
         await _restaurantRepository.SaveChangesAsync();
-
-        return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurant);
+        var newRestaurantDto = _mapper.Map<RestaurantDto>(newRestaurant);
+        return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurantDto);
     }
     [HttpPut("{restaurantId}")]
     public async Task<IActionResult> UpdateRestaurant(int restaurantId, RestaurantForUpdateDto restaurantDto)

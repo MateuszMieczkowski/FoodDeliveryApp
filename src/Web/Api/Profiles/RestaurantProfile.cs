@@ -12,6 +12,7 @@ namespace Web.Api.Profiles
             CreateMap<Restaurant, RestaurantForUpdateDto>().ReverseMap().PreserveReferences();
             CreateMap<RestaurantCategory,RestaurantCategoryDto>().ReverseMap().PreserveReferences();
             CreateMap<RestaurantReview, RestaurantReviewDto>().ReverseMap().PreserveReferences();
+            CreateMap<RestaurantReview, RestaurantReviewForUpdateDto>().ReverseMap().PreserveReferences();
         }
     }
 }

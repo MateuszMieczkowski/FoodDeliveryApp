@@ -11,24 +11,27 @@ namespace Web.Api.Controllers;
 public class ReviewsController : ControllerBase
 {
     private readonly IRestaurantRepository _restaurantRepository;
+    private readonly IReviewRepository _reviewRepository;
     private readonly IMapper _mapper;
 
-    public ReviewsController(IRestaurantRepository restaurantRepository, IMapper mapper)
+    public ReviewsController(IRestaurantRepository restaurantRepository, IMapper mapper, IReviewRepository reviewRepository)
     {
         _restaurantRepository = restaurantRepository;
         _mapper = mapper;
+        _reviewRepository = reviewRepository;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RestaurantReviewDto>>> GetReviews(int restaurantId)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if(restaurant is null)
+        if (restaurant is null)
         {
             return NotFound();
         }
-        var reviews = _mapper.Map<IEnumerable<RestaurantReviewDto>>(restaurant.Reviews);
-        return Ok(reviews);
+        var reviews = _reviewRepository.Reviews.Where(r => r.Restaurant.Id == restaurantId);
+        var reviewDtos = _mapper.Map<IEnumerable<RestaurantReviewDto>>(reviews);
+        return Ok(reviewDtos);
     }
 
     [HttpPost]
@@ -39,13 +42,14 @@ public class ReviewsController : ControllerBase
         {
             return NotFound();
         }
-        if(!ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
             return BadRequest();
         }
         var newReview = _mapper.Map<RestaurantReview>(reviewDto);
-        restaurant.Reviews?.Add(newReview);
-        await _restaurantRepository.SaveChangesAsync();
+        newReview.Restaurant = restaurant;
+        await _reviewRepository.AddReviewAsync(newReview);
+        await _reviewRepository.SaveChangesAsync();
 
         return Ok();
     }
@@ -58,15 +62,13 @@ public class ReviewsController : ControllerBase
             return NotFound();
         }
 
-        var review = restaurant.Reviews?.FirstOrDefault(r => r.Id == reviewId);
+        var review = await _reviewRepository.GetReviewAsync(reviewId);
         if (review is null)
         {
             return NotFound();
         }
-
-        restaurant.Reviews!.Remove(review);
+        _reviewRepository.DeleteReview(review);
         await _restaurantRepository.SaveChangesAsync();
-
         return Ok();
     }
 
