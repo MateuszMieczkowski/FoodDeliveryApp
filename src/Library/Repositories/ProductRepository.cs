@@ -47,4 +47,9 @@ public class ProductRepository : IProductRepository
         var products = await _dbContext.Products.ToListAsync();
         return products;
     }
+
+    public IEnumerable<ProductCategory> GetCategories()
+    {
+        return _dbContext.ProductCategories;
+    }
 }
