@@ -24,15 +24,9 @@ public class RestaurantRepository : IRestaurantRepository
         await _dbContext.Restaurants.AddAsync(restaurant);
     }
 
-    public async Task<bool> DeleteRestaurantAsync(int restaurantId)
+    public void DeleteRestaurant(Restaurant restaurant)
     {
-        var restaurant = await _dbContext.Restaurants.FindAsync(restaurantId);
-        if(restaurant is null)
-        {
-            return false;
-        }
         _dbContext.Restaurants.Remove(restaurant);
-        return true;
     }
 
     public async Task<Restaurant?> GetRestaurantAsync(int restaurantId)

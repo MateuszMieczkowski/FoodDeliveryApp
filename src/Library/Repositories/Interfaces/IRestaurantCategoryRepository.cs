@@ -6,9 +6,9 @@ public interface IRestaurantCategoryRepository
 {
     IEnumerable<RestaurantCategory> Categories { get; set; }
 
-    Task<bool> AddCategoryAsync(RestaurantCategory category);
+    Task AddCategoryAsync(RestaurantCategory category);
 
-    Task<bool> DeleteCategory(string categoryName);
+    void DeleteCategory(RestaurantCategory category);
 
     Task<RestaurantCategory?> GetRestaurantCategory(string categoryName);
 

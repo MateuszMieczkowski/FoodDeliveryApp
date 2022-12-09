@@ -2,6 +2,7 @@
 using Library.Entities;
 using Library.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Library.Repositories;
 
@@ -22,15 +23,13 @@ public class ProductRepository : IProductRepository
        await _dbContext.Products.AddAsync(product);
     }
 
-    public async Task<bool> DeleteProductAsync(int productId)
+    public void DeleteProductAsync(Product product)
     {
-       var product = await _dbContext.Products.FindAsync(productId);
        if(product is null)
        {
-            return false;
+            return;
        }
         _dbContext.Products.Remove(product);
-        return true;
     }
 
     public async Task<Product?> GetProductAsync(int productId)

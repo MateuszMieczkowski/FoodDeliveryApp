@@ -13,7 +13,7 @@ public interface IReviewRepository
 
     Task AddReviewAsync(RestaurantReview review);
 
-    Task<bool> DeleteReviewAsync(int reviewId);
+    void DeleteReview(RestaurantReview review);
 
     Task<RestaurantReview?> GetReviewAsync(int reviewId);
 

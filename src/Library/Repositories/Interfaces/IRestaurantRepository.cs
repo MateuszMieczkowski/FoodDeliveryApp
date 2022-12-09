@@ -12,7 +12,7 @@ public interface IRestaurantRepository
 
     Task AddRestaurantAsync(Restaurant restaurant);
 
-    Task<bool> DeleteRestaurantAsync(int restaurantId);
+    void DeleteRestaurant(Restaurant restaurant);
 
     Task<Restaurant?> GetRestaurantAsync(int restaurantId);
 

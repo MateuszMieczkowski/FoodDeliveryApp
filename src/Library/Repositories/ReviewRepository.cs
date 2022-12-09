@@ -22,15 +22,9 @@ public class ReviewRepository : IReviewRepository
         await _dbContext.RestaurantReviews.AddAsync(review);
     }
 
-    public async Task<bool> DeleteReviewAsync(int reviewId)
+    public void DeleteReview(RestaurantReview review)
     {
-        var review = await GetReviewAsync(reviewId);
-        if(review is null)
-        {
-            return false;
-        }
         _dbContext.RestaurantReviews.Remove(review);
-        return true;
     }
 
     public async Task<List<RestaurantReview>> GetAllReviewsAsync()
