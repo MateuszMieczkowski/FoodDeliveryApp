@@ -23,7 +23,7 @@ public class ProductRepository : IProductRepository
        await _dbContext.Products.AddAsync(product);
     }
 
-    public void DeleteProductAsync(Product product)
+    public void DeleteProduct(Product product)
     {
        if(product is null)
        {
