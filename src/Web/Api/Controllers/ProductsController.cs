@@ -51,16 +51,14 @@ public class ProductsController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-
-        var newProduct = _mapper.Map<Product>(productDto);
-        newProduct.Restaurant = restaurant;
-
-        var productCategory = _productRepository.Products.FirstOrDefault(r => r.Name == newProduct.Name)?.Category;
+        var productCategory = _productRepository.GetCategories().FirstOrDefault(r => r.Name == productDto.Category.Name);
         if (productCategory is null)
         {
             return BadRequest($"There's not such productCategory as {productDto.Category.Name}");
         }
 
+        var newProduct = _mapper.Map<Product>(productDto);
+        newProduct.Restaurant = restaurant;
         newProduct.Category = productCategory;
         newProduct.Restaurant = restaurant;
 
@@ -79,12 +77,12 @@ public class ProductsController : ControllerBase
         }
 
 
-        var wasDeleted = await _productRepository.DeleteProductAsync(productId);
-        if (!wasDeleted)
+       var product = await _productRepository.GetProductAsync(productId);
+        if (product is null)
         {
             return NotFound();
         }
-
+        _productRepository.DeleteProduct(product);
         await _productRepository.SaveChangesAsync();
         return Ok();
     }
