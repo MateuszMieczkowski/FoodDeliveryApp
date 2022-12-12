@@ -21,4 +21,5 @@ public interface IProductRepository
 
     Task<int> SaveChangesAsync();
     IEnumerable<ProductCategory> GetCategories();
+    
 }

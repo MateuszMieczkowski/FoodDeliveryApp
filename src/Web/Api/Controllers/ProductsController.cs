@@ -33,7 +33,7 @@ public class ProductsController : ControllerBase
             return NotFound();
         }
 
-        var products = _productRepository.Products.Where(r => r.Restaurant == restuarant);
+        var products = _productRepository.Products?.Where(r => r.Restaurant == restuarant);
         var productDtos = _mapper.Map<IEnumerable<ProductDto>>(products);
         return Ok(productDtos);
     }

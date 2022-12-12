@@ -4,11 +4,12 @@ using Library.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Api.Models.ProductDtos;
+using Web.Pages.Shared;
 
 namespace Web.Api.Controllers
 {
     [ApiController]
-    [Route("api/productCategory")]
+    [Route("api/productCategories")]
     public class ProductCategoryController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
@@ -46,13 +47,20 @@ namespace Web.Api.Controllers
             var productCategory = await _dbContext.ProductCategories.FindAsync(productCategoryId);
             if(productCategory is null)
             {
-                return BadRequest("Bad productCategoryId");
+                return NotFound();
             }
 
             _dbContext.Remove(productCategory);
             await _dbContext.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<ProductCategoryDto>> GetProductCategories()
+        {
+            var categories = _dbContext.ProductCategories;
+            return Ok(categories);
         }
     }
 }

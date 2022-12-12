@@ -29,7 +29,7 @@ public class ReviewsController : ControllerBase
         {
             return NotFound();
         }
-        var reviews = _reviewRepository.Reviews.Where(r => r.Restaurant.Id == restaurantId);
+        var reviews = _reviewRepository.Reviews?.Where(r => r.Restaurant == restaurant);
         var reviewDtos = _mapper.Map<IEnumerable<RestaurantReviewDto>>(reviews);
         return Ok(reviewDtos);
     }

@@ -152,4 +152,11 @@ public class RestaurantsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("categories")]
+    public ActionResult<IEnumerable<RestaurantCategoryDto>> GetCategories()
+    {
+        var categoryDtos = _mapper.Map<IEnumerable<RestaurantCategoryDto>>(_restaurantCategoryRepository.Categories);
+        return Ok(categoryDtos);
+    }
 }
