@@ -10,7 +10,7 @@ public class ProductRepository : IProductRepository
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public IEnumerable<Product> Products { get; set; }
+    public IEnumerable<Product>? Products { get; set; }
 
     public ProductRepository(ApplicationDbContext dbContext)
     {

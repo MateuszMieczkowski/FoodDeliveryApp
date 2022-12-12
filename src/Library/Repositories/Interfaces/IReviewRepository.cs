@@ -9,7 +9,7 @@ namespace Library.Repositories.Interfaces;
 
 public interface IReviewRepository
 {
-    IEnumerable<RestaurantReview> Reviews{ get; set; }
+    IEnumerable<RestaurantReview>? Reviews{ get; set; }
 
     Task AddReviewAsync(RestaurantReview review);
 

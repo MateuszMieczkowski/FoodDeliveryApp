@@ -11,7 +11,7 @@ public class RestaurantRepository : IRestaurantRepository
 
     private const int maxRestaurantsPageSize = 30;
 
-    public IEnumerable<Restaurant> Restaurants { get; set; }
+    public IEnumerable<Restaurant>? Restaurants { get; set; }
 
     public RestaurantRepository(ApplicationDbContext dbContext)
     {

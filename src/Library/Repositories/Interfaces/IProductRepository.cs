@@ -9,7 +9,7 @@ namespace Library.Repositories.Interfaces;
 
 public interface IProductRepository
 {
-    IEnumerable<Product> Products { get; set; }
+    IEnumerable<Product>? Products { get; set; }
 
     Task AddProductAsync(Product product);
 

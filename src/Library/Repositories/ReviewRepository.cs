@@ -9,7 +9,7 @@ public class ReviewRepository : IReviewRepository
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public IEnumerable<RestaurantReview> Reviews { get; set; }
+    public IEnumerable<RestaurantReview>? Reviews { get; set; }
 
     public ReviewRepository(ApplicationDbContext dbContext)
     {
