@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Library.DataPersistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Web.Services;
 
 namespace Library;
 
@@ -15,9 +16,11 @@ public static class ConfigureServices
         services.AddScoped<IRestaurantCategoryRepository, RestaurantCategoryRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddHostedService<BackgroundUpdateRestaurantsRatingService>();
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration["ConnectionStrings:DefaultConnection"]);
         });
+
     }
 }
