@@ -17,6 +17,8 @@ public interface IReviewRepository
 
     Task<RestaurantReview?> GetReviewAsync(int reviewId);
 
+    Task<IEnumerable<RestaurantReview>?> GetRestaurantReviewsAsync(int restaurantId);
+
     Task<List<RestaurantReview>> GetAllReviewsAsync();
 
     Task<int> SaveChangesAsync();
