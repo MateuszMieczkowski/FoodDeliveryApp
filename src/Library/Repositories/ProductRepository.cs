@@ -56,6 +56,6 @@ public class ProductRepository : IProductRepository
     public async Task<IEnumerable<Product>?> GetRestaurantProductsAsync(int restaurantId)
     {
         var restaurant = await _dbContext.Restaurants.Include(r => r.Products).SingleOrDefaultAsync(r => r.Id == restaurantId);
-        return restaurant?.Products;
+        return restaurant.Products;
     }
 }

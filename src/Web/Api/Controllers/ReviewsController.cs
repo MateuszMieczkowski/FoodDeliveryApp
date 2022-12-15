@@ -62,17 +62,17 @@ public class ReviewsController : ControllerBase
             return NotFound();
         }
 
-        var reviews = await _reviewRepository.GetRestaurantReviewsAsync(restaurantId);
-        var reviewToDelete = reviews?.FirstOrDefault(r => r.Id == reviewId);
-        if (reviewToDelete is null)
+        var review = await _reviewRepository.GetReviewAsync(reviewId);
+        if (review is null)
         {
             return NotFound();
         }
-
-        _reviewRepository.DeleteReview(reviewToDelete);
+        _reviewRepository.DeleteReview(review);
         await _restaurantRepository.SaveChangesAsync();
         return Ok();
     }
+
+
 }
 
 
