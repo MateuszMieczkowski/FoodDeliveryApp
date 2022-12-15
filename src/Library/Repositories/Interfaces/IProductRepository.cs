@@ -19,7 +19,10 @@ public interface IProductRepository
 
     Task<List<Product>> GetAllProductsAsync();
 
+    Task<IEnumerable<Product>?> GetRestaurantProductsAsync(int restaurantId);
+
     Task<int> SaveChangesAsync();
+
     IEnumerable<ProductCategory> GetCategories();
     
 }
