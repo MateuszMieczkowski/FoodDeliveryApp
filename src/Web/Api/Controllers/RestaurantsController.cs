@@ -28,7 +28,7 @@ public class RestaurantsController : ControllerBase
         (string? name, string? city, string? category,  string? searchQuery, int pageNumber, int pageSize)
     {
         var restaurants = await _restaurantRepository.GetRestaurantsAsync(name, city, category, searchQuery, pageNumber, pageSize);
-        var restaurantDtos = _mapper.Map<IEnumerable<Restaurant>, IEnumerable<RestaurantDto>>(restaurants);
+        var restaurantDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
         return Ok(restaurantDtos);
     }
 

@@ -77,12 +77,14 @@ public class ProductsController : ControllerBase
         }
 
 
-       var product = await _productRepository.GetProductAsync(productId);
-        if (product is null)
+        var products = await _productRepository.GetRestaurantProductsAsync(restaurantId);
+        var productToDelete = products?.SingleOrDefault(r => r.Id == productId);
+        if (productToDelete is null)
         {
             return NotFound();
         }
-        _productRepository.DeleteProduct(product);
+
+        _productRepository.DeleteProduct(productToDelete);
         await _productRepository.SaveChangesAsync();
         return Ok();
     }

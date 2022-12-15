@@ -20,9 +20,5 @@ public class Order
 
     public Restaurant Restaurant { get; set; } = default!;
 
-    [NotMapped]
-    public decimal Total
-    {
-        get => OrderItems.Sum(o => o.ProductQuantity * o.Product.Price);
-    }
+    public decimal Total { get; set; }
 }
