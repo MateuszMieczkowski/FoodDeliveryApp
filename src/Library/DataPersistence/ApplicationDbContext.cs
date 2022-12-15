@@ -15,6 +15,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Restaurant> Restaurants { get; set; } = default!;
     public DbSet<RestaurantCategory> RestaurantCategories { get; set; } = default!;
     public DbSet<RestaurantReview> RestaurantReviews { get; set; } = default!;
+    public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,6 +57,10 @@ public class ApplicationDbContext : DbContext
 
             entity.HasOne(r => r.Category)
                   .WithMany(r => r.Products)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(r => r.ShoppingCartItems)
+                  .WithOne(r => r.Product)
                   .OnDelete(DeleteBehavior.Restrict);
         });
 

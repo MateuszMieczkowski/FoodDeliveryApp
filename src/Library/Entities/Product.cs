@@ -27,5 +27,7 @@ public sealed class Product
     
     public ICollection<OrderItem>? OrderItems { get; set; }
 
+    public ICollection<ShoppingCartItem>? ShoppingCartItems{ get; set; }
+
     public string ImageUrl { get; set; } = string.Empty;
 }
