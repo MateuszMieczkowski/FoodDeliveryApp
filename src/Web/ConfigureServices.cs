@@ -23,5 +23,6 @@ internal static class ConfigureServices
         services.AddSession();
         services.AddSwaggerGen();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddHttpContextAccessor();
     }
 }
