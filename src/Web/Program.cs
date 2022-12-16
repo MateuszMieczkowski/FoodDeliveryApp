@@ -1,8 +1,11 @@
 using Library;
 using Library.DataPersistence;
+using Library.Services.ShoppingCart;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Serilog;
 using Web;
+using Web.Api.Models.ProductDtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +48,25 @@ app.UseAuthorization();
 app.UseSession();
 
 app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+//TODO: add shoppingCartController
+app.MapPost("api/shoppingCart", async ([FromQuery] int productId, ShoppingCartService cartService, ApplicationDbContext dbContext) =>
+{
+   var product =  await dbContext.Products.FindAsync(productId);
+    if (product is null)
+    {
+        return Results.NotFound();
+    }
+    await cartService.AddToCartAsync(product);
+    return Results.NoContent();
+});
+
+app.MapGet("api/shoppingCart", (ShoppingCartService shoppingCartService) =>
+{
+    var json = JsonConvert.SerializeObject(shoppingCartService.ShoppingCart.ShoppingCartItems,Formatting.Indented, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
+    return Results.Json(json);
+});
+
 
 app.MapRazorPages();
 
