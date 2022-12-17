@@ -66,10 +66,10 @@ public class RestaurantsController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantForCreationDto.RestaurantCategory.Name);
+        var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantForCreationDto.RestaurantCategoryName);
         if (category is null)
         {
-            category = new RestaurantCategory() { Name = restaurantForCreationDto.RestaurantCategory.Name };
+            category = new RestaurantCategory() { Name = restaurantForCreationDto.RestaurantCategoryName };
         }
 
         var newRestaurant = _mapper.Map<Restaurant>(restaurantForCreationDto);
@@ -93,11 +93,11 @@ public class RestaurantsController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantDto.RestaurantCategory.Name);
+        var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantDto.RestaurantCategoryName);
 
         if (category is null)
         {
-            category = new RestaurantCategory() { Name = restaurantDto.RestaurantCategory.Name };
+            category = new RestaurantCategory() { Name = restaurantDto.RestaurantCategoryName };
         }
 
         restaurant.Name = restaurantDto.Name;
@@ -138,10 +138,10 @@ public class RestaurantsController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var category = await _restaurantCategoryRepository.GetRestaurantCategory(updatedRestaurantDto.RestaurantCategory.Name);
+        var category = await _restaurantCategoryRepository.GetRestaurantCategory(updatedRestaurantDto.RestaurantCategoryName);
         if (category is null)
         {
-            category = new RestaurantCategory() { Name = updatedRestaurantDto.RestaurantCategory.Name };
+            category = new RestaurantCategory() { Name = updatedRestaurantDto.RestaurantCategoryName };
         }
 
         restaurant.Name = updatedRestaurantDto.Name;

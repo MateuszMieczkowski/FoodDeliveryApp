@@ -21,5 +21,6 @@ public class RestaurantForUpdateDto
     public string ImageUrl { get; set; } = string.Empty;
 
     [Required]
-    public RestaurantCategory RestaurantCategory { get; set; } = default!;
+    public string RestaurantCategoryName { get; set; } = default!;
+
 }

@@ -41,26 +41,13 @@ namespace Web.Api.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{productCategoryId}")]
-        public async Task<IActionResult> DeleteProductCategory(int productCategoryId)
-        {
-            var productCategory = await _dbContext.ProductCategories.FindAsync(productCategoryId);
-            if(productCategory is null)
-            {
-                return NotFound();
-            }
-
-            _dbContext.Remove(productCategory);
-            await _dbContext.SaveChangesAsync();
-
-            return NoContent();
-        }
 
         [HttpGet]
         public ActionResult<IEnumerable<ProductCategoryDto>> GetProductCategories()
         {
             var categories = _dbContext.ProductCategories;
-            return Ok(categories);
+            var categoriesDtos = _mapper.Map<IEnumerable<ProductCategoryDto>>(categories);
+            return Ok(categoriesDtos);
         }
     }
 }

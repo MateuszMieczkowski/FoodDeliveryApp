@@ -18,9 +18,9 @@ public class ProductDto
 
     public bool InStock { get; set; }
 
-    public ProductCategoryDto Category { get; set; } = default!;
+    public int ProductCategoryId { get; set; }
 
-    public RestaurantDto Restaurant { get; set; } = default!;
+    public int RestaurantId { get; set; }   
 
     public string ImageUrl { get; set; } = string.Empty;
 }

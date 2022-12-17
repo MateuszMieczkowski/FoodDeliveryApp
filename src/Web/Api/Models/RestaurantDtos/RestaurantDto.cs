@@ -16,7 +16,7 @@ public class RestaurantDto
 
     public string City { get; set; } = string.Empty;
 
-    public RestaurantCategoryDto RestaurantCategory { get; set; } = default!;
+    public string RestaurantCategoryName { get; set; } = default!;  
 
     public double Rating { get; set; }
 

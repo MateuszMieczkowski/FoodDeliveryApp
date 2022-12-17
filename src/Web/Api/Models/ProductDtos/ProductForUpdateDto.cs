@@ -20,7 +20,7 @@ public class ProductForUpdateDto
     public bool InStock { get; set; }
 
     [Required]
-    public ProductCategoryDto Category { get; set; } = default!;
+    public int ProductCategoryId { get; set; }
 
     [Required]
     public string ImageUrl { get; set; } = string.Empty;

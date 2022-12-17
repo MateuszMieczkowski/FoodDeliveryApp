@@ -29,7 +29,7 @@ public class ReviewsController : ControllerBase
         {
             return NotFound();
         }
-        var reviews = _reviewRepository.Reviews?.Where(r => r.Restaurant == restaurant);
+        var reviews = _reviewRepository.Reviews?.Where(r => r.RestaurantId == restaurantId);
         var reviewDtos = _mapper.Map<IEnumerable<RestaurantReviewDto>>(reviews);
         return Ok(reviewDtos);
     }
@@ -66,6 +66,11 @@ public class ReviewsController : ControllerBase
         if (review is null)
         {
             return NotFound();
+        }
+
+        if(review.RestaurantId != restaurantId)
+        {
+            return BadRequest();
         }
         _reviewRepository.DeleteReview(review);
         await _restaurantRepository.SaveChangesAsync();

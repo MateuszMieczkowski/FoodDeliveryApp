@@ -33,7 +33,7 @@ public class ProductsController : ControllerBase
             return NotFound();
         }
 
-        var products = _productRepository.Products?.Where(r => r.Restaurant == restuarant);
+        var products = _productRepository.Products?.Where(r => r.RestaurantId == restaurantId);
         var productDtos = _mapper.Map<IEnumerable<ProductDto>>(products);
         return Ok(productDtos);
     }
@@ -51,10 +51,10 @@ public class ProductsController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-        var productCategory = _productRepository.GetCategories().FirstOrDefault(r => r.Name == productDto.Category.Name);
+        var productCategory = _productRepository.GetCategories().FirstOrDefault(r => r.Id == productDto.ProductCategoryId);
         if (productCategory is null)
         {
-            return BadRequest($"There's not such productCategory as {productDto.Category.Name}");
+            return BadRequest($"There's not such productCategory with id: {productDto.ProductCategoryId}");
         }
 
         var newProduct = _mapper.Map<Product>(productDto);

@@ -16,7 +16,7 @@ public class OrderDto
 
     public OrderStatus Status { get; set; }
 
-    public RestaurantDto Restaurant { get; set; } = default!;
+   public int RestaurantId { get; set; }
 
     public decimal Total
     {

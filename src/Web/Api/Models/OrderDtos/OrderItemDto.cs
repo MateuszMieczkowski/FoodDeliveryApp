@@ -9,8 +9,6 @@ public class OrderItemDto
 {
     public int Id { get; set; }
 
-    public OrderDto Order { get; set; } = default!;
-
     public Guid OrderId { get; set; }
 
     public int ProductQuantity { get; set; }
