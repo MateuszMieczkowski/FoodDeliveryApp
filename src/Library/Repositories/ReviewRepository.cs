@@ -8,7 +8,7 @@ namespace Library.Repositories;
 public class ReviewRepository : IReviewRepository
 {
     private readonly ApplicationDbContext _dbContext;
-
+    private const int _maxPageSize = 30;
     public IEnumerable<RestaurantReview>? Reviews { get; set; }
 
     public ReviewRepository(ApplicationDbContext dbContext)
@@ -42,9 +42,17 @@ public class ReviewRepository : IReviewRepository
         return await _dbContext.SaveChangesAsync();
     }
 
-    public IEnumerable<RestaurantReview>? GetRestaurantReviews(int restaurantId)
+    public IEnumerable<RestaurantReview>? GetRestaurantReviews(int restaurantId, int pageNumber = 1, int pageSize = 10)
     {
-        var reviews = _dbContext.RestaurantReviews.Where(r => r.RestaurantId == restaurantId);
+        if(pageSize > _maxPageSize)
+        {
+            pageSize = _maxPageSize;
+        }
+
+        var reviews = _dbContext.RestaurantReviews.Where(r => r.RestaurantId == restaurantId)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize);
+
         return reviews;
     }
 }

@@ -22,14 +22,14 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RestaurantReviewDto>>> GetReviews(int restaurantId)
+    public async Task<ActionResult<IEnumerable<RestaurantReviewDto>>> GetReviews(int restaurantId, int pageNumber, int pageSize)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
         {
             return NotFound();
         }
-        var reviews = _reviewRepository.Reviews?.Where(r => r.RestaurantId == restaurantId);
+        var reviews = _reviewRepository.GetRestaurantReviews(restaurantId, pageNumber, pageSize);
         var reviewDtos = _mapper.Map<IEnumerable<RestaurantReviewDto>>(reviews);
         return Ok(reviewDtos);
     }
