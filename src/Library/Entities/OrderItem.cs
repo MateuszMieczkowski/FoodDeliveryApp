@@ -12,8 +12,12 @@ public class OrderItem
 
     public Order Order { get; set; } = default!;
 
+    public Guid OrderId { get; set; }
+
     public int ProductQuantity { get; set; }
 
     public Product Product { get; set; } = default!;
+
+    public int ProductId { get; set; }
 
 }

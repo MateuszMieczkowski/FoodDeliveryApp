@@ -13,5 +13,7 @@ public class ShoppingCartItem
 
     public Product Product { get; set; } = default!;
 
+    public int ProductId { get; set; }
+
     public int Quantity { get; set; }
 }

@@ -23,8 +23,12 @@ public sealed class Product
 
     public ProductCategory Category { get; set; } = default!;
 
+    public int ProductCategoryId { get; set; }
+
     public Restaurant Restaurant { get; set; } = default!;
-    
+
+    public int RestaurantId { get; set; }
+
     public ICollection<OrderItem>? OrderItems { get; set; }
 
     public ICollection<ShoppingCartItem>? ShoppingCartItems{ get; set; }

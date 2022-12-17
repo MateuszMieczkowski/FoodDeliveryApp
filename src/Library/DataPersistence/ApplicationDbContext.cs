@@ -23,14 +23,17 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasMany(r => r.Products)
                   .WithOne(r => r.Restaurant)
+                  .HasForeignKey(r=>r.RestaurantId)
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(r => r.Orders)
                   .WithOne(r => r.Restaurant)
+                  .HasForeignKey(r=>r.RestaurantId)
                   .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasMany(r => r.Reviews)
                   .WithOne(r => r.Restaurant)
+                  .HasForeignKey(r=>r.RestaurantId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
@@ -38,16 +41,22 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasMany(r => r.OrderItems)
                   .WithOne(r => r.Order)
+                  .HasForeignKey(r=>r.OrderId)
                   .OnDelete(DeleteBehavior.Cascade);
+
             entity.Property(e => e.Status)
                    .HasConversion(v => v.ToString(), v => (OrderStatus)Enum.Parse(typeof(OrderStatus), v));
         });
-                   
 
-        modelBuilder.Entity<OrderItem>()
-                    .HasOne(r => r.Product)
-                    .WithMany(r => r.OrderItems)
-                    .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasOne(r => r.Product)
+                  .WithMany(r => r.OrderItems)
+                  .HasForeignKey(r => r.ProductId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+                    
 
         modelBuilder.Entity<Product>(entity =>
         {
@@ -57,10 +66,12 @@ public class ApplicationDbContext : DbContext
 
             entity.HasOne(r => r.Category)
                   .WithMany(r => r.Products)
+                  .HasForeignKey(r=>r.ProductCategoryId)
                   .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasMany(r => r.ShoppingCartItems)
                   .WithOne(r => r.Product)
+                  .HasForeignKey(r=>r.ProductId)
                   .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -73,6 +84,11 @@ public class ApplicationDbContext : DbContext
                     .HasOne(r => r.Restaurant)
                     .WithMany(r => r.Reviews)
                     .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ShoppingCartItem>()
+                    .HasOne(r => r.Product)
+                    .WithMany(r => r.ShoppingCartItems)
+                    .HasForeignKey(r=>r.ProductId);
 
     }
 }

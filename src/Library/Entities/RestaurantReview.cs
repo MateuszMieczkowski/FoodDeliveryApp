@@ -20,4 +20,6 @@ public class RestaurantReview
     public int Rating { get; set; }
 
     public Restaurant Restaurant { get; set; } = default!;
+
+    public int RestaurantId { get; set; }
 }

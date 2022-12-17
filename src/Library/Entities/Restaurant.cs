@@ -21,6 +21,8 @@ public class Restaurant
 
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
 
+    public string RestaurantCategoryName { get; set; } = default!;
+
     public ICollection<Product>? Products { get; set; }
 
     public ICollection<Order>? Orders { get; set; }
