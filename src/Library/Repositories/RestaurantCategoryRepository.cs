@@ -14,7 +14,7 @@ public class RestaurantCategoryRepository : IRestaurantCategoryRepository
     public RestaurantCategoryRepository(ApplicationDbContext dbcontext)
     {
         _dbcontext = dbcontext;
-        Categories = dbcontext.RestaurantCategories.Include(r => r.Restaurants);
+        Categories = dbcontext.RestaurantCategories;
     }
 
     public async Task AddCategoryAsync(RestaurantCategory category)
@@ -29,7 +29,7 @@ public class RestaurantCategoryRepository : IRestaurantCategoryRepository
 
     public async Task<RestaurantCategory?> GetRestaurantCategory(string name)
     {
-        return await _dbcontext.RestaurantCategories.Include(r=>r.Restaurants).SingleOrDefaultAsync(r => r.Name == name);
+        return await _dbcontext.RestaurantCategories.SingleOrDefaultAsync(r => r.Name == name);
     }
 
     public async Task<int> SaveChangesAsync()
@@ -39,7 +39,7 @@ public class RestaurantCategoryRepository : IRestaurantCategoryRepository
 
     public async Task<List<RestaurantCategory>> GetAllCategoriesAsync()
     {
-        var categories = await _dbcontext.RestaurantCategories.Include(r => r.Restaurants).ToListAsync();
+        var categories = await _dbcontext.RestaurantCategories.ToListAsync();
         return categories;
     }
 }
