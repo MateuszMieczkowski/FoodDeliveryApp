@@ -60,7 +60,6 @@ public class ProductsController : ControllerBase
         var newProduct = _mapper.Map<Product>(productDto);
         newProduct.Restaurant = restaurant;
         newProduct.Category = productCategory;
-        newProduct.Restaurant = restaurant;
 
         await _productRepository.AddProductAsync(newProduct);
         await _productRepository.SaveChangesAsync();
