@@ -42,10 +42,9 @@ public class ReviewRepository : IReviewRepository
         return await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<RestaurantReview>?> GetRestaurantReviewsAsync(int restaurantId)
+    public IEnumerable<RestaurantReview>? GetRestaurantReviews(int restaurantId)
     {
-        var restaurant = await _dbContext.Restaurants.Include(r => r.Reviews)
-                                                     .SingleOrDefaultAsync(r => r.Id == restaurantId);
-        return restaurant?.Reviews;
+        var reviews = _dbContext.RestaurantReviews.Where(r => r.RestaurantId == restaurantId);
+        return reviews;
     }
 }
