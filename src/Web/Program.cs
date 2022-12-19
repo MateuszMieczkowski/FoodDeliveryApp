@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Serilog;
 using Web;
 using Web.Api.Models.ProductDtos;
+using Web.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,8 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 app.UseSerilogRequestLogging();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

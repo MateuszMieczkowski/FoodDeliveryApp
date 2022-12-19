@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Web.Middlewares;
 
 namespace Web;
 
@@ -24,5 +25,7 @@ internal static class ConfigureServices
         services.AddSwaggerGen();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.AddHttpContextAccessor();
+
+        services.AddTransient<ExceptionHandlingMiddleware>();
     }
 }
