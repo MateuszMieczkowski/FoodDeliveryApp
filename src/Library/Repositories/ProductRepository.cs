@@ -20,15 +20,15 @@ public class ProductRepository : IProductRepository
 
     public async Task AddProductAsync(Product product)
     {
-       await _dbContext.Products.AddAsync(product);
+        await _dbContext.Products.AddAsync(product);
     }
 
     public void DeleteProduct(Product product)
     {
-       if(product is null)
-       {
+        if (product is null)
+        {
             return;
-       }
+        }
         _dbContext.Products.Remove(product);
     }
 
@@ -53,9 +53,10 @@ public class ProductRepository : IProductRepository
         return _dbContext.ProductCategories;
     }
 
-    public IEnumerable<Product>? GetRestaurantProducts(int restaurantId)
+    public async Task<List<Product>?> GetRestaurantProductsAsync(int restaurantId)
     {
-        var products =  _dbContext.Products.Where(r => r.RestaurantId == restaurantId);
+        var products = await _dbContext.Products.Where(r => r.RestaurantId == restaurantId)
+                                                 .ToListAsync();
         return products;
     }
 }
