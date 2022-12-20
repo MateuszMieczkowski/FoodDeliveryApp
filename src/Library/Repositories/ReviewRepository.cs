@@ -42,16 +42,26 @@ public class ReviewRepository : IReviewRepository
         return await _dbContext.SaveChangesAsync();
     }
 
-    public IEnumerable<RestaurantReview>? GetRestaurantReviews(int restaurantId, int pageNumber = 1, int pageSize = 10)
+    public async Task<List<RestaurantReview>> GetRestaurantReviewsAsync(int restaurantId, int pageNumber = 1, int pageSize = 10)
     {
         if(pageSize > _maxPageSize)
         {
             pageSize = _maxPageSize;
         }
+        if(pageSize <= 0)
+        {
+            pageSize = 10;
+        }
 
-        var reviews = _dbContext.RestaurantReviews.Where(r => r.RestaurantId == restaurantId)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize);
+        if(pageNumber <= 0)
+        {
+            pageNumber = 1;
+        }
+
+        var reviews = await _dbContext.RestaurantReviews.Where(r => r.RestaurantId == restaurantId)
+                                                  .Skip((pageNumber - 1) * pageSize)
+                                                  .Take(pageSize)
+                                                  .ToListAsync();
 
         return reviews;
     }
