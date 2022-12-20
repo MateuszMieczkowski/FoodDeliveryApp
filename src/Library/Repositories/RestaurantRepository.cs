@@ -31,7 +31,7 @@ public class RestaurantRepository : IRestaurantRepository
 
     public async Task<Restaurant?> GetRestaurantAsync(int restaurantId)
     {
-        var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == restaurantId);
+        var restaurant = await _dbContext.Restaurants.FindAsync(restaurantId);
         return restaurant;
     }
 
@@ -47,7 +47,7 @@ public class RestaurantRepository : IRestaurantRepository
     }
 
     public async Task<List<Restaurant>> GetRestaurantsAsync
-        (string? name, string? city, string? category, string? searchQuery, int pageNumber = 1, int pageSize = 15)
+        (string? name, string? city, string? category, string? searchQuery, int pageNumber = 1, int pageSize = 10)
     {
         var restaurants = _dbContext.Restaurants as IQueryable<Restaurant>;
         if (!string.IsNullOrEmpty(name))
@@ -71,6 +71,7 @@ public class RestaurantRepository : IRestaurantRepository
             restaurants = restaurants.Where(r => r.Name.Contains(searchQuery) || r.Description.Contains(searchQuery)
             || r.City.Contains(searchQuery) || r.RestaurantCategory.Name.Contains(searchQuery));
         }
+
         if(pageSize > maxRestaurantsPageSize)
         {
             pageSize = maxRestaurantsPageSize;
