@@ -29,7 +29,8 @@ public class ReviewsController : ControllerBase
         {
             return NotFound();
         }
-        var reviews = _reviewRepository.GetRestaurantReviews(restaurantId, pageNumber, pageSize);
+
+        var reviews = await _reviewRepository.GetRestaurantReviewsAsync(restaurantId, pageNumber, pageSize);
         var reviewDtos = _mapper.Map<IEnumerable<RestaurantReviewDto>>(reviews);
         return Ok(reviewDtos);
     }
@@ -37,15 +38,17 @@ public class ReviewsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddReview(int restaurantId, RestaurantReviewForUpdateDto reviewDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
         {
             return NotFound();
         }
-        if (!ModelState.IsValid)
-        {
-            return BadRequest();
-        }
+
         var newReview = _mapper.Map<RestaurantReview>(reviewDto);
         newReview.Restaurant = restaurant;
         await _reviewRepository.AddReviewAsync(newReview);
@@ -68,10 +71,11 @@ public class ReviewsController : ControllerBase
             return NotFound();
         }
 
-        if(review.RestaurantId != restaurantId)
+        if (review.RestaurantId != restaurantId)
         {
             return BadRequest();
         }
+
         _reviewRepository.DeleteReview(review);
         await _restaurantRepository.SaveChangesAsync();
         return Ok();

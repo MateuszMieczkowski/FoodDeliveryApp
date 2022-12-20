@@ -53,56 +53,62 @@ public class RestaurantsController : ControllerBase
         {
             return NotFound();
         }
+
         _restaurantRepository.DeleteRestaurant(restaurant);
         await _restaurantRepository.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateRestaurant(RestaurantForUpdateDto restaurantForCreationDto)
+    public async Task<IActionResult> CreateRestaurant(RestaurantForUpdateDto restaurantDto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-
-        var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantForCreationDto.RestaurantCategoryName);
-        if (category is null)
-        {
-            category = new RestaurantCategory() { Name = restaurantForCreationDto.RestaurantCategoryName };
-        }
-
-        var newRestaurant = _mapper.Map<Restaurant>(restaurantForCreationDto);
-        newRestaurant.RestaurantCategory = category;
-
-        await _restaurantRepository.AddRestaurantAsync(newRestaurant);
-        await _restaurantRepository.SaveChangesAsync();
-        var newRestaurantDto = _mapper.Map<RestaurantDto>(newRestaurant);
-        return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurantDto);
-    }
-    [HttpPut("{restaurantId}")]
-    public async Task<IActionResult> UpdateRestaurant(int restaurantId, RestaurantForUpdateDto restaurantDto)
-    {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            return NotFound();
-        }
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
+        
         var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantDto.RestaurantCategoryName);
-
         if (category is null)
         {
             category = new RestaurantCategory() { Name = restaurantDto.RestaurantCategoryName };
         }
 
+        var newRestaurant = _mapper.Map<Restaurant>(restaurantDto);
+        newRestaurant.RestaurantCategory = category;
+
+        await _restaurantRepository.AddRestaurantAsync(newRestaurant);
+        await _restaurantRepository.SaveChangesAsync();
+
+        var newRestaurantDto = _mapper.Map<RestaurantDto>(newRestaurant);
+        return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurantDto);
+    }
+
+    [HttpPut("{restaurantId}")]
+    public async Task<IActionResult> UpdateRestaurant(int restaurantId, RestaurantForUpdateDto restaurantDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
+        if (restaurant is null)
+        {
+            return NotFound();
+        }
+        
+        var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantDto.RestaurantCategoryName);
+        if (category is null)
+        {
+            category = new RestaurantCategory() { Name = restaurantDto.RestaurantCategoryName };
+        }
+
+        
         restaurant.Name = restaurantDto.Name;
         restaurant.Description = restaurantDto.Description;
         restaurant.RestaurantCategory = category;
+        restaurant.City = restaurantDto.City;
+        restaurant.ImageUrl = restaurantDto.ImageUrl;
 
         await _restaurantRepository.SaveChangesAsync();
 
@@ -112,17 +118,17 @@ public class RestaurantsController : ControllerBase
     [HttpPatch("{restaurantId}")]
     public async Task<IActionResult> UpdateRestaurant(int restaurantId, JsonPatchDocument<RestaurantForUpdateDto> jsonPatchDocument)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-
-        if (restaurant is null)
-        {
-            return NotFound();
-        }
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
+        if (restaurant is null)
+        {
+            return NotFound();
+        }
+       
         var updatedRestaurantDto = _mapper.Map<RestaurantForUpdateDto>(restaurant);
         try
         {
@@ -141,13 +147,15 @@ public class RestaurantsController : ControllerBase
         var category = await _restaurantCategoryRepository.GetRestaurantCategory(updatedRestaurantDto.RestaurantCategoryName);
         if (category is null)
         {
-            category = new RestaurantCategory() { Name = updatedRestaurantDto.RestaurantCategoryName };
+            return BadRequest();
         }
 
         restaurant.Name = updatedRestaurantDto.Name;
         restaurant.Description = updatedRestaurantDto.Description;
         restaurant.RestaurantCategory = category;
         restaurant.ImageUrl = updatedRestaurantDto.ImageUrl;
+        restaurant.City = updatedRestaurantDto.City;
+
         await _restaurantRepository.SaveChangesAsync();
 
         return NoContent();
@@ -156,7 +164,8 @@ public class RestaurantsController : ControllerBase
     [HttpGet("categories")]
     public ActionResult<IEnumerable<RestaurantCategoryDto>> GetCategories()
     {
-        var categoryDtos = _mapper.Map<IEnumerable<RestaurantCategoryDto>>(_restaurantCategoryRepository.Categories);
+        var categories = _restaurantCategoryRepository.Categories;
+        var categoryDtos = _mapper.Map<IEnumerable<RestaurantCategoryDto>>(categories);
         return Ok(categoryDtos);
     }
 }

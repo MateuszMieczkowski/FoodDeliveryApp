@@ -33,7 +33,7 @@ public class ProductsController : ControllerBase
             return NotFound();
         }
 
-        var products = _productRepository.Products?.Where(r => r.RestaurantId == restaurantId);
+        var products = await _productRepository.GetRestaurantProductsAsync(restaurantId);
         var productDtos = _mapper.Map<IEnumerable<ProductDto>>(products);
         return Ok(productDtos);
     }
@@ -41,25 +41,24 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateProduct(int restaurantId, ProductForUpdateDto productDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
         {
             return NotFound();
         }
 
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        var productCategory = _productRepository.GetCategories().FirstOrDefault(r => r.Id == productDto.ProductCategoryId);
+        var productCategory = _productRepository.GetCategories().SingleOrDefault(r => r.Id == productDto.ProductCategoryId);
         if (productCategory is null)
         {
             return BadRequest($"There's not such productCategory with id: {productDto.ProductCategoryId}");
         }
 
         var newProduct = _mapper.Map<Product>(productDto);
-        newProduct.Restaurant = restaurant;
-        newProduct.Category = productCategory;
 
         await _productRepository.AddProductAsync(newProduct);
         await _productRepository.SaveChangesAsync();
@@ -81,6 +80,12 @@ public class ProductsController : ControllerBase
         {
             return NotFound();
         }
+
+        if (product.RestaurantId != restaurantId)
+        {
+            return BadRequest();
+        }
+
         _productRepository.DeleteProduct(product);
         await _productRepository.SaveChangesAsync();
         return Ok();

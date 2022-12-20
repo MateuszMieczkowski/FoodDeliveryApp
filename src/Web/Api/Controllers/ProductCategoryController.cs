@@ -29,7 +29,8 @@ namespace Web.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (await _dbContext.ProductCategories.AnyAsync(r => r.Name.ToLower() == productCategoryDto.Name.ToLower()))
+            var exists = await _dbContext.ProductCategories.AnyAsync(r => r.Name == productCategoryDto.Name);
+            if (exists)
             {
                 return BadRequest("Such productCategory already exists");
             }
