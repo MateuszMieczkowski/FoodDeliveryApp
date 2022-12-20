@@ -12,7 +12,7 @@ namespace Web.Middlewares
 			{
 				await next(context);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				
 				ProblemDetails problemDetails = new ProblemDetails()
