@@ -36,9 +36,10 @@ if (app.Environment.IsDevelopment())
     app.UseHsts();
     app.UseDeveloperExceptionPage();
 }
-app.UseSerilogRequestLogging();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
