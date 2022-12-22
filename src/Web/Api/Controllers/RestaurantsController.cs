@@ -54,7 +54,7 @@ public class RestaurantsController : ControllerBase
             return NotFound();
         }
 
-        _restaurantRepository.DeleteRestaurant(restaurant);
+        await _restaurantRepository.DeleteRestaurantAsync(restaurant);
         await _restaurantRepository.SaveChangesAsync();
         return NoContent();
     }
