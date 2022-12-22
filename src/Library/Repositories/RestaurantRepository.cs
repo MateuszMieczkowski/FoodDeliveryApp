@@ -24,9 +24,11 @@ public class RestaurantRepository : IRestaurantRepository
         await _dbContext.Restaurants.AddAsync(restaurant);
     }
 
-    public void DeleteRestaurant(Restaurant restaurant)
+    public async Task DeleteRestaurantAsync(Restaurant restaurant)
     {
-        _dbContext.Restaurants.Remove(restaurant);
+        //including orders to be deleted by ef core because of clientCascade deletion
+        var restaurantToDelete = await _dbContext.Restaurants.Include(r=>r.Orders).SingleOrDefaultAsync(r=>r.Id == restaurant.Id);
+        _dbContext.Restaurants.Remove(restaurantToDelete!);
     }
 
     public async Task<Restaurant?> GetRestaurantAsync(int restaurantId)
