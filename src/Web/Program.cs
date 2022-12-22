@@ -74,4 +74,11 @@ app.MapGet("api/shoppingCart", (ShoppingCartService shoppingCartService) =>
 
 app.MapRazorPages();
 
+
+using(var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var dbSeeder = new DbSeeder(context);
+    dbSeeder.Seed();
+}
 app.Run();
