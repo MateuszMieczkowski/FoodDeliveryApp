@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221215121224_addTotalToOrder")]
-    partial class addTotalToOrder
+    [Migration("20221222121603_initialMigration")]
+    partial class initialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -85,9 +85,6 @@ namespace Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -95,7 +92,8 @@ namespace Library.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("InStock")
                         .HasColumnType("bit");
@@ -108,12 +106,15 @@ namespace Library.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("ProductCategoryId");
 
                     b.HasIndex("RestaurantId");
 
@@ -148,8 +149,8 @@ namespace Library.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -163,13 +164,14 @@ namespace Library.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(70)
-                        .HasColumnType("nvarchar(70)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
                     b.Property<string>("RestaurantCategoryName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
@@ -221,12 +223,36 @@ namespace Library.Migrations
                     b.ToTable("RestaurantReviews");
                 });
 
+            modelBuilder.Entity("Library.Entities.ShoppingCartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ShoppingCartId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ShoppingCartItems");
+                });
+
             modelBuilder.Entity("Library.Entities.Order", b =>
                 {
                     b.HasOne("Library.Entities.Restaurant", "Restaurant")
                         .WithMany("Orders")
                         .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Restaurant");
@@ -243,7 +269,7 @@ namespace Library.Migrations
                     b.HasOne("Library.Entities.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -255,8 +281,8 @@ namespace Library.Migrations
                 {
                     b.HasOne("Library.Entities.ProductCategory", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("ProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Library.Entities.Restaurant", "Restaurant")
@@ -274,7 +300,9 @@ namespace Library.Migrations
                 {
                     b.HasOne("Library.Entities.RestaurantCategory", "RestaurantCategory")
                         .WithMany("Restaurants")
-                        .HasForeignKey("RestaurantCategoryName");
+                        .HasForeignKey("RestaurantCategoryName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("RestaurantCategory");
                 });
@@ -290,6 +318,17 @@ namespace Library.Migrations
                     b.Navigation("Restaurant");
                 });
 
+            modelBuilder.Entity("Library.Entities.ShoppingCartItem", b =>
+                {
+                    b.HasOne("Library.Entities.Product", "Product")
+                        .WithMany("ShoppingCartItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Library.Entities.Order", b =>
                 {
                     b.Navigation("OrderItems");
@@ -298,6 +337,8 @@ namespace Library.Migrations
             modelBuilder.Entity("Library.Entities.Product", b =>
                 {
                     b.Navigation("OrderItems");
+
+                    b.Navigation("ShoppingCartItems");
                 });
 
             modelBuilder.Entity("Library.Entities.ProductCategory", b =>

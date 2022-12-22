@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.Entities;
 
-public sealed class RestaurantCategory
+public class RestaurantCategory
 {
-   
-    [Key]
-    [MaxLength(20)]
     public string Name { get; set; } = string.Empty;
 
     public ICollection<Restaurant>? Restaurants { get; set; }

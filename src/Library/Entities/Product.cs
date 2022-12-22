@@ -5,16 +5,12 @@ using static Library.Enums.Enums;
 
 namespace Library.Entities;
 
-public sealed class Product
+public class Product
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
    
-    [MaxLength(50)]
     public string Name { get; set; } = string.Empty;
 
-    [MaxLength(100)]
     public string Description { get; set; } = string.Empty;
 
     public decimal Price { get; set; }

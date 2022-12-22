@@ -1,5 +1,6 @@
 ﻿using Library.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using static Library.Enums.Enums;
 
 namespace Library.DataPersistence;
@@ -19,76 +20,6 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Restaurant>(entity =>
-        {
-            entity.HasMany(r => r.Products)
-                  .WithOne(r => r.Restaurant)
-                  .HasForeignKey(r=>r.RestaurantId)
-                  .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasMany(r => r.Orders)
-                  .WithOne(r => r.Restaurant)
-                  .HasForeignKey(r=>r.RestaurantId)
-                  .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasMany(r => r.Reviews)
-                  .WithOne(r => r.Restaurant)
-                  .HasForeignKey(r=>r.RestaurantId)
-                  .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        modelBuilder.Entity<Order>(entity =>
-        {
-            entity.HasMany(r => r.OrderItems)
-                  .WithOne(r => r.Order)
-                  .HasForeignKey(r=>r.OrderId)
-                  .OnDelete(DeleteBehavior.Cascade);
-
-            entity.Property(e => e.Status)
-                   .HasConversion(v => v.ToString(), v => (OrderStatus)Enum.Parse(typeof(OrderStatus), v));
-        });
-
-
-        modelBuilder.Entity<OrderItem>(entity =>
-        {
-            entity.HasOne(r => r.Product)
-                  .WithMany(r => r.OrderItems)
-                  .HasForeignKey(r => r.ProductId)
-                  .OnDelete(DeleteBehavior.Restrict);
-        });
-                    
-
-        modelBuilder.Entity<Product>(entity =>
-        {
-            entity.HasMany(r => r.OrderItems)
-                  .WithOne(r => r.Product)
-                  .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(r => r.Category)
-                  .WithMany(r => r.Products)
-                  .HasForeignKey(r=>r.ProductCategoryId)
-                  .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasMany(r => r.ShoppingCartItems)
-                  .WithOne(r => r.Product)
-                  .HasForeignKey(r=>r.ProductId)
-                  .OnDelete(DeleteBehavior.Restrict);
-        });
-
-        modelBuilder.Entity<ProductCategory>()
-                    .HasMany(r => r.Products)
-                    .WithOne(r => r.Category)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<RestaurantReview>()
-                    .HasOne(r => r.Restaurant)
-                    .WithMany(r => r.Reviews)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<ShoppingCartItem>()
-                    .HasOne(r => r.Product)
-                    .WithMany(r => r.ShoppingCartItems)
-                    .HasForeignKey(r=>r.ProductId);
-
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }
