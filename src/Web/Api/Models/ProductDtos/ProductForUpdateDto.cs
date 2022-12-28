@@ -15,16 +15,16 @@ public class ProductForUpdateDto
     public string Description { get; set; } = string.Empty;
 
     [Required]
-    public decimal Price { get; set; }
+    public decimal? Price { get; set; }
 
     [Required]
-    public bool InStock { get; set; }
+    public bool? InStock { get; set; }
 
     [Required]
-    public int ProductCategoryId { get; set; }
+    public int? ProductCategoryId { get; set; }
 
     [Required]
-    public int RestaurantId { get; set; }
+    public int? RestaurantId { get; set; }
 
     [Required]
     public string ImageUrl { get; set; } = string.Empty;
