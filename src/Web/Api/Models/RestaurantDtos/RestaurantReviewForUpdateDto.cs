@@ -15,5 +15,5 @@ public class RestaurantReviewForUpdateDto
 
     [Range(0, 5)]
     [Required]
-    public int Rating { get; set; }
+    public int? Rating { get; set; }
 }
