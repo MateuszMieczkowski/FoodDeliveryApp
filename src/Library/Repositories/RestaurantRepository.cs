@@ -27,7 +27,7 @@ public class RestaurantRepository : IRestaurantRepository
     public async Task DeleteRestaurantAsync(Restaurant restaurant)
     {
         //including orders to be deleted by ef core because of clientCascade deletion
-        var restaurantToDelete = await _dbContext.Restaurants.Include(r=>r.Orders).SingleOrDefaultAsync(r=>r.Id == restaurant.Id);
+        var restaurantToDelete = await _dbContext.Restaurants.Include(r => r.Orders).SingleOrDefaultAsync(r => r.Id == restaurant.Id);
         _dbContext.Restaurants.Remove(restaurantToDelete!);
     }
 
@@ -74,15 +74,15 @@ public class RestaurantRepository : IRestaurantRepository
             || r.City.Contains(searchQuery) || r.RestaurantCategory.Name.Contains(searchQuery));
         }
 
-        if(pageSize > maxRestaurantsPageSize)
+        if (pageSize > maxRestaurantsPageSize)
         {
             pageSize = maxRestaurantsPageSize;
         }
-        if(pageSize == 0)
+        if (pageSize == 0)
         {
             pageSize = 15;
         }
-        if(pageNumber == 0)
+        if (pageNumber == 0)
         {
             pageNumber = 1;
         }
@@ -90,5 +90,10 @@ public class RestaurantRepository : IRestaurantRepository
         return await restaurants.Skip(pageSize * (pageNumber - 1))
                                 .Take(pageSize)
                                 .ToListAsync();
+    }
+
+    public async Task<int> GetRestaurantsCount()
+    {
+        return await _dbContext.Restaurants.CountAsync();
     }
 }

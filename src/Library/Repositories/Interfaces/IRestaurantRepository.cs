@@ -4,7 +4,9 @@ namespace Library.Repositories.Interfaces;
 
 public interface IRestaurantRepository
 {
-    public IEnumerable<Restaurant>? Restaurants { get; set; }
+    IEnumerable<Restaurant>? Restaurants { get; set; }
+
+    Task<int> GetRestaurantsCount();
 
     Task<List<Restaurant>> GetAllRestaurantsAsync();
 

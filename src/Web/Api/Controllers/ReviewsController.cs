@@ -2,6 +2,7 @@
 using Library.Entities;
 using Library.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Web.Api.Models;
 using Web.Api.Models.RestaurantDtos;
 
 namespace Web.Api.Controllers;
@@ -22,7 +23,7 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RestaurantReviewDto>>> GetReviews(int restaurantId, int pageNumber, int pageSize)
+    public async Task<ActionResult<IEnumerable<RestaurantReviewDto>>> GetReviews(int restaurantId, int pageNumber = 1, int pageSize = 10)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
@@ -31,8 +32,11 @@ public class ReviewsController : ControllerBase
         }
 
         var reviews = await _reviewRepository.GetRestaurantReviewsAsync(restaurantId, pageNumber, pageSize);
-        var reviewDtos = _mapper.Map<IEnumerable<RestaurantReviewDto>>(reviews);
-        return Ok(reviewDtos);
+        var totalReviewsCount = await _reviewRepository.GetReviewsCount(restaurantId);
+        var reviewDtos = _mapper.Map<List<RestaurantReviewDto>>(reviews);
+
+        var result = new PagedResult<RestaurantReviewDto>(reviewDtos, pageNumber, pageSize, totalReviewsCount);
+        return Ok(result);
     }
 
     [HttpPost]

@@ -11,6 +11,8 @@ public interface IReviewRepository
 {
     IEnumerable<RestaurantReview>? Reviews{ get; set; }
 
+    Task<int> GetReviewsCount(int restaurantId);
+
     Task AddReviewAsync(RestaurantReview review);
 
     void DeleteReview(RestaurantReview review);

@@ -4,6 +4,7 @@ using Library.Repositories.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Web.Api.Models;
 using Web.Api.Models.RestaurantDtos;
 
 namespace Web.Api.Controllers;
@@ -24,23 +25,27 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetRestaurants
-        (string? name, string? city, string? category,  string? searchQuery, int pageNumber, int pageSize)
+    public async Task<ActionResult<PagedResult<RestaurantDto>>> GetRestaurants
+        (string? name, string? city, string? category,  string? searchQuery, int pageNumber = 1, int pageSize = 10)
     {
-        var restaurants = await _restaurantRepository.GetRestaurantsAsync(name, city, category, searchQuery, pageNumber, pageSize);
-        var restaurantDtos = _mapper.Map<IEnumerable<Restaurant>, IEnumerable<RestaurantDto>>(restaurants);
-        return Ok(restaurantDtos);
+        var restaurants = await _restaurantRepository.GetRestaurantsAsync(name, city, category, searchQuery,  pageNumber, pageSize);
+        var totalRestaurantsCount = await _restaurantRepository.GetRestaurantsCount();
+
+        var restaurantDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
+        
+        var result = new PagedResult<RestaurantDto>(restaurantDtos, pageNumber, pageSize, totalRestaurantsCount);
+        return Ok(result);
     }
 
     [HttpGet("{restaurantId}", Name = "GetRestaurant")]
     public async Task<ActionResult<RestaurantDto>> GetRestaurant(int restaurantId)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-
         if (restaurant is null)
         {
             return NotFound();
         }
+
         var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
         return Ok(restaurantDto);
     }
@@ -103,7 +108,6 @@ public class RestaurantsController : ControllerBase
             category = new RestaurantCategory() { Name = restaurantDto.RestaurantCategoryName };
         }
 
-        
         restaurant.Name = restaurantDto.Name;
         restaurant.Description = restaurantDto.Description;
         restaurant.RestaurantCategory = category;

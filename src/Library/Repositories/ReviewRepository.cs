@@ -65,4 +65,9 @@ public class ReviewRepository : IReviewRepository
 
         return reviews;
     }
+
+    public async Task<int> GetReviewsCount(int restaurantId)
+    {
+        return await _dbContext.RestaurantReviews.Where(r => r.RestaurantId == restaurantId).CountAsync();
+    }
 }
