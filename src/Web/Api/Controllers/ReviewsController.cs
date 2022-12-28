@@ -42,11 +42,6 @@ public class ReviewsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddReview(int restaurantId, RestaurantReviewForUpdateDto reviewDto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest();
-        }
-
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
         {

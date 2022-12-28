@@ -67,11 +67,6 @@ public class RestaurantsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateRestaurant(RestaurantForUpdateDto restaurantDto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
         var category = await _restaurantCategoryRepository.GetRestaurantCategory(restaurantDto.RestaurantCategoryName);
         if (category is null)
         {
@@ -91,11 +86,6 @@ public class RestaurantsController : ControllerBase
     [HttpPut("{restaurantId}")]
     public async Task<IActionResult> UpdateRestaurant(int restaurantId, RestaurantForUpdateDto restaurantDto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
         {
@@ -122,11 +112,6 @@ public class RestaurantsController : ControllerBase
     [HttpPatch("{restaurantId}")]
     public async Task<IActionResult> UpdateRestaurant(int restaurantId, JsonPatchDocument<RestaurantForUpdateDto> jsonPatchDocument)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
         if (restaurant is null)
         {

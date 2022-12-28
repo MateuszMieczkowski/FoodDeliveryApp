@@ -24,11 +24,6 @@ namespace Web.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProductCategory(ProductCategoryForUpdateDto productCategoryDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var exists = await _dbContext.ProductCategories.AnyAsync(r => r.Name == productCategoryDto.Name);
             if (exists)
             {
