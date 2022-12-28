@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Library.Services.ShoppingCart;
 
-public class ShoppingCartService
+public class ShoppingCartService : IShoppingCartService
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly IServiceProvider _serviceProvider;

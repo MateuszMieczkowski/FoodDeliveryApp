@@ -17,7 +17,7 @@ public static class ConfigureServices
         services.AddScoped<IRestaurantCategoryRepository, RestaurantCategoryRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
-        services.AddTransient<ShoppingCartService>();
+        services.AddTransient<IShoppingCartService,ShoppingCartService>();
         services.AddHostedService<BackgroundUpdateRestaurantsRatingService>();
         services.AddDbContext<ApplicationDbContext>(options =>
         {

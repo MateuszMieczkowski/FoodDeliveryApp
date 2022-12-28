@@ -54,7 +54,7 @@ app.UseSession();
 app.UseEndpoints(endpoints => endpoints.MapControllers());
 
 //TODO: add shoppingCartController
-app.MapPost("api/shoppingCart", async ([FromQuery] int productId, ShoppingCartService cartService, ApplicationDbContext dbContext) =>
+app.MapPost("api/shoppingCart", async ([FromQuery] int productId, IShoppingCartService cartService, ApplicationDbContext dbContext) =>
 {
    var product =  await dbContext.Products.FindAsync(productId);
     if (product is null)
@@ -65,7 +65,7 @@ app.MapPost("api/shoppingCart", async ([FromQuery] int productId, ShoppingCartSe
     return Results.NoContent();
 });
 
-app.MapGet("api/shoppingCart", (ShoppingCartService shoppingCartService) =>
+app.MapGet("api/shoppingCart", (IShoppingCartService shoppingCartService) =>
 {
     var json = JsonConvert.SerializeObject(shoppingCartService.ShoppingCart.ShoppingCartItems,Formatting.Indented, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
     return Results.Json(json);
