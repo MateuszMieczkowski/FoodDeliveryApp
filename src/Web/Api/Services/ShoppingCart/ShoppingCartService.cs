@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using Library.DataPersistence;
 using Library.Entities;
 using Library.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Web.Api.Exceptions;
 using Web.Api.Models.ShoppingCartDtos;
+using Web.Api.Services.Interfaces;
 
 namespace Library.Services.ShoppingCart;
 
