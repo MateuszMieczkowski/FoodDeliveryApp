@@ -10,8 +10,6 @@ public interface IRestaurantRepository
 
     Task<List<Restaurant>> GetAllRestaurantsAsync();
 
-    Task<List<Restaurant>> GetRestaurantsAsync(string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize);
-
     Task AddRestaurantAsync(Restaurant restaurant);
 
     Task DeleteRestaurantAsync(Restaurant restaurant);

@@ -1,11 +1,11 @@
 using Library;
 using Library.DataPersistence;
-using Library.Services.ShoppingCart;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog;
 using Web;
 using Web.Api.Models.ProductDtos;
+using Web.Api.Services.Interfaces;
 using Web.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -46,33 +46,6 @@ public class RestaurantRepository : IRestaurantRepository
         return restaurants;
     }
 
-    public async Task<List<Restaurant>> GetRestaurantsAsync
-        (string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize)
-    {
-        var restaurants = Restaurants;
-        if (!string.IsNullOrEmpty(name))
-        {
-            restaurants = restaurants.Where(r => r.Name == name);
-        }
-        if (!string.IsNullOrEmpty(city))
-        {
-            restaurants = restaurants.Where(r => r.City == city);
-        }
-        if (!string.IsNullOrEmpty(category))
-        {
-            restaurants = restaurants.Where(r => r.RestaurantCategory.Name == category);
-        }
-        if (!string.IsNullOrEmpty(searchQuery))
-        {
-            restaurants = restaurants.Where(r => r.Name.Contains(searchQuery) || r.Description.Contains(searchQuery)
-               || r.City.Contains(searchQuery) || r.RestaurantCategory.Name.Contains(searchQuery));
-        }
-
-        return await restaurants.Skip(pageSize * (pageNumber - 1))
-                                .Take(pageSize)
-                                .ToListAsync();
-    }
-
     public async Task<int> GetRestaurantsCount()
     {
         return await _dbContext.Restaurants.CountAsync();

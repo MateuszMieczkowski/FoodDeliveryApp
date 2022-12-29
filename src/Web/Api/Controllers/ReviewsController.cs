@@ -4,6 +4,7 @@ using Library.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Web.Api.Models;
 using Web.Api.Models.RestaurantDtos;
+using Web.Api.Services.Interfaces;
 
 namespace Web.Api.Controllers;
 
@@ -11,72 +12,30 @@ namespace Web.Api.Controllers;
 [Route("/api/restaurants/{restaurantId}/reviews")]
 public class ReviewsController : ControllerBase
 {
-    private readonly IRestaurantRepository _restaurantRepository;
-    private readonly IReviewRepository _reviewRepository;
-    private readonly IMapper _mapper;
+    private readonly IRestaurantReviewService _restaurantReviewService;
 
-    public ReviewsController(IRestaurantRepository restaurantRepository, IMapper mapper, IReviewRepository reviewRepository)
+    public ReviewsController(IRestaurantReviewService restaurantReviewService)
     {
-        _restaurantRepository = restaurantRepository;
-        _mapper = mapper;
-        _reviewRepository = reviewRepository;
+        _restaurantReviewService = restaurantReviewService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RestaurantReviewDto>>> GetReviews(int restaurantId, int pageNumber = 1, int pageSize = 10)
+    public async Task<ActionResult<List<RestaurantReviewDto>>> GetReviews(int restaurantId, int pageNumber = 1, int pageSize = 10)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            return NotFound();
-        }
-
-        var reviews = await _reviewRepository.GetRestaurantReviewsAsync(restaurantId, pageNumber, pageSize);
-        var totalReviewsCount = await _reviewRepository.GetReviewsCount(restaurantId);
-        var reviewDtos = _mapper.Map<List<RestaurantReviewDto>>(reviews);
-
-        var result = new PagedResult<RestaurantReviewDto>(reviewDtos, pageNumber, pageSize, totalReviewsCount);
+        var result = await _restaurantReviewService.GetReviewsAsync(restaurantId, pageNumber, pageSize);
         return Ok(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddReview(int restaurantId, RestaurantReviewForUpdateDto reviewDto)
+    public async Task<IActionResult> AddReview(int restaurantId, RestaurantReviewForUpdateDto dto)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            return NotFound();
-        }
-
-        var newReview = _mapper.Map<RestaurantReview>(reviewDto);
-        newReview.Restaurant = restaurant;
-        await _reviewRepository.AddReviewAsync(newReview);
-        await _reviewRepository.SaveChangesAsync();
-
+        await _restaurantReviewService.AddReviewAsync(restaurantId, dto);
         return Ok();
     }
     [HttpDelete("{reviewId}")]
     public async Task<IActionResult> DeleteReview(int restaurantId, int reviewId)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            return NotFound();
-        }
-
-        var review = await _reviewRepository.GetReviewAsync(reviewId);
-        if (review is null)
-        {
-            return NotFound();
-        }
-
-        if (review.RestaurantId != restaurantId)
-        {
-            return BadRequest();
-        }
-
-        _reviewRepository.DeleteReview(review);
-        await _restaurantRepository.SaveChangesAsync();
+        await _restaurantReviewService.DeleteReviewAsync(restaurantId, reviewId);
         return Ok();
     }
 

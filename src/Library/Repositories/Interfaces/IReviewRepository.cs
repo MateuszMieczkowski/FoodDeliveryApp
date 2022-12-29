@@ -9,7 +9,7 @@ namespace Library.Repositories.Interfaces;
 
 public interface IReviewRepository
 {
-    IEnumerable<RestaurantReview>? Reviews{ get; set; }
+    IQueryable<RestaurantReview>? Reviews{ get; set; }
 
     Task<int> GetReviewsCount(int restaurantId);
 
@@ -18,8 +18,6 @@ public interface IReviewRepository
     void DeleteReview(RestaurantReview review);
 
     Task<RestaurantReview?> GetReviewAsync(int reviewId);
-
-    Task<List<RestaurantReview>> GetRestaurantReviewsAsync(int restaurantId, int pageNumber=1, int pageSize = 10);
 
     Task<List<RestaurantReview>> GetAllReviewsAsync();
 
