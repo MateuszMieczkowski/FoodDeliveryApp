@@ -9,9 +9,7 @@ public class RestaurantRepository : IRestaurantRepository
 {
     private readonly ApplicationDbContext _dbContext;
 
-    private const int maxRestaurantsPageSize = 30;
-
-    public IEnumerable<Restaurant>? Restaurants { get; set; }
+    public IQueryable<Restaurant> Restaurants { get; set; }
 
     public RestaurantRepository(ApplicationDbContext dbContext)
     {
@@ -49,42 +47,25 @@ public class RestaurantRepository : IRestaurantRepository
     }
 
     public async Task<List<Restaurant>> GetRestaurantsAsync
-        (string? name, string? city, string? category, string? searchQuery, int pageNumber = 1, int pageSize = 10)
+        (string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize)
     {
-        var restaurants = _dbContext.Restaurants as IQueryable<Restaurant>;
+        var restaurants = Restaurants;
         if (!string.IsNullOrEmpty(name))
         {
-            name = name.Trim();
             restaurants = restaurants.Where(r => r.Name == name);
         }
         if (!string.IsNullOrEmpty(city))
         {
-            city = city.Trim();
             restaurants = restaurants.Where(r => r.City == city);
         }
         if (!string.IsNullOrEmpty(category))
         {
-            category = category.Trim();
             restaurants = restaurants.Where(r => r.RestaurantCategory.Name == category);
         }
         if (!string.IsNullOrEmpty(searchQuery))
         {
-            searchQuery = searchQuery.Trim();
             restaurants = restaurants.Where(r => r.Name.Contains(searchQuery) || r.Description.Contains(searchQuery)
-            || r.City.Contains(searchQuery) || r.RestaurantCategory.Name.Contains(searchQuery));
-        }
-
-        if (pageSize > maxRestaurantsPageSize)
-        {
-            pageSize = maxRestaurantsPageSize;
-        }
-        if (pageSize == 0)
-        {
-            pageSize = 15;
-        }
-        if (pageNumber == 0)
-        {
-            pageNumber = 1;
+               || r.City.Contains(searchQuery) || r.RestaurantCategory.Name.Contains(searchQuery));
         }
 
         return await restaurants.Skip(pageSize * (pageNumber - 1))
