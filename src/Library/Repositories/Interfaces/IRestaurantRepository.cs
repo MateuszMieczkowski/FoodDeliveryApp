@@ -4,7 +4,7 @@ namespace Library.Repositories.Interfaces;
 
 public interface IRestaurantRepository
 {
-    IEnumerable<Restaurant>? Restaurants { get; set; }
+    IQueryable<Restaurant> Restaurants { get; set; }
 
     Task<int> GetRestaurantsCount();
 
