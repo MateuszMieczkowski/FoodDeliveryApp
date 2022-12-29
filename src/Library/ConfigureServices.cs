@@ -5,7 +5,6 @@ using Library.DataPersistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Web.Services;
-using Library.Services.ShoppingCart;
 
 namespace Library;
 
@@ -17,7 +16,7 @@ public static class ConfigureServices
         services.AddScoped<IRestaurantCategoryRepository, RestaurantCategoryRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
-        services.AddTransient<IShoppingCartService,ShoppingCartService>();
+        services.AddScoped<IShoppingCartItemRepository, ShoppingCartItemRepository>();
         services.AddHostedService<BackgroundUpdateRestaurantsRatingService>();
         services.AddDbContext<ApplicationDbContext>(options =>
         {

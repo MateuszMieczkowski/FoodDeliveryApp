@@ -56,29 +56,26 @@ app.UseEndpoints(endpoints => endpoints.MapControllers());
 //TODO: add shoppingCartController
 app.MapPost("api/shoppingCart", async ([FromQuery] int productId, IShoppingCartService cartService, ApplicationDbContext dbContext) =>
 {
-   var product =  await dbContext.Products.FindAsync(productId);
-    if (product is null)
-    {
-        return Results.NotFound();
-    }
-    await cartService.AddToCartAsync(product);
+    await cartService.AddToCartAsync(productId);
     return Results.NoContent();
 });
 
 app.MapGet("api/shoppingCart", (IShoppingCartService shoppingCartService) =>
 {
-    var json = JsonConvert.SerializeObject(shoppingCartService.ShoppingCart.ShoppingCartItems,Formatting.Indented, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
-    return Results.Json(json);
+    var json = JsonConvert.SerializeObject(shoppingCartService.GetShoppingCart(), Formatting.Indented, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+    return json;
 });
 
 
 app.MapRazorPages();
 
 
-using(var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var dbSeeder = new DbSeeder(context);
     dbSeeder.Seed();
 }
+app.Urls.Add("http://0.0.0.0:5000");
+app.Urls.Add("https://0.0.0.0:5001");
 app.Run();
