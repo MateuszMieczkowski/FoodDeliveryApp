@@ -20,7 +20,7 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<RestaurantReviewDto>>> GetReviews(int restaurantId, int pageNumber = 1, int pageSize = 10)
+    public async Task<ActionResult<PagedResult<RestaurantReviewDto>>> GetReviews(int restaurantId, int pageNumber = 1, int pageSize = 10)
     {
         var result = await _restaurantReviewService.GetReviewsAsync(restaurantId, pageNumber, pageSize);
         return Ok(result);
