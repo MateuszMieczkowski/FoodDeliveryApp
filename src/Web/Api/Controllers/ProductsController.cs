@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Api.Models.ProductDtos;
+using Web.Api.Services.Interfaces;
 
 namespace Web.Api.Controllers;
 
@@ -13,76 +14,31 @@ namespace Web.Api.Controllers;
 [ApiController]
 public class ProductsController : ControllerBase
 {
-    private readonly IRestaurantRepository _restaurantRepository;
-    private readonly IProductRepository _productRepository;
-    private readonly IMapper _mapper;
+    private readonly IProductService _productService;
 
-    public ProductsController(IMapper mapper, IProductRepository productRepository, IRestaurantRepository restaurantRepository)
+    public ProductsController(IProductService productService)
     {
-        _mapper = mapper;
-        _productRepository = productRepository;
-        _restaurantRepository = restaurantRepository;
+        _productService = productService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts(int restaurantId)
+    public async Task<ActionResult<List<ProductDto>>> GetProducts(int restaurantId)
     {
-        var restuarant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restuarant is null)
-        {
-            return NotFound();
-        }
-
-        var products = await _productRepository.GetRestaurantProductsAsync(restaurantId);
-        var productDtos = _mapper.Map<IEnumerable<ProductDto>>(products);
+        var productDtos = await _productService.GetProductsAsync(restaurantId);
         return Ok(productDtos);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateProduct(int restaurantId, ProductForUpdateDto productDto)
+    public async Task<IActionResult> CreateProduct(int restaurantId, ProductForUpdateDto dto)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            return NotFound();
-        }
-
-        var productCategory = _productRepository.GetCategories().SingleOrDefault(r => r.Id == productDto.ProductCategoryId);
-        if (productCategory is null)
-        {
-            return BadRequest($"There's not such productCategory with id: {productDto.ProductCategoryId}");
-        }
-
-        var newProduct = _mapper.Map<Product>(productDto);
-
-        await _productRepository.AddProductAsync(newProduct);
-        await _productRepository.SaveChangesAsync();
+        await _productService.CreateProductAsync(restaurantId, dto);
         return NoContent();
     }
 
     [HttpDelete("{productId}")]
     public async Task<IActionResult> DeleteProduct(int restaurantId, int productId)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            return NotFound();
-        }
-
-
-       var product = await _productRepository.GetProductAsync(productId);
-        if (product is null)
-        {
-            return NotFound();
-        }
-
-        if (product.RestaurantId != restaurantId)
-        {
-            return BadRequest();
-        }
-
-        _productRepository.DeleteProduct(product);
-        await _productRepository.SaveChangesAsync();
+        await _productService.DeleteProductAsync(restaurantId, productId);
         return Ok();
     }
 }

@@ -12,6 +12,7 @@ internal static class ConfigureServices
         services.AddScoped<IShoppingCartService, ShoppingCartService>();
         services.AddScoped<IRestaurantService, RestaurantService>();
         services.AddScoped<IRestaurantReviewService, RestaurantReviewService>();
+        services.AddScoped<IProductService, ProductService>();
 
         services.AddRazorPages().AddRazorPagesOptions(options =>
         {
