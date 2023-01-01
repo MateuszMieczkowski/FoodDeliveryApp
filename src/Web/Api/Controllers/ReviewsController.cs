@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Library.Entities;
-using Library.Repositories.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Web.Api.Models;
 using Web.Api.Models.RestaurantDtos;
 using Web.Api.Services.Interfaces;

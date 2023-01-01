@@ -9,8 +9,8 @@ namespace Web.Api.Profiles
     {
         public ShoppingCartProfile()
         {
-            CreateMap<ShoppingCart, ShoppingCartDto>().ReverseMap().PreserveReferences();
-            CreateMap<ShoppingCartItem, ShoppingCartItemDto>().ReverseMap().PreserveReferences();
+            CreateMap<ShoppingCart, ShoppingCartDto>().ReverseMap();
+            CreateMap<ShoppingCartItem, ShoppingCartItemDto>().ReverseMap();
         }
     }
 }

@@ -8,7 +8,7 @@ public class OrderProfile : Profile
 {
 	public OrderProfile()
 	{
-		CreateMap<Order, OrderDto>().ReverseMap().PreserveReferences();
-		CreateMap<OrderItem, OrderItemDto>().ReverseMap().PreserveReferences();
+		CreateMap<Order, OrderDto>().ReverseMap();
+		CreateMap<OrderItem, OrderItemDto>().ReverseMap();
     }
 }

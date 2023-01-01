@@ -8,11 +8,11 @@ namespace Web.Api.Profiles
     {
         public RestaurantProfile()
         {
-            CreateMap<Restaurant, RestaurantDto>().ReverseMap().PreserveReferences(); 
-            CreateMap<Restaurant, RestaurantForUpdateDto>().ReverseMap().PreserveReferences();
-            CreateMap<RestaurantCategory,RestaurantCategoryDto>().ReverseMap().PreserveReferences();
-            CreateMap<RestaurantReview, RestaurantReviewDto>().ReverseMap().PreserveReferences();
-            CreateMap<RestaurantReview, RestaurantReviewForUpdateDto>().ReverseMap().PreserveReferences();
+            CreateMap<Restaurant, RestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, RestaurantForUpdateDto>().ReverseMap();
+            CreateMap<RestaurantCategory, RestaurantCategoryDto>().ReverseMap();
+            CreateMap<RestaurantReview, RestaurantReviewDto>().ReverseMap();
+            CreateMap<RestaurantReview, RestaurantReviewForUpdateDto>().ReverseMap();
         }
     }
 }

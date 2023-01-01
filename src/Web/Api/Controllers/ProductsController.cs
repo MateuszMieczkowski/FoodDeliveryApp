@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using Library.DataPersistence;
-using Library.Entities;
-using Library.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Web.Api.Models.ProductDtos;
 using Web.Api.Services.Interfaces;
 

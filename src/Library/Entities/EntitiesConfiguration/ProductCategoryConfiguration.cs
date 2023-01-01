@@ -14,8 +14,7 @@ namespace Library.Entities.EntitiesConfiguration
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id)
-                   .ValueGeneratedOnAdd()
-                   .UseIdentityColumn();
+                   .ValueGeneratedOnAdd();
 
             builder.Property(x => x.Name)
                    .HasMaxLength(20);

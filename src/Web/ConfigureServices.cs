@@ -1,4 +1,7 @@
-﻿using Library.Services.ShoppingCart;
+﻿using Library.DataPersistence;
+using Library.Entities;
+using Library.Services.ShoppingCart;
+using Microsoft.AspNetCore.Identity;
 using Web.Api.Services;
 using Web.Api.Services.Interfaces;
 using Web.Middlewares;
@@ -13,6 +16,20 @@ internal static class ConfigureServices
         services.AddScoped<IRestaurantService, RestaurantService>();
         services.AddScoped<IRestaurantReviewService, RestaurantReviewService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IUserService, UserService>();
+
+        services.AddAuthentication();
+        services.AddIdentity<User, IdentityRole<Guid>>(options =>
+        {
+            options.Password.RequiredLength = 8;
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.User.RequireUniqueEmail = true;
+        })
+          .AddEntityFrameworkStores<ApplicationDbContext>()
+          .AddDefaultTokenProviders();
 
         services.AddRazorPages().AddRazorPagesOptions(options =>
         {

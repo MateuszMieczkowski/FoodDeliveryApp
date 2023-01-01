@@ -52,12 +52,12 @@ namespace Library.DataPersistence
             }
 
 
-            if(!_dbContext.Orders.Any())
-            {
-                var orders = GetOrders();
-                _dbContext.Orders.AddRange(orders);
-                _dbContext.SaveChanges();
-            }
+            //if(!_dbContext.Orders.Any())
+            //{
+            //    var orders = GetOrders();
+            //    _dbContext.Orders.AddRange(orders);
+            //    _dbContext.SaveChanges();
+            //}
         }
 
         private ProductCategory[] GetProductCategories()

@@ -4,7 +4,6 @@ using Library.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Api.Models.ProductDtos;
-using Web.Pages.Shared;
 
 namespace Web.Api.Controllers
 {
@@ -39,10 +38,10 @@ namespace Web.Api.Controllers
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<ProductCategoryDto>> GetProductCategories()
+        public async Task<ActionResult<List<ProductCategoryDto>>> GetProductCategories()
         {
-            var categories = _dbContext.ProductCategories;
-            var categoriesDtos = _mapper.Map<IEnumerable<ProductCategoryDto>>(categories);
+            var categories = await _dbContext.ProductCategories.ToListAsync();
+            var categoriesDtos = _mapper.Map<List<ProductCategoryDto>>(categories);
             return Ok(categoriesDtos);
         }
     }

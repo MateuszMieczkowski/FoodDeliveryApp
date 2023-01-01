@@ -15,7 +15,7 @@ internal class OrderConfiguration : IEntityTypeConfiguration<Order>
                .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Created)
-               .ValueGeneratedOnAdd();
+               .HasDefaultValueSql("getdate()");
 
         builder.HasMany(x => x.OrderItems)
                .WithOne(x => x.Order)

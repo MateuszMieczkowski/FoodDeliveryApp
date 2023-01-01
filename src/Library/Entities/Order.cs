@@ -20,4 +20,8 @@ public class Order
     public int RestaurantId { get; set; }
 
     public decimal Total { get; set; }
+
+    public User User { get; set; } = default!;
+
+    public Guid UserId { get; set; }
 }

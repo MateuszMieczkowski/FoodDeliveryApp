@@ -8,9 +8,9 @@ public class ProductProfile : Profile
 {
 	public ProductProfile()
 	{
-		CreateMap<Product, ProductDto>().ReverseMap().PreserveReferences();
-		CreateMap<Product, ProductForUpdateDto>().ReverseMap().PreserveReferences();
-        CreateMap<ProductCategory, ProductCategoryDto>().ReverseMap().PreserveReferences();
-		CreateMap<ProductCategory, ProductCategoryForUpdateDto>().ReverseMap().PreserveReferences();
+		CreateMap<Product, ProductDto>().ReverseMap();
+		CreateMap<Product, ProductForUpdateDto>().ReverseMap();
+        CreateMap<ProductCategory, ProductCategoryDto>().ReverseMap();
+		CreateMap<ProductCategory, ProductCategoryForUpdateDto>().ReverseMap();
     }
 }
