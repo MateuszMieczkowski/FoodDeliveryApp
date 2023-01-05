@@ -18,11 +18,6 @@ internal static class ConfigureServices
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IUserService, UserService>();
 
-        services.AddRazorPages().AddRazorPagesOptions(options =>
-        {
-            options.Conventions.AddPageRoute("/restaurant/start", "/");
-        });
-
         services.AddControllers(options =>
         {
             

@@ -75,6 +75,7 @@ public class RestaurantService : IRestaurantService
 
         var result = await restaurants.Skip(pageSize * (pageNumber - 1))
                                       .Take(pageSize)
+                                      .OrderBy(x=>x.Rating)
                                       .ToListAsync();
 
         int totalResultsCount = await baseQuery.CountAsync();
