@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Web.Api.Models.UserDtos;
+﻿using API.Models.UserDtos;
+using Microsoft.AspNetCore.Identity;
 
-namespace Web.Api.Services.Interfaces;
+namespace API.Services.Interfaces;
 
 public interface IUserService
 {

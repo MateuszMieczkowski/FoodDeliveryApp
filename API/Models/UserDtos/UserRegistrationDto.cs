@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
-namespace Web.Api.Models.UserDtos;
+namespace API.Models.UserDtos;
 
 public class UserRegistrationDto
 {

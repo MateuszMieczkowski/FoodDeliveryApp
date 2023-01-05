@@ -1,16 +1,16 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using API.Exceptions;
+using API.Models;
+using API.Models.UserDtos;
+using API.Services.Interfaces;
+using AutoMapper;
 using Library.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Web.Api.Exceptions;
-using Web.Api.Models;
-using Web.Api.Models.UserDtos;
-using Web.Api.Services.Interfaces;
 
-namespace Web.Api.Services;
+namespace API.Services;
 
 public class UserService : IUserService
 {

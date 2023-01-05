@@ -1,13 +1,13 @@
-﻿using AutoMapper;
+﻿using API.Exceptions;
+using API.Models;
+using API.Models.RestaurantDtos;
+using API.Services.Interfaces;
+using AutoMapper;
 using Library.Entities;
 using Library.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Web.Api.Exceptions;
-using Web.Api.Models;
-using Web.Api.Models.RestaurantDtos;
-using Web.Api.Services.Interfaces;
 
-namespace Web.Api.Services;
+namespace API.Services;
 
 public class RestaurantReviewService : IRestaurantReviewService
 {

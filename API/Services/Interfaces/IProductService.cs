@@ -1,6 +1,6 @@
-﻿using Web.Api.Models.ProductDtos;
+﻿using API.Models.ProductDtos;
 
-namespace Web.Api.Services.Interfaces;
+namespace API.Services.Interfaces;
 
 public interface IProductService
 {

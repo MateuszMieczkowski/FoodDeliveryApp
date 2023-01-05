@@ -1,4 +1,4 @@
-﻿namespace Web.Api.Models;
+﻿namespace API.Models;
 
 public class JwtSettings
 {

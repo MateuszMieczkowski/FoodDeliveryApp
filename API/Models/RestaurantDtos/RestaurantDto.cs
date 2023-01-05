@@ -1,10 +1,4 @@
-﻿using Library.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Web.Api.Models.ProductDtos;
-using Web.Api.Models.OrderDtos;
-
-namespace Web.Api.Models.RestaurantDtos;
+﻿namespace API.Models.RestaurantDtos;
 
 public class RestaurantDto
 {

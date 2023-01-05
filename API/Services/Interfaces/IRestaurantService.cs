@@ -1,22 +1,20 @@
-﻿using Web.Api.Models.RestaurantDtos;
-using Web.Api.Models;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using API.Models;
+using API.Models.RestaurantDtos;
 
-namespace Web.Api.Services.Interfaces
+namespace API.Services.Interfaces;
+
+public interface IRestaurantService
 {
-    public interface IRestaurantService
-    {
-        Task<PagedResult<RestaurantDto>> GetRestaurantsAsync
+    Task<PagedResult<RestaurantDto>> GetRestaurantsAsync
         (string? name, string? city, string? category, string? searchQuery, int pageNumber, int pageSize);
 
-        Task<RestaurantDto> GetRestaurantAsync(int restaurantId);
+    Task<RestaurantDto> GetRestaurantAsync(int restaurantId);
 
-        Task DeleteRestaurantAsync(int restaurantId);
+    Task DeleteRestaurantAsync(int restaurantId);
 
-        Task<RestaurantDto> CreateRestaurantAsync(RestaurantForUpdateDto dto);
+    Task<RestaurantDto> CreateRestaurantAsync(RestaurantForUpdateDto dto);
 
-        Task UpdateRestaurantAsync(int restaurantId, RestaurantForUpdateDto dto);
+    Task UpdateRestaurantAsync(int restaurantId, RestaurantForUpdateDto dto);
 
-        IEnumerable<RestaurantCategoryDto> GetRestaurantCategories();
-    }
+    IEnumerable<RestaurantCategoryDto> GetRestaurantCategories();
 }

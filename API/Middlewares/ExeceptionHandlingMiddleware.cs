@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net;
-using Web.Api.Exceptions;
+﻿using System.Net;
+using API.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Middlewares
+namespace API.Middlewares
 {
     public class ExceptionHandlingMiddleware : IMiddleware
     {

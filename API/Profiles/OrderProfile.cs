@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+﻿using API.Models.OrderDtos;
+using AutoMapper;
 using Library.Entities;
-using Web.Api.Models.OrderDtos;
 
-namespace Web.Api.Profiles;
+namespace API.Profiles;
 
 public class OrderProfile : Profile
 {

@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Web.Api.Models.UserDtos;
+namespace API.Models.UserDtos;
 
 public class UserLoginDto
 {

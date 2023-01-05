@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Web.Api.Models.ProductDtos;
-using Web.Api.Services.Interfaces;
+﻿using API.Models.ProductDtos;
+using API.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Api.Controllers;
+namespace API.Controllers;
 
 [Route("api/restaurants/{restaurantId}/products")]
 [ApiController]

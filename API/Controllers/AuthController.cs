@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Web.Api.Models.UserDtos;
-using Web.Api.Services.Interfaces;
+﻿using API.Models.UserDtos;
+using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Api.Controllers
+namespace API.Controllers
 {
     [Route("api/auth")]
     [ApiController]
@@ -18,6 +19,17 @@ namespace Web.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser(UserRegistrationDto dto)
         {
+            dto.RoleName = "user";
+            var result = await _userService.RegisterUserAsync(dto);
+
+            return Ok(result);
+        }
+
+        [HttpPost("register-manager")]
+        [Authorize(Roles ="admin")]
+        public async Task<IActionResult> RegisterManager(UserRegistrationDto dto)
+        {
+            dto.RoleName = "manager";
             var result = await _userService.RegisterUserAsync(dto);
 
             return Ok(result);

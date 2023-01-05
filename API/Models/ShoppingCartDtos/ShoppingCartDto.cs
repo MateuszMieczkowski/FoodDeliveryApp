@@ -1,6 +1,4 @@
-﻿using Library.Entities;
-
-namespace Web.Api.Models.ShoppingCartDtos
+﻿namespace API.Models.ShoppingCartDtos
 {
     public class ShoppingCartDto
     {

@@ -1,4 +1,4 @@
-﻿namespace Web.Api.Exceptions;
+﻿namespace API.Exceptions;
 
 public class BadRequestException : Exception
 {

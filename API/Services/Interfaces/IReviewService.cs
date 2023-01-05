@@ -1,7 +1,7 @@
-﻿using Web.Api.Models;
-using Web.Api.Models.RestaurantDtos;
+﻿using API.Models;
+using API.Models.RestaurantDtos;
 
-namespace Web.Api.Services.Interfaces;
+namespace API.Services.Interfaces;
 
 public interface IRestaurantReviewService
 {

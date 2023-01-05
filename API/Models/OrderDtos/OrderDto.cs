@@ -1,10 +1,6 @@
-﻿using Library.Entities;
-using static Library.Enums.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Web.Api.Models.RestaurantDtos;
+﻿using static Library.Enums.Enums;
 
-namespace Web.Api.Models.OrderDtos;
+namespace API.Models.OrderDtos;
 
 public class OrderDto
 {

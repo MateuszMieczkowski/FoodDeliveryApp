@@ -1,9 +1,6 @@
-﻿using Library.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Web.Api.Models.ProductDtos;
+﻿using API.Models.ProductDtos;
 
-namespace Web.Api.Models.OrderDtos;
+namespace API.Models.OrderDtos;
 
 public class OrderItemDto
 {

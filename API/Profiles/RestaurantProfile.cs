@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+﻿using API.Models.RestaurantDtos;
+using AutoMapper;
 using Library.Entities;
-using Web.Api.Models.RestaurantDtos;
 
-namespace Web.Api.Profiles
+namespace API.Profiles
 {
     public class RestaurantProfile : Profile
     {

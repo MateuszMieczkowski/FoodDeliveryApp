@@ -1,12 +1,11 @@
+using API;
+using API.Middlewares;
+using API.Services.Interfaces;
 using Library;
 using Library.DataPersistence;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog;
-using Web;
-using Web.Api.Models.ProductDtos;
-using Web.Api.Services.Interfaces;
-using Web.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +18,7 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
-builder.Services.AddWebServices();
+builder.Services.AddApiServices();
 builder.Services.AddLibraryServices(builder.Configuration);
 
 var app = builder.Build();

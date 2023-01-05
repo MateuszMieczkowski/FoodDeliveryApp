@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Web.Api.Models.ProductDtos;
+namespace API.Models.ProductDtos;
 
 public class ProductCategoryForUpdateDto
 {

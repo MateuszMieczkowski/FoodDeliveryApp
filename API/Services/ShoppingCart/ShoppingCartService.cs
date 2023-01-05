@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using API.Exceptions;
+using API.Models.ShoppingCartDtos;
+using API.Services.Interfaces;
+using AutoMapper;
 using Library.Entities;
 using Library.Repositories.Interfaces;
-using Web.Api.Exceptions;
-using Web.Api.Models.ShoppingCartDtos;
-using Web.Api.Services.Interfaces;
 
-namespace Library.Services.ShoppingCart;
+namespace API.Services.ShoppingCart;
 
 public class ShoppingCartService : IShoppingCartService
 {

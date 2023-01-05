@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+﻿using API.Models.UserDtos;
+using AutoMapper;
 using Library.Entities;
-using Web.Api.Models.UserDtos;
 
-namespace Web.Api.Profiles
+namespace API.Profiles
 {
     public class UserProfile : Profile
     {

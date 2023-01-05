@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Web.Services
+namespace Library.Services
 {
     public class BackgroundUpdateRestaurantsRatingService : BackgroundService
     {

@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+﻿using API.Models.ProductDtos;
+using AutoMapper;
 using Library.Entities;
-using Web.Api.Models.ProductDtos;
 
-namespace Web.Api.Profiles;
+namespace API.Profiles;
 
 public class ProductProfile : Profile
 {

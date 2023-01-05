@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using API.Exceptions;
+using API.Models.ProductDtos;
+using API.Services.Interfaces;
+using AutoMapper;
 using Library.Entities;
 using Library.Repositories.Interfaces;
-using Web.Api.Exceptions;
-using Web.Api.Models.ProductDtos;
-using Web.Api.Services.Interfaces;
 
-namespace Web.Api.Services;
+namespace API.Services;
 
 public class ProductService : IProductService
 {

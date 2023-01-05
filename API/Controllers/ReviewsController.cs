@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Web.Api.Models;
-using Web.Api.Models.RestaurantDtos;
-using Web.Api.Services.Interfaces;
+﻿using API.Models;
+using API.Models.RestaurantDtos;
+using API.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Api.Controllers;
+namespace API.Controllers;
 
 [ApiController]
 [Route("/api/restaurants/{restaurantId}/reviews")]

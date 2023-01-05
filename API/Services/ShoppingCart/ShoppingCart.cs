@@ -1,6 +1,6 @@
 ﻿using Library.Entities;
 
-namespace Library.Services.ShoppingCart;
+namespace API.Services.ShoppingCart;
 
 public class ShoppingCart
 {

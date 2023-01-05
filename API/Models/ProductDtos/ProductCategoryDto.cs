@@ -1,8 +1,4 @@
-﻿using Library.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
-namespace Web.Api.Models.ProductDtos
+﻿namespace API.Models.ProductDtos
 {
     public class ProductCategoryDto
     {

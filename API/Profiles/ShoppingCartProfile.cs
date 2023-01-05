@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+﻿using API.Models.ShoppingCartDtos;
+using API.Services.ShoppingCart;
+using AutoMapper;
 using Library.Entities;
-using Library.Services.ShoppingCart;
-using Web.Api.Models.ShoppingCartDtos;
 
-namespace Web.Api.Profiles
+namespace API.Profiles
 {
     public class ShoppingCartProfile : Profile
     {

@@ -1,7 +1,6 @@
-﻿using Library.Entities;
-using Web.Api.Models.ShoppingCartDtos;
+﻿using API.Models.ShoppingCartDtos;
 
-namespace Web.Api.Services.Interfaces;
+namespace API.Services.Interfaces;
 
 public interface IShoppingCartService
 {

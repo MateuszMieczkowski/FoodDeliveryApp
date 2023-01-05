@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using API.Models.ProductDtos;
+using AutoMapper;
 using Library.DataPersistence;
 using Library.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Web.Api.Models.ProductDtos;
 
-namespace Web.Api.Controllers
+namespace API.Controllers
 {
     [ApiController]
     [Route("api/productCategories")]
