@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Bogus.Extensions;
 using Library.Entities;
+using Microsoft.AspNetCore.Identity;
 using static Library.Enums.Enums;
 
 namespace Library.DataPersistence
@@ -44,13 +45,19 @@ namespace Library.DataPersistence
                 _dbContext.SaveChanges();
             }
 
-            if(!_dbContext.RestaurantReviews.Any())
+            if (!_dbContext.RestaurantReviews.Any())
             {
-                var reviews= GetRestaurantReviews();
+                var reviews = GetRestaurantReviews();
                 _dbContext.RestaurantReviews.AddRange(reviews);
                 _dbContext.SaveChanges();
             }
 
+            if (!_dbContext.Roles.Any())
+            {
+                var roles = GetRoles();
+                _dbContext.Roles.AddRange(roles);
+                _dbContext.SaveChanges();
+            }
 
             //if(!_dbContext.Orders.Any())
             //{
@@ -139,7 +146,8 @@ namespace Library.DataPersistence
 
             var orders = faker.Generate(1000);
 
-            orders.ForEach(r => {
+            orders.ForEach(r =>
+            {
                 r.OrderItems = GetOrderItems(r.Restaurant);
                 r.OrderItems.ToList().ForEach(x => x.Order = r);
                 r.Total = r.OrderItems.Where(x => x.Order == r).Sum(x => x.ProductQuantity * x.Product.Price);
@@ -150,7 +158,7 @@ namespace Library.DataPersistence
 
         private OrderItem[] GetOrderItems(Restaurant restaurant)
         {
-            var products = _dbContext.Products.Where(r => r.RestaurantId == restaurant.Id).ToArray(); 
+            var products = _dbContext.Products.Where(r => r.RestaurantId == restaurant.Id).ToArray();
 
             var faker = new Faker<OrderItem>();
             faker.RuleFor(r => r.Product, f => f.PickRandom(products))
@@ -158,7 +166,18 @@ namespace Library.DataPersistence
 
             return faker.GenerateBetween(1, 6).ToArray();
         }
-   
+
+        private IdentityRole<Guid>[] GetRoles()
+        {
+            IdentityRole<Guid>[] roles = new[]
+            {
+                new IdentityRole<Guid>("user"),
+                new IdentityRole<Guid>("manager"),
+                new IdentityRole<Guid>("administrator")
+            };
+
+            return roles;
+        }
 
     }
 }

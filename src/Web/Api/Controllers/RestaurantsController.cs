@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web.Api.Models;
 using Web.Api.Models.RestaurantDtos;
 using Web.Api.Services.Interfaces;
@@ -17,6 +18,7 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles ="user")]
     public async Task<ActionResult<PagedResult<RestaurantDto>>> GetRestaurants
         (string? name, string? city, string? category, string? searchQuery, int pageNumber = 1, int pageSize = 10)
     {

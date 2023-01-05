@@ -15,12 +15,19 @@ namespace Web.Api.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUser(UserRegistrationDto dto)
         {
             var result = await _userService.RegisterUserAsync(dto);
 
             return Ok(result);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginUser(UserLoginDto dto)
+        {
+            var token = await _userService.GetTokenAsync(dto);
+            return Ok(token);
         }
     }
 }

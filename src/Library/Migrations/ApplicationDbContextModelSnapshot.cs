@@ -58,7 +58,7 @@ namespace Library.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.Order", b =>
@@ -91,7 +91,7 @@ namespace Library.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.OrderItem", b =>
@@ -117,7 +117,7 @@ namespace Library.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.Product", b =>
@@ -161,7 +161,7 @@ namespace Library.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.ProductCategory", b =>
@@ -179,7 +179,7 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategories");
+                    b.ToTable("ProductCategories", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.Restaurant", b =>
@@ -221,7 +221,7 @@ namespace Library.Migrations
 
                     b.HasIndex("RestaurantCategoryName");
 
-                    b.ToTable("Restaurants");
+                    b.ToTable("Restaurants", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.RestaurantCategory", b =>
@@ -232,7 +232,7 @@ namespace Library.Migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("RestaurantCategories");
+                    b.ToTable("RestaurantCategories", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.RestaurantReview", b =>
@@ -263,7 +263,7 @@ namespace Library.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("RestaurantReviews");
+                    b.ToTable("RestaurantReviews", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.ShoppingCartItem", b =>
@@ -287,7 +287,7 @@ namespace Library.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoppingCartItems");
+                    b.ToTable("ShoppingCartItems", (string)null);
                 });
 
             modelBuilder.Entity("Library.Entities.User", b =>

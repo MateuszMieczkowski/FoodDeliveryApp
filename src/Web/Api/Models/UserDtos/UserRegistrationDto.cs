@@ -15,11 +15,16 @@ public class UserRegistrationDto
     
     [Required]
     [EmailAddress]
+    [MaxLength(80)]
     public string Email { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(300)]
+    [MaxLength(100)]
     public string Password { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(20)]
+    public string RoleName { get; set; } = string.Empty;
 
     [JsonIgnore]
     public string UserName { get => Email; }

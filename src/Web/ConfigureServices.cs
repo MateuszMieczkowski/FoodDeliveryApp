@@ -18,19 +18,6 @@ internal static class ConfigureServices
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IUserService, UserService>();
 
-        services.AddAuthentication();
-        services.AddIdentity<User, IdentityRole<Guid>>(options =>
-        {
-            options.Password.RequiredLength = 8;
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequireUppercase = false;
-            options.User.RequireUniqueEmail = true;
-        })
-          .AddEntityFrameworkStores<ApplicationDbContext>()
-          .AddDefaultTokenProviders();
-
         services.AddRazorPages().AddRazorPagesOptions(options =>
         {
             options.Conventions.AddPageRoute("/restaurant/start", "/");
