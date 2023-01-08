@@ -2,17 +2,16 @@
 using AutoMapper;
 using Library.Entities;
 
-namespace API.Profiles
+namespace API.Profiles;
+
+public class RestaurantProfile : Profile
 {
-    public class RestaurantProfile : Profile
+    public RestaurantProfile()
     {
-        public RestaurantProfile()
-        {
-            CreateMap<Restaurant, RestaurantDto>().ReverseMap();
-            CreateMap<Restaurant, RestaurantForUpdateDto>().ReverseMap();
-            CreateMap<RestaurantCategory, RestaurantCategoryDto>().ReverseMap();
-            CreateMap<RestaurantReview, RestaurantReviewDto>().ReverseMap();
-            CreateMap<RestaurantReview, RestaurantReviewForUpdateDto>().ReverseMap();
-        }
+        CreateMap<Restaurant, RestaurantDto>().ReverseMap();
+        CreateMap<Restaurant, RestaurantForUpdateDto>().ReverseMap();
+        CreateMap<RestaurantCategory, RestaurantCategoryDto>().ReverseMap();
+        CreateMap<RestaurantReview, RestaurantReviewDto>().ReverseMap();
+        CreateMap<RestaurantReview, RestaurantReviewForUpdateDto>().ReverseMap();
     }
 }

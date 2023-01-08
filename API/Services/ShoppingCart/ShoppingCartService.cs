@@ -28,9 +28,8 @@ public class ShoppingCartService : IShoppingCartService
     {
         var httpContext = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
-        string? shoppingCartIdFromSession = httpContext?.Session.GetString("shoppingCartId");
-        Guid shoppingCartId;
-        if (!Guid.TryParse(shoppingCartIdFromSession, out shoppingCartId))
+        var shoppingCartIdFromSession = httpContext?.Session.GetString("shoppingCartId");
+        if (!Guid.TryParse(shoppingCartIdFromSession, out var shoppingCartId))
         {
             shoppingCartId = Guid.NewGuid();
         }
@@ -39,13 +38,13 @@ public class ShoppingCartService : IShoppingCartService
 
         var shoppingCartItems = _shoppingCartItemRepository.GetShoppingCartItems(shoppingCartId);
 
-        return new ShoppingCart() { ShoppingCartId = shoppingCartId, ShoppingCartItems = shoppingCartItems };
+        return new ShoppingCart { ShoppingCartId = shoppingCartId, ShoppingCartItems = shoppingCartItems };
 
     }
 
     public async Task AddToCartAsync(int productId)
     {
-        var shoppingCartItem = _shoppingCart!.ShoppingCartItems!.SingleOrDefault(r => r.ProductId == productId);
+        var shoppingCartItem = _shoppingCart.ShoppingCartItems!.SingleOrDefault(r => r.ProductId == productId);
 
         if (shoppingCartItem is null)
         {
@@ -72,7 +71,7 @@ public class ShoppingCartService : IShoppingCartService
     }
     public async Task DeleteFromCartAsync(int productId)
     {
-        var shoppingCartItem = _shoppingCart!.ShoppingCartItems!.SingleOrDefault(r => r.Id == productId);
+        var shoppingCartItem = _shoppingCart.ShoppingCartItems!.SingleOrDefault(r => r.ProductId == productId);
         if (shoppingCartItem is null)
         {
             throw new NotFoundException($"There's no such product with id: {productId} in shopping cart");

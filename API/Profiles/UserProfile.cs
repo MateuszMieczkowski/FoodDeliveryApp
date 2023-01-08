@@ -2,13 +2,12 @@
 using AutoMapper;
 using Library.Entities;
 
-namespace API.Profiles
+namespace API.Profiles;
+
+public class UserProfile : Profile
 {
-    public class UserProfile : Profile
+    public UserProfile()
     {
-        public UserProfile()
-        {
-            CreateMap<UserRegistrationDto, User>();
-        }
+        CreateMap<UserRegistrationDto, User>();
     }
 }

@@ -2,47 +2,47 @@
 using AutoMapper;
 using Library.DataPersistence;
 using Library.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Controllers
+namespace API.Controllers;
+
+[ApiController]
+[Route("api/productCategories")]
+public class ProductCategoryController : ControllerBase
 {
-    [ApiController]
-    [Route("api/productCategories")]
-    public class ProductCategoryController : ControllerBase
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
+    public ProductCategoryController(ApplicationDbContext dbContext, IMapper mapper)
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly IMapper _mapper;
+        _dbContext = dbContext;
+        _mapper = mapper;
+    }
 
-        public ProductCategoryController(ApplicationDbContext dbContext, IMapper mapper)
+    [HttpPost]
+    [Authorize(Roles = "admin,manager")]
+    public async Task<IActionResult> CreateProductCategory(ProductCategoryForUpdateDto productCategoryDto)
+    {
+        var exists = await _dbContext.ProductCategories.AnyAsync(r => r.Name == productCategoryDto.Name);
+        if (exists)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            return BadRequest("Such productCategory already exists");
         }
+        var newProductCategory = _mapper.Map<ProductCategory>(productCategoryDto);
 
-        [HttpPost]
-        public async Task<IActionResult> CreateProductCategory(ProductCategoryForUpdateDto productCategoryDto)
-        {
-            var exists = await _dbContext.ProductCategories.AnyAsync(r => r.Name == productCategoryDto.Name);
-            if (exists)
-            {
-                return BadRequest("Such productCategory already exists");
-            }
-            var newProductCategory = _mapper.Map<ProductCategory>(productCategoryDto);
+        await _dbContext.ProductCategories.AddAsync(newProductCategory);
+        await _dbContext.SaveChangesAsync();
 
-            await _dbContext.ProductCategories.AddAsync(newProductCategory);
-            await _dbContext.SaveChangesAsync();
-
-            return NoContent();
-        }
+        return NoContent();
+    }
 
 
-        [HttpGet]
-        public async Task<ActionResult<List<ProductCategoryDto>>> GetProductCategories()
-        {
-            var categories = await _dbContext.ProductCategories.ToListAsync();
-            var categoriesDtos = _mapper.Map<List<ProductCategoryDto>>(categories);
-            return Ok(categoriesDtos);
-        }
+    [HttpGet]
+    public async Task<ActionResult<List<ProductCategoryDto>>> GetProductCategories()
+    {
+        var categories = await _dbContext.ProductCategories.ToListAsync();
+        var categoriesDtos = _mapper.Map<List<ProductCategoryDto>>(categories);
+        return Ok(categoriesDtos);
     }
 }

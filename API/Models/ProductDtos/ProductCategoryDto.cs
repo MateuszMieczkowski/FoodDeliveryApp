@@ -1,9 +1,8 @@
-﻿namespace API.Models.ProductDtos
-{
-    public class ProductCategoryDto
-    {
-        public int Id { get; set; }
+﻿namespace API.Models.ProductDtos;
 
-        public string Name { get; set; } = string.Empty;
-    }
+public class ProductCategoryDto
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; } = string.Empty;
 }

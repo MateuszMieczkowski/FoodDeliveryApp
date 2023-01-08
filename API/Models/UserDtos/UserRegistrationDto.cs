@@ -21,12 +21,13 @@ public class UserRegistrationDto
     [Required]
     [MaxLength(100)]
     public string Password { get; set; } = string.Empty;
-
-    [Required]
+    
     [MaxLength(20)]
-    public string RoleName { get; set; } = string.Empty;
+    public string RoleName { get; set; } = "user";
+    
+    public int? ManagedRestaurantId { get; set; }
 
     [JsonIgnore]
-    public string UserName { get => Email; }
+    public string UserName => Email;
 }
 

@@ -10,5 +10,4 @@ public interface IRestaurantReviewService
     Task AddReviewAsync(int restaurantId, RestaurantReviewForUpdateDto reviewDto);
 
     Task DeleteReviewAsync(int restaurantId, int reviewId);
-
 }

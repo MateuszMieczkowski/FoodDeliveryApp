@@ -11,14 +11,14 @@ public class PagedResult<T>
         PageCount = Convert.ToInt32(Math.Ceiling(totalCount / (decimal)pageSize));
     }
 
-    public int TotalCount { get; set; }
+    public int TotalCount { get; }
 
-    public int PageCount { get; set; }
+    public int PageCount { get; }
 
-    public int PageSize { get; set; }
+    public int PageSize { get; }
 
-    public int CurrentPageNumber { get; set; }
+    public int CurrentPageNumber { get; }
 
-    public List<T> Result { get; set; }
+    public List<T> Result { get; }
 
 }

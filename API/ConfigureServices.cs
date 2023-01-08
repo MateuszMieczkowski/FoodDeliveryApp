@@ -1,7 +1,9 @@
-﻿using API.Middlewares;
+﻿using API.Authorization;
+using API.Middlewares;
 using API.Services;
 using API.Services.Interfaces;
 using API.Services.ShoppingCart;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API;
 
@@ -14,10 +16,10 @@ internal static class ConfigureServices
         services.AddScoped<IRestaurantReviewService, RestaurantReviewService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IUserService, UserService>();
-
+        services.AddScoped<IAuthorizationHandler, RestaurantManagerRequirementHandler>();
+        services.AddScoped<IUserContextAccessor, UserContextAccessor>();
         services.AddControllers(options =>
         {
-            
             options.ReturnHttpNotAcceptable = true;
         }).AddNewtonsoftJson(options =>
         {

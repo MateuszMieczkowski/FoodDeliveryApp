@@ -14,8 +14,5 @@ public class OrderDto
 
    public int RestaurantId { get; set; }
 
-    public decimal Total
-    {
-        get => OrderItems.Sum(o => o.ProductQuantity * o.Product.Price);
-    }
+    public decimal Total => OrderItems.Sum(o => o.ProductQuantity * o.Product.Price);
 }

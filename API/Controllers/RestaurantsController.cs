@@ -18,7 +18,6 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles ="user")]
     public async Task<ActionResult<PagedResult<RestaurantDto>>> GetRestaurants
         (string? name, string? city, string? category, string? searchQuery, int pageNumber = 1, int pageSize = 10)
     {
@@ -26,14 +25,15 @@ public class RestaurantsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{restaurantId}", Name = "GetRestaurant")]
+    [HttpGet("{restaurantId:int}", Name = "GetRestaurant")]
     public async Task<ActionResult<RestaurantDto>> GetRestaurant(int restaurantId)
     {
         var restaurantDto = await _restaurantService.GetRestaurantAsync(restaurantId);
         return Ok(restaurantDto);
     }
 
-    [HttpDelete("{restaurantId}")]
+    [HttpDelete("{restaurantId:int}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteRestaurant(int restaurantId)
     {
         await _restaurantService.DeleteRestaurantAsync(restaurantId);
@@ -41,13 +41,15 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> CreateRestaurant(RestaurantForUpdateDto dto)
     {
         var newRestaurant = await _restaurantService.CreateRestaurantAsync(dto);
         return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurant);
     }
 
-    [HttpPut("{restaurantId}")]
+    [HttpPut("{restaurantId:int}")]
+    [Authorize(Roles = "admin,manager")]
     public async Task<IActionResult> UpdateRestaurant(int restaurantId, RestaurantForUpdateDto dto)
     {
         await _restaurantService.UpdateRestaurantAsync(restaurantId, dto);

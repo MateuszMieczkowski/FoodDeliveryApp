@@ -23,4 +23,8 @@
     <ProjectReference Include="..\src\Library\Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\UserDtos\ManagerRegistrationDto.cs" />
+  </ItemGroup>
+
 </Project>

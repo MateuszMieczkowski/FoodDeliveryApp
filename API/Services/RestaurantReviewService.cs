@@ -15,7 +15,7 @@ public class RestaurantReviewService : IRestaurantReviewService
     private readonly IReviewRepository _reviewRepository;
     private readonly IMapper _mapper;
 
-    private const int _maxPageSize = 50;
+    private const int MaxPageSize = 50;
 
     public RestaurantReviewService(IRestaurantRepository restaurantRepository, IReviewRepository reviewRepository, IMapper mapper)
     {
@@ -70,7 +70,7 @@ public class RestaurantReviewService : IRestaurantReviewService
             throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
         }
 
-        if (pageSize > _maxPageSize || pageSize <= 0 || pageNumber <= 0)
+        if (pageSize > MaxPageSize || pageSize <= 0 || pageNumber <= 0)
         {
             throw new BadRequestException("Wrong page size or page number.");
         }

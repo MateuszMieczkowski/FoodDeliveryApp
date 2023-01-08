@@ -3,14 +3,13 @@ using API.Services.ShoppingCart;
 using AutoMapper;
 using Library.Entities;
 
-namespace API.Profiles
+namespace API.Profiles;
+
+public class ShoppingCartProfile : Profile
 {
-    public class ShoppingCartProfile : Profile
+    public ShoppingCartProfile()
     {
-        public ShoppingCartProfile()
-        {
-            CreateMap<ShoppingCart, ShoppingCartDto>().ReverseMap();
-            CreateMap<ShoppingCartItem, ShoppingCartItemDto>().ReverseMap();
-        }
+        CreateMap<ShoppingCart, ShoppingCartDto>().ReverseMap();
+        CreateMap<ShoppingCartItem, ShoppingCartItemDto>().ReverseMap();
     }
 }

@@ -48,6 +48,11 @@ namespace API
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                
+            });
+
         }
     }
 }

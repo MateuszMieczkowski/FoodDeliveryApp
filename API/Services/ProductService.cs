@@ -1,9 +1,11 @@
-﻿using API.Exceptions;
+﻿using API.Authorization;
+using API.Exceptions;
 using API.Models.ProductDtos;
 using API.Services.Interfaces;
 using AutoMapper;
 using Library.Entities;
 using Library.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Services;
 
@@ -12,12 +14,16 @@ public class ProductService : IProductService
     private readonly IRestaurantRepository _restaurantRepository;
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IUserContextAccessor _userContextAccessor;
 
-    public ProductService(IRestaurantRepository restaurantRepository, IProductRepository productRepository, IMapper mapper)
+    public ProductService(IRestaurantRepository restaurantRepository, IProductRepository productRepository, IMapper mapper, IAuthorizationService authorizationService, IUserContextAccessor userContextAccessor)
     {
         _restaurantRepository = restaurantRepository;
         _productRepository = productRepository;
         _mapper = mapper;
+        _authorizationService = authorizationService;
+        _userContextAccessor = userContextAccessor;
     }
 
     public async Task CreateProductAsync(int restaurantId, ProductForUpdateDto dto)
@@ -27,6 +33,8 @@ public class ProductService : IProductService
         {
             throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
         }
+
+        await AuthorizeManager(restaurant);
 
         var productCategory = _productRepository.GetCategories().SingleOrDefault(r => r.Id == dto.ProductCategoryId);
         if (productCategory is null)
@@ -48,6 +56,7 @@ public class ProductService : IProductService
             throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
         }
 
+        await AuthorizeManager(restaurant);
 
         var product = await _productRepository.GetProductAsync(productId);
         if (product is null)
@@ -64,10 +73,27 @@ public class ProductService : IProductService
         await _productRepository.SaveChangesAsync();
     }
 
+    private async Task AuthorizeManager(Restaurant restaurant)
+    {
+        var user = _userContextAccessor.User;
+        if (user is null)
+        {
+            throw new Exception();
+        }
+
+        var authorizationResult = await
+            _authorizationService.AuthorizeAsync(user, restaurant, new RestaurantManagerRequirement());
+
+        if (!authorizationResult.Succeeded)
+        {
+            throw new ForbiddenException();
+        }
+    }
+
     public async Task<List<ProductDto>> GetProductsAsync(int restaurantId)
     {
-        var restuarant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restuarant is null)
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
+        if (restaurant is null)
         {
             throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
         }

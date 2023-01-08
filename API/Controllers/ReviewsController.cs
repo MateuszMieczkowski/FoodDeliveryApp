@@ -1,12 +1,13 @@
 ﻿using API.Models;
 using API.Models.RestaurantDtos;
 using API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [ApiController]
-[Route("/api/restaurants/{restaurantId}/reviews")]
+[Route("/api/restaurants/{restaurantId:int}/reviews")]
 public class ReviewsController : ControllerBase
 {
     private readonly IRestaurantReviewService _restaurantReviewService;
@@ -24,12 +25,14 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "user")]
     public async Task<IActionResult> AddReview(int restaurantId, RestaurantReviewForUpdateDto dto)
     {
         await _restaurantReviewService.AddReviewAsync(restaurantId, dto);
         return Ok();
     }
-    [HttpDelete("{reviewId}")]
+    [HttpDelete("{reviewId:int}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteReview(int restaurantId, int reviewId)
     {
         await _restaurantReviewService.DeleteReviewAsync(restaurantId, reviewId);

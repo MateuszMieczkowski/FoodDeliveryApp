@@ -25,7 +25,7 @@ public class UserService : IUserService
         _jwtSettings = jwtSettings;
     }
 
-    private JwtSecurityToken CreateToken(IList<Claim> claims)
+    private JwtSecurityToken CreateToken(IEnumerable<Claim> claims)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.JwtKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -56,6 +56,19 @@ public class UserService : IUserService
 
     public async Task<IdentityResult> RegisterUserAsync(UserRegistrationDto dto)
     {
+        if (dto.ManagedRestaurantId.HasValue && dto.RoleName != "manager")
+        {
+            var error = new IdentityErrorDescriber().InvalidRoleName(dto.RoleName);
+            return IdentityResult.Failed(error);
+        }
+
+        if (dto is {RoleName: "manager", ManagedRestaurantId: null})
+        {
+            var error = new IdentityErrorDescriber().DefaultError();
+            error.Description = "MangedRestaurantId is required";
+            return IdentityResult.Failed(error);
+        }
+        
         var newUser = _mapper.Map<User>(dto);
         var createResult = await _userManager.CreateAsync(newUser, dto.Password);
         if (!createResult.Succeeded)
@@ -66,17 +79,21 @@ public class UserService : IUserService
         var addToRoleResult = await _userManager.AddToRoleAsync(newUser, dto.RoleName);
         if (!addToRoleResult.Succeeded)
         {
+            await _userManager.DeleteAsync(newUser);
             return addToRoleResult;
         }
 
         var claims = await CreateClaimsAsync(newUser);
-        var addClaimsResult = await _userManager.AddClaimsAsync(newUser, claims);
-        if (!addClaimsResult.Succeeded)
-        {
-            return addClaimsResult;
-        }
+       
 
-        return createResult;
+        if (dto is {RoleName: "manager", ManagedRestaurantId: { }})
+        {
+            claims.Add(new Claim("ManagedRestaurantId", dto.ManagedRestaurantId.Value.ToString()));
+        }
+        
+        var addClaimsResult = await _userManager.AddClaimsAsync(newUser, claims);
+        
+        return !addClaimsResult.Succeeded ? addClaimsResult : createResult;
     }
 
     public async Task<string> GetTokenAsync(UserLoginDto dto)

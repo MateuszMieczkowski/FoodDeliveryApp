@@ -1,10 +1,12 @@
-﻿using API.Exceptions;
+﻿using API.Authorization;
+using API.Exceptions;
 using API.Models;
 using API.Models.RestaurantDtos;
 using API.Services.Interfaces;
 using AutoMapper;
 using Library.Entities;
 using Library.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services;
@@ -14,13 +16,17 @@ public class RestaurantService : IRestaurantService
     private readonly IRestaurantRepository _restaurantRepository;
     private readonly IRestaurantCategoryRepository _restaurantCategoryRepository;
     private readonly IMapper _mapper;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IUserContextAccessor _userContextAccessor;
 
-    private const int _maxPageSize = 50;
+    private const int MaxPageSize = 50;
 
-    public RestaurantService(IRestaurantRepository restaurantRepository, IMapper mapper, IRestaurantCategoryRepository restaurantCategoryRepository)
+    public RestaurantService(IRestaurantRepository restaurantRepository, IMapper mapper, IRestaurantCategoryRepository restaurantCategoryRepository, IAuthorizationService authorizationService, IUserContextAccessor userContextAccessor)
     {
         _restaurantRepository = restaurantRepository;
         _restaurantCategoryRepository = restaurantCategoryRepository;
+        _authorizationService = authorizationService;
+        _userContextAccessor = userContextAccessor;
         _mapper = mapper;
     }
 
@@ -32,7 +38,7 @@ public class RestaurantService : IRestaurantService
         category = category?.Trim();
         searchQuery = searchQuery?.Trim();
 
-        if (pageSize > _maxPageSize || pageSize <= 0 || pageNumber <= 0)
+        if (pageSize > MaxPageSize || pageSize <= 0 || pageNumber <= 0)
         {
             throw new BadRequestException("Wrong page size or page number.");
         }
@@ -108,11 +114,7 @@ public class RestaurantService : IRestaurantService
 
     public async Task<RestaurantDto> CreateRestaurantAsync(RestaurantForUpdateDto dto)
     {
-        var category = await _restaurantCategoryRepository.GetRestaurantCategory(dto.RestaurantCategoryName);
-        if (category is null)
-        {
-            category = new RestaurantCategory() { Name = dto.RestaurantCategoryName };
-        }
+        var category = await _restaurantCategoryRepository.GetRestaurantCategory(dto.RestaurantCategoryName) ?? new RestaurantCategory { Name = dto.RestaurantCategoryName };
 
         var newRestaurant = _mapper.Map<Restaurant>(dto);
         newRestaurant.RestaurantCategory = category;
@@ -132,11 +134,10 @@ public class RestaurantService : IRestaurantService
             throw new NotFoundException($"There's no such restaurant with id:{restaurantId}.");
         }
 
-        var category = await _restaurantCategoryRepository.GetRestaurantCategory(dto.RestaurantCategoryName);
-        if (category is null)
-        {
-            category = new RestaurantCategory() { Name = dto.RestaurantCategoryName };
-        }
+        await AuthorizeManager(restaurant);
+
+        var category = await _restaurantCategoryRepository.GetRestaurantCategory(dto.RestaurantCategoryName) 
+                       ?? new RestaurantCategory { Name = dto.RestaurantCategoryName };
 
         restaurant.Name = dto.Name;
         restaurant.Description = dto.Description;
@@ -145,6 +146,22 @@ public class RestaurantService : IRestaurantService
         restaurant.ImageUrl = dto.ImageUrl;
 
         await _restaurantRepository.SaveChangesAsync();
+    }
+
+    private async Task AuthorizeManager(Restaurant restaurant)
+    {
+        var user = _userContextAccessor.User;
+        if (user is null)
+        {
+            throw new Exception();
+        }
+
+        var authorizationResult = await
+            _authorizationService.AuthorizeAsync(user, restaurant, new RestaurantManagerRequirement());
+        if (!authorizationResult.Succeeded)
+        {
+            throw new ForbiddenException();
+        }
     }
 
     public IEnumerable<RestaurantCategoryDto> GetRestaurantCategories()
