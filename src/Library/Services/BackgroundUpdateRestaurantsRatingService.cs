@@ -24,28 +24,21 @@ namespace Library.Services
             await UpdateRatings(stoppingToken);
         }
 
-        private async Task UpdateRatings(CancellationToken stopingToken)
+        private async Task UpdateRatings(CancellationToken stoppingToken)
         {
-            while(!stopingToken.IsCancellationRequested)
+            while(!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    await dbContext.Restaurants.Include(r => r.Reviews).ForEachAsync(r =>
-                    {
-                        var rating = 0.0;
-
-                        if (r.Reviews!.Any())
-                        {
-                            rating = r.Reviews!.Average(r => r.Rating);
-                        }
-                        r.Rating = rating;
-
-                    }, cancellationToken: stopingToken);
-                    await dbContext.SaveChangesAsync();
+                    await dbContext.Database.ExecuteSqlRawAsync(@"UPDATE Restaurants
+                                                            SET Rating = (SELECT  ISNULL(AVG(RestaurantReviews.Rating),0)
+                                                                          FROM RestaurantReviews
+                                                                          WHERE RestaurantId = Id);", cancellationToken: stoppingToken);
+                    await dbContext.SaveChangesAsync(stoppingToken);
                 }
                 _logger.LogInformation("BackgroundUpdateRestaurantsRatingService: updated ratings on restaurant");
-                await Task.Delay(_updateInterval, stopingToken);
+                await Task.Delay(_updateInterval, stoppingToken);
             }
         }
 
