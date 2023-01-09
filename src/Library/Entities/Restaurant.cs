@@ -16,7 +16,7 @@ public class Restaurant
 
     public RestaurantCategory RestaurantCategory { get; set; } = default!;
 
-    public string RestaurantCategoryName { get; set; } = default!;
+    public string RestaurantCategoryName { get; set; } = string.Empty;
 
     public ICollection<Product>? Products { get; set; }
 
