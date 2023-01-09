@@ -10,7 +10,7 @@ namespace Library.Services
     {
         private readonly ILogger<BackgroundUpdateRestaurantsRatingService> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly TimeSpan _updateInterval = new TimeSpan(1,0,0);
+        private readonly TimeSpan _updateInterval = new TimeSpan(1, 0, 0);
 
         public BackgroundUpdateRestaurantsRatingService(ILogger<BackgroundUpdateRestaurantsRatingService> logger, IServiceProvider serviceProvider)
         {
@@ -26,15 +26,16 @@ namespace Library.Services
 
         private async Task UpdateRatings(CancellationToken stoppingToken)
         {
-            while(!stoppingToken.IsCancellationRequested)
+            while (!stoppingToken.IsCancellationRequested)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    await dbContext.Database.ExecuteSqlRawAsync(@"UPDATE Restaurants
-                                                            SET Rating = (SELECT  ISNULL(AVG(RestaurantReviews.Rating),0)
-                                                                          FROM RestaurantReviews
-                                                                          WHERE RestaurantId = Id);", cancellationToken: stoppingToken);
+                    await dbContext.Database.ExecuteSqlRawAsync(
+                        @"UPDATE Restaurants
+                        SET Rating = (SELECT  ISNULL(AVG(CAST(RestaurantReviews.Rating as float)), 0.0)
+                                      FROM RestaurantReviews
+                                      WHERE RestaurantId = Restaurants.Id);", cancellationToken: stoppingToken);
                     await dbContext.SaveChangesAsync(stoppingToken);
                 }
                 _logger.LogInformation("BackgroundUpdateRestaurantsRatingService: updated ratings on restaurant");
