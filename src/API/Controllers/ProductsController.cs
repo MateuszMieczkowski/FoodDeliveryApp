@@ -25,7 +25,7 @@ public class ProductsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles="manager, admin")]
-    public async Task<IActionResult> CreateProduct(int restaurantId, ProductForUpdateDto dto)
+    public async Task<ActionResult> CreateProduct(int restaurantId, ProductForUpdateDto dto)
     {
         await _productService.CreateProductAsync(restaurantId, dto);
         return NoContent();
@@ -33,7 +33,7 @@ public class ProductsController : ControllerBase
 
     [HttpDelete("{productId:int}")]
     [Authorize(Roles="manager, admin")]
-    public async Task<IActionResult> DeleteProduct(int restaurantId, int productId)
+    public async Task<ActionResult> DeleteProduct(int restaurantId, int productId)
     {
         await _productService.DeleteProductAsync(restaurantId, productId);
         return Ok();

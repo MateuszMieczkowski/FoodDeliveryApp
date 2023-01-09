@@ -22,7 +22,7 @@ public class ProductCategoryController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "admin,manager")]
-    public async Task<IActionResult> CreateProductCategory(ProductCategoryForUpdateDto productCategoryDto)
+    public async Task<ActionResult> CreateProductCategory(ProductCategoryForUpdateDto productCategoryDto)
     {
         var exists = await _dbContext.ProductCategories.AnyAsync(r => r.Name == productCategoryDto.Name);
         if (exists)

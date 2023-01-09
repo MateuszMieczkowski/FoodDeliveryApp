@@ -34,7 +34,7 @@ public class RestaurantsController : ControllerBase
 
     [HttpDelete("{restaurantId:int}")]
     [Authorize(Roles = "admin")]
-    public async Task<IActionResult> DeleteRestaurant(int restaurantId)
+    public async Task<ActionResult> DeleteRestaurant(int restaurantId)
     {
         await _restaurantService.DeleteRestaurantAsync(restaurantId);
         return NoContent();
@@ -42,7 +42,7 @@ public class RestaurantsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "admin")]
-    public async Task<IActionResult> CreateRestaurant(RestaurantForUpdateDto dto)
+    public async Task<ActionResult> CreateRestaurant(RestaurantForUpdateDto dto)
     {
         var newRestaurant = await _restaurantService.CreateRestaurantAsync(dto);
         return CreatedAtRoute("GetRestaurant", new { restaurantId = newRestaurant.Id }, newRestaurant);
@@ -50,16 +50,16 @@ public class RestaurantsController : ControllerBase
 
     [HttpPut("{restaurantId:int}")]
     [Authorize(Roles = "admin,manager")]
-    public async Task<IActionResult> UpdateRestaurant(int restaurantId, RestaurantForUpdateDto dto)
+    public async Task<ActionResult> UpdateRestaurant(int restaurantId, RestaurantForUpdateDto dto)
     {
         await _restaurantService.UpdateRestaurantAsync(restaurantId, dto);
         return NoContent();
     }
 
     [HttpGet("categories")]
-    public ActionResult<IEnumerable<RestaurantCategoryDto>> GetCategories()
+    public ActionResult<List<RestaurantCategoryDto>> GetCategories()
     {
-        var categoryDtos = _restaurantService.GetRestaurantCategories();
+        var categoryDtos = _restaurantService.GetRestaurantCategories().ToList();
         return Ok(categoryDtos);
     }
 }

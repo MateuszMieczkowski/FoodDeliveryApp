@@ -23,7 +23,7 @@ public class ShoppingCartController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddToCart(int? productId)
+    public async Task<ActionResult> AddToCart(int? productId)
     {
         if (!productId.HasValue)
         {
@@ -34,7 +34,7 @@ public class ShoppingCartController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteFromCart(int? productId)
+    public async Task<ActionResult> DeleteFromCart(int? productId)
     {
         if (!productId.HasValue)
         {
