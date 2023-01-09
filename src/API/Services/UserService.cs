@@ -1,8 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using API.Authorization;
 using API.Exceptions;
-using API.Models;
 using API.Models.UserDtos;
 using API.Services.Interfaces;
 using AutoMapper;

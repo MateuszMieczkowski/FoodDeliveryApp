@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using API.Models;
+using API.Authorization;
 using Library.DataPersistence;
 using Library.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

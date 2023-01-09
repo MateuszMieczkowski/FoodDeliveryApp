@@ -1,4 +1,4 @@
-﻿namespace API.Models;
+﻿namespace API.Authorization;
 
 public class JwtSettings
 {
@@ -6,5 +6,5 @@ public class JwtSettings
 
     public string JwtIssuer { get; set; } = string.Empty;
 
-    public int JwtExpireDays{ get; set; }
+    public int JwtExpireDays { get; set; }
 }
