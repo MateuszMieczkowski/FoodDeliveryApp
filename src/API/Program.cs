@@ -14,7 +14,6 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add services to the container.
-builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 builder.Services.AddApiServices();
 builder.Services.AddLibraryServices(builder.Configuration);
 

@@ -1,6 +1,6 @@
-﻿using API.Models;
-using API.Models.RestaurantDtos;
-using API.Services.Interfaces;
+﻿using Library.Models;
+using Library.Models.RestaurantDtos;
+using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

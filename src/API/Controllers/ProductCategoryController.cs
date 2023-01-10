@@ -1,7 +1,7 @@
-﻿using API.Models.ProductDtos;
-using AutoMapper;
+﻿using AutoMapper;
 using Library.DataPersistence;
 using Library.Entities;
+using Library.Models.ProductDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

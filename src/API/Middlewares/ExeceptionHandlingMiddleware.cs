@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using API.Exceptions;
+using Library.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Middlewares;

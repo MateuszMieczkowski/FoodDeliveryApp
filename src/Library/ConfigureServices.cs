@@ -1,8 +1,12 @@
-﻿using Library.Repositories.Interfaces;
+﻿using Library.Authorization;
+using Library.Repositories.Interfaces;
 using Library.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Library.DataPersistence;
 using Library.Services;
+using Library.Services.Interfaces;
+using Library.Services.ShoppingCart;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -17,7 +21,19 @@ public static class ConfigureServices
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IShoppingCartItemRepository, ShoppingCartItemRepository>();
+        
+        services.AddScoped<IShoppingCartService, ShoppingCartService>();
+        services.AddScoped<IRestaurantService, RestaurantService>();
+        services.AddScoped<IRestaurantReviewService, RestaurantReviewService>();
+        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAuthorizationHandler, RestaurantManagerRequirementHandler>();
+        services.AddScoped<IUserContextAccessor, UserContextAccessor>();
+        
+        services.AddAuthenticationAndAuthorization(configuration);
+        
         services.AddHostedService<BackgroundUpdateRestaurantsRatingService>();
+        
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration["ConnectionStrings:DefaultConnection"]);

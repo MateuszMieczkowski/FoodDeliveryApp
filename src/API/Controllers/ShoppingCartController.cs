@@ -1,5 +1,5 @@
-﻿using API.Models.ShoppingCartDtos;
-using API.Services.Interfaces;
+﻿using Library.Models.ShoppingCartDtos;
+using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;

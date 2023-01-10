@@ -1,5 +1,5 @@
-﻿using API.Models.ProductDtos;
-using API.Services.Interfaces;
+﻿using Library.Models.ProductDtos;
+using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
