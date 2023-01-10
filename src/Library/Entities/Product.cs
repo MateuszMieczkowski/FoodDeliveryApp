@@ -1,9 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using static Library.Enums.Enums;
-
-namespace Library.Entities;
+﻿namespace Library.Entities;
 
 public class Product
 {

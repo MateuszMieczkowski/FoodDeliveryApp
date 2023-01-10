@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
-
-namespace Library.Entities;
+﻿namespace Library.Entities;
 
 public class OrderItem
 {

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using static Library.Enums.Enums;
-using Newtonsoft.Json;
+﻿using static Library.Enums.Enums;
 
 namespace Library.Entities;
 
