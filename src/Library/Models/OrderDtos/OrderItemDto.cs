@@ -11,4 +11,6 @@ public class OrderItemDto
     public int ProductQuantity { get; set; }
 
     public ProductDto Product { get; set; } = default!;
+
+    public int ProductId { get; set; }
 }
