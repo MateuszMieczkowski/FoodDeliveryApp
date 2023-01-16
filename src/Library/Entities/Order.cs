@@ -21,4 +21,6 @@ public class Order
     public User User { get; set; } = default!;
 
     public Guid UserId { get; set; }
+
+    public Address? Address { get; set; }
 }

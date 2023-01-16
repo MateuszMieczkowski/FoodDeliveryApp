@@ -4,6 +4,7 @@ using Library.DataPersistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230115232019_OrderOwnsAddress_AddTotalToShoppingCartItem")]
+    partial class OrderOwnsAddress_AddTotalToShoppingCartItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -493,18 +495,15 @@ namespace Library.Migrations
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .HasMaxLength(40)
-                                .HasColumnType("nvarchar(40)");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Street")
                                 .IsRequired()
-                                .HasMaxLength(40)
-                                .HasColumnType("nvarchar(40)");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("ZipCode")
                                 .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("OrderId");
 

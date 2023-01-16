@@ -10,7 +10,6 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    public DbSet<Address> Addresses { get; set; } = default!;
     public DbSet<Order> Orders { get; set; } = default!;
     public DbSet<OrderItem> OrderItems { get; set; } = default!;
     public DbSet<Product> Products { get; set; } = default!;

@@ -8,7 +8,5 @@ public class User : IdentityUser<Guid>
 
     public string LastName { get; set; } = string.Empty;
 
-    public ICollection<Address>? Address { get; set; }
-
     public ICollection<Order>? Orders { get; set; }
 }
