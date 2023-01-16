@@ -14,14 +14,13 @@ public class Restaurant
 
     public string RestaurantCategoryName { get; set; } = string.Empty;
 
+    public double Rating { get; set; }
+
+    public string ImageUrl { get; set; } = string.Empty;
+
     public ICollection<Product>? Products { get; set; }
 
     public ICollection<Order>? Orders { get; set; }
 
     public ICollection<RestaurantReview>? Reviews { get; set; }
-
-    public double Rating { get; set; }
-
-    public string ImageUrl { get; set; } = string.Empty;
-
 }
