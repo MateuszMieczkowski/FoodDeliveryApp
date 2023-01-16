@@ -10,7 +10,7 @@ public class ProductRepository : IProductRepository
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public IEnumerable<Product>? Products { get; set; }
+    public IQueryable<Product>? Products { get; set; }
 
     public ProductRepository(ApplicationDbContext dbContext)
     {
@@ -48,7 +48,7 @@ public class ProductRepository : IProductRepository
         return products;
     }
 
-    public IEnumerable<ProductCategory> GetCategories()
+    public IQueryable<ProductCategory> GetCategories()
     {
         return _dbContext.ProductCategories;
     }

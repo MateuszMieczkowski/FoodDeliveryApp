@@ -9,7 +9,7 @@ public class RestaurantCategoryRepository : IRestaurantCategoryRepository
 {
     private readonly ApplicationDbContext _dbcontext;
 
-    public IEnumerable<RestaurantCategory>? Categories { get; set; }
+    public IQueryable<RestaurantCategory>? Categories { get; set; }
 
     public RestaurantCategoryRepository(ApplicationDbContext dbcontext)
     {

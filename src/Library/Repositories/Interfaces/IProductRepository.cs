@@ -4,7 +4,7 @@ namespace Library.Repositories.Interfaces;
 
 public interface IProductRepository
 {
-    IEnumerable<Product>? Products { get; set; }
+    IQueryable<Product>? Products { get; set; }
 
     Task AddProductAsync(Product product);
 
@@ -18,6 +18,6 @@ public interface IProductRepository
 
     Task<int> SaveChangesAsync();
 
-    IEnumerable<ProductCategory> GetCategories();
+    IQueryable<ProductCategory> GetCategories();
     
 }

@@ -4,7 +4,7 @@ namespace Library.Repositories.Interfaces;
 
 public interface IRestaurantCategoryRepository
 {
-    IEnumerable<RestaurantCategory>? Categories { get; set; }
+    IQueryable<RestaurantCategory>? Categories { get; set; }
 
     Task AddCategoryAsync(RestaurantCategory category);
 
