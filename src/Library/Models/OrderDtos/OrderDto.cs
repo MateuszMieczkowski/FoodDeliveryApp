@@ -12,7 +12,9 @@ public class OrderDto
 
     public OrderStatus Status { get; set; }
 
-   public int RestaurantId { get; set; }
+    public int RestaurantId { get; set; }
+
+    public AddressDto Address { get; set; } = default!;
 
     public decimal Total => OrderItems.Sum(o => o.ProductQuantity * o.Product.Price);
 }
