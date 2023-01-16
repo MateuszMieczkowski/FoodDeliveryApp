@@ -11,9 +11,5 @@ internal class ShoppingCartItemConfiguration : IEntityTypeConfiguration<Shopping
         builder.Property(x => x.Id)
                .ValueGeneratedOnAdd()
                .UseIdentityColumn();
-
-        builder.HasOne(r => r.Product)
-               .WithMany(r => r.ShoppingCartItems)
-               .HasForeignKey(r => r.ProductId);
     }
 }
