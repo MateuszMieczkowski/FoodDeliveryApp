@@ -46,21 +46,23 @@ public class ShoppingCartService : IShoppingCartService
 
     public async Task AddToCartAsync(int productId)
     {
-        var shoppingCartItem = _shoppingCart.ShoppingCartItems!.SingleOrDefault(r => r.ProductId == productId);
+        var product = await _productRepository.GetProductAsync(productId);
+        if (product is null)
+        {
+            throw new NotFoundException($"Product with id {productId} does not exists");
+        }
 
+        var shoppingCartItem = _shoppingCart.ShoppingCartItems!.SingleOrDefault(r => r.ProductId == productId);
         if (shoppingCartItem is null)
         {
-            var product = await _productRepository.GetProductAsync(productId);
-            if (product is null)
-            {
-                throw new NotFoundException($"Product with id {productId} does not exists");
-            }
+            
 
             var newItem = new ShoppingCartItem()
             {
                 Product = product,
                 ShoppingCartId = _shoppingCart.ShoppingCartId,
-                Quantity = 1
+                Quantity = 1,
+                Total = product.Price
             };
 
             await _shoppingCartItemRepository.AddShoppingCartItemAsync(newItem);
@@ -68,11 +70,18 @@ public class ShoppingCartService : IShoppingCartService
             return;
         }
 
+        shoppingCartItem.Total += product.Price;
         shoppingCartItem.Quantity++;
         await _shoppingCartItemRepository.SaveChangesAsync();
     }
     public async Task DeleteFromCartAsync(int productId)
     {
+        var product = await _productRepository.GetProductAsync(productId);
+        if (product is null)
+        {
+            throw new NotFoundException($"Product with id {productId} does not exists");
+        }
+
         var shoppingCartItem = _shoppingCart.ShoppingCartItems!.SingleOrDefault(r => r.ProductId == productId);
         if (shoppingCartItem is null)
         {
@@ -85,6 +94,8 @@ public class ShoppingCartService : IShoppingCartService
             await _shoppingCartItemRepository.SaveChangesAsync();
             return;
         }
+
+        shoppingCartItem.Total -= product.Price;
         shoppingCartItem.Quantity--;
         await _shoppingCartItemRepository.SaveChangesAsync();
     }
