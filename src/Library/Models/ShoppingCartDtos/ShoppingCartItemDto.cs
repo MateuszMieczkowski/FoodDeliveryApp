@@ -1,4 +1,6 @@
-﻿namespace Library.Models.ShoppingCartDtos;
+﻿using Library.Models.ProductDtos;
+
+namespace Library.Models.ShoppingCartDtos;
 
 public class ShoppingCartItemDto
 {
@@ -8,5 +10,9 @@ public class ShoppingCartItemDto
 
     public int ProductId { get; set; }
 
+    public ProductDto Product { get; set; } = default!;
+
     public int Quantity { get; set; }
+
+    public decimal Total { get; set; }
 }
