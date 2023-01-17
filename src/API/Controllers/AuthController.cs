@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult> RegisterUser(UserRegistrationDto dto)
+    public async Task<ActionResult> RegisterUser([FromBody] UserRegistrationDto dto)
     {
         dto.RoleName = "user";
         var result = await _userService.RegisterUserAsync(dto);
@@ -27,7 +27,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("register-manager")]
     [Authorize(Roles ="admin")]
-    public async Task<ActionResult> RegisterManager(UserRegistrationDto dto)
+    public async Task<ActionResult> RegisterManager([FromBody] UserRegistrationDto dto)
     {
         dto.RoleName = "manager";
         var result = await _userService.RegisterUserAsync(dto);
@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<string>> LoginUser(UserLoginDto dto)
+    public async Task<ActionResult<string>> LoginUser([FromBody] UserLoginDto dto)
     {
         var token = await _userService.GetTokenAsync(dto);
         return Ok(token);

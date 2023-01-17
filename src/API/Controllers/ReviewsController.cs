@@ -26,14 +26,14 @@ public class ReviewsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "user")]
-    public async Task<ActionResult> AddReview(int restaurantId, RestaurantReviewForUpdateDto dto)
+    public async Task<ActionResult> AddReview([FromRoute] int restaurantId, [FromBody] RestaurantReviewForUpdateDto dto)
     {
         await _restaurantReviewService.AddReviewAsync(restaurantId, dto);
         return Ok();
     }
     [HttpDelete("{reviewId:int}")]
     [Authorize(Roles = "admin")]
-    public async Task<ActionResult> DeleteReview(int restaurantId, int reviewId)
+    public async Task<ActionResult> DeleteReview([FromRoute] int restaurantId, [FromRoute] int reviewId)
     {
         await _restaurantReviewService.DeleteReviewAsync(restaurantId, reviewId);
         return Ok();
