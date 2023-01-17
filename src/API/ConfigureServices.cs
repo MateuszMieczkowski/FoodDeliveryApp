@@ -8,6 +8,7 @@ internal static class ConfigureServices
     {
         services.AddControllers(options =>
         {
+            options.AllowEmptyInputInBodyModelBinding = true;
             options.ReturnHttpNotAcceptable = true;
         }).AddNewtonsoftJson(options =>
         {
