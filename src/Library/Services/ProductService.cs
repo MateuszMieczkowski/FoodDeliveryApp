@@ -82,7 +82,7 @@ public class ProductService : IProductService
         }
 
         var authorizationResult = await
-            _authorizationService.AuthorizeAsync(user, restaurant, new RestaurantManagerRequirement());
+            _authorizationService.AuthorizeAsync(user, null, new RestaurantManagerRequirement(restaurant.Id));
 
         if (!authorizationResult.Succeeded)
         {

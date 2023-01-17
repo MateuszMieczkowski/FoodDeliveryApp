@@ -134,7 +134,7 @@ public class RestaurantService : IRestaurantService
             throw new NotFoundException($"There's no such restaurant with id:{restaurantId}.");
         }
 
-        await AuthorizeManager(restaurant);
+        await AuthorizeManager(restaurantId);
 
         var category = await _restaurantCategoryRepository.GetRestaurantCategory(dto.RestaurantCategoryName) 
                        ?? new RestaurantCategory { Name = dto.RestaurantCategoryName };
@@ -148,7 +148,7 @@ public class RestaurantService : IRestaurantService
         await _restaurantRepository.SaveChangesAsync();
     }
 
-    private async Task AuthorizeManager(Restaurant restaurant)
+    private async Task AuthorizeManager(int restaurantId)
     {
         var user = _userContextAccessor.User;
         if (user is null)
@@ -157,7 +157,7 @@ public class RestaurantService : IRestaurantService
         }
 
         var authorizationResult = await
-            _authorizationService.AuthorizeAsync(user, restaurant, new RestaurantManagerRequirement());
+            _authorizationService.AuthorizeAsync(user, null, new RestaurantManagerRequirement(restaurantId));
         if (!authorizationResult.Succeeded)
         {
             throw new ForbiddenException();
