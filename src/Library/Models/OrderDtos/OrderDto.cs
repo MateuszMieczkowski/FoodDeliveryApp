@@ -16,5 +16,7 @@ public class OrderDto
 
     public AddressDto Address { get; set; } = default!;
 
+    public Guid UserId { get; set; }
+
     public decimal Total => OrderItems.Sum(o => o.ProductQuantity * o.Product.Price);
 }
