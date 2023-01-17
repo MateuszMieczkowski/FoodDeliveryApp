@@ -21,13 +21,17 @@ public static class ConfigureServices
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IShoppingCartItemRepository, ShoppingCartItemRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+      
         
         services.AddScoped<IShoppingCartService, ShoppingCartService>();
         services.AddScoped<IRestaurantService, RestaurantService>();
         services.AddScoped<IRestaurantReviewService, RestaurantReviewService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthorizationHandler, RestaurantManagerRequirementHandler>();
+        services.AddScoped<IAuthorizationHandler, AccountOwnerRequirementHandler>();
         services.AddScoped<IUserContextAccessor, UserContextAccessor>();
         
         services.AddAuthenticationAndAuthorization(configuration);
