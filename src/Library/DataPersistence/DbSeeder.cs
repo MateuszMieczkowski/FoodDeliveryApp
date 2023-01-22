@@ -9,10 +9,12 @@ namespace Library.DataPersistence;
 public class DbSeeder
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly UserManager<User> _userManager;
     private Random _random;
-    public DbSeeder(ApplicationDbContext dbContext)
+    public DbSeeder(ApplicationDbContext dbContext, UserManager<User> userManager)
     {
         _dbContext = dbContext;
+        _userManager = userManager;
         _random = new Random();
     }
     public void Seed()
@@ -45,26 +47,24 @@ public class DbSeeder
             _dbContext.SaveChanges();
         }
 
-        if (!_dbContext.RestaurantReviews.Any())
-        {
-            var reviews = GetRestaurantReviews();
-            _dbContext.RestaurantReviews.AddRange(reviews);
-            _dbContext.SaveChanges();
-        }
-
         if (!_dbContext.Roles.Any())
         {
             var roles = GetRoles();
             _dbContext.Roles.AddRange(roles);
             _dbContext.SaveChanges();
         }
-
-        //if(!_dbContext.Orders.Any())
-        //{
-        //    var orders = GetOrders();
-        //    _dbContext.Orders.AddRange(orders);
-        //    _dbContext.SaveChanges();
-        //}
+        if(!_userManager.GetUsersInRoleAsync("admin").Result.Any())
+        {
+            var adminUser = new User
+            {
+                Email = "admin@fooddeliveryapp.com",
+                FirstName = "admin",
+                LastName = "admin",
+                UserName = "admin"
+            };
+            _userManager.CreateAsync(adminUser, "administrator").GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(adminUser, "admin").GetAwaiter().GetResult();
+        }
     }
 
     private ProductCategory[] GetProductCategories()
@@ -173,7 +173,7 @@ public class DbSeeder
         {
             new IdentityRole<Guid>("user"),
             new IdentityRole<Guid>("manager"),
-            new IdentityRole<Guid>("administrator")
+            new IdentityRole<Guid>("admin")
         };
 
         return roles;

@@ -2,6 +2,7 @@ using API;
 using API.Middlewares;
 using Library;
 using Library.DataPersistence;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +42,8 @@ app.UseEndpoints(endpoints => endpoints.MapControllers());
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var dbSeeder = new DbSeeder(context);
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Library.Entities.User>>();
+    var dbSeeder = new DbSeeder(context, userManager);
     dbSeeder.Seed();
 }
 app.Run();
