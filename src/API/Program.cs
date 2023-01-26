@@ -17,7 +17,7 @@ builder.Host.UseSerilog();
 // Add services to the container.
 builder.Services.AddApiServices();
 builder.Services.AddLibraryServices(builder.Configuration);
-
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin()));
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -31,6 +31,8 @@ app.UseAuthentication();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors();
 
 app.UseAuthorization();
 
@@ -46,4 +48,5 @@ using (var scope = app.Services.CreateScope())
     var dbSeeder = new DbSeeder(context, userManager);
     dbSeeder.Seed();
 }
+
 app.Run();
