@@ -29,22 +29,32 @@ public class OrderRepository : IOrderRepository
 
     public async Task<List<Order>> GetAllOrders(Order order)
     {
-        return await _dbContext.Orders.ToListAsync();
+        return await _dbContext.Orders
+                               .Include(x => x.OrderItems)
+                               .ToListAsync();
     }
 
     public async Task<Order?> GetOrderAsync(Guid orderId)
     {
-        return await _dbContext.Orders.FindAsync(orderId);
+        return await _dbContext.Orders
+                               .Include(x => x.OrderItems)
+                               .SingleOrDefaultAsync(x => x.Id == orderId);
     }
 
     public async Task<List<Order>> GetRestaurantOrders(int restaurantId)
     {
-        return await _dbContext.Orders.Where(x => x.RestaurantId == restaurantId).ToListAsync();
+        return await _dbContext.Orders
+                               .Where(x => x.RestaurantId == restaurantId)
+                               .Include(x => x.OrderItems)
+                               .ToListAsync();
     }
 
     public async Task<List<Order>> GetUserOrders(Guid userId)
     {
-        return await _dbContext.Orders.Where(x => x.UserId == userId).ToListAsync();
+        return await _dbContext.Orders
+                               .Where(x => x.UserId == userId)
+                               .Include(x => x.OrderItems)
+                               .ToListAsync();
     }
 
     public async Task<int> SaveChangesAsync()
