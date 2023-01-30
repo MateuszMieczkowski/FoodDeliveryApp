@@ -18,5 +18,5 @@ public class OrderDto
 
     public Guid UserId { get; set; }
 
-    public decimal Total => OrderItems.Sum(o => o.ProductQuantity * o.Product.Price);
+    public decimal Total { get; set; }
 }
