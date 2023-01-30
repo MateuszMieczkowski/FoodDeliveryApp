@@ -19,22 +19,20 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IShoppingCartService _shoppingCartService;
     private readonly IRestaurantRepository _restaurantRepository;
-    private readonly IAuthorizationService _authorizationService;
-    private readonly IUserContextAccessor _userContextAccessor;
+    private readonly IRequirementService _requirementService;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
     private const int MaxPageSize = 50;
 
     public OrderService(IOrderRepository orderRepository, IShoppingCartService shoppingCartService,
-        UserManager<User> userManager, IRestaurantRepository restaurantRepository, IMapper mapper, IAuthorizationService authorizationService, IUserContextAccessor userContextAccessor)
+        UserManager<User> userManager, IRestaurantRepository restaurantRepository, IMapper mapper, IRequirementService requirementService)
     {
         _orderRepository = orderRepository;
         _shoppingCartService = shoppingCartService;
         _userManager = userManager;
         _restaurantRepository = restaurantRepository;
         _mapper = mapper;
-        _authorizationService = authorizationService;
-        _userContextAccessor = userContextAccessor;
+        _requirementService = requirementService;
     }
 
     public async Task CreateOrderAsync(Guid? userId, int? restaurantId, AddressDto? addressDto)
@@ -44,7 +42,7 @@ public class OrderService : IOrderService
             throw new BadRequestException("userId and restaurantId are required");
         }
         await AuthorizeUserAndRestaurantManager(userId.Value, restaurantId.Value);
-
+        
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if(user is null)
         {
@@ -56,7 +54,8 @@ public class OrderService : IOrderService
             throw new NotFoundException($"There's no such restaurant with id: {restaurantId.Value}");
         }
 
-        var cartItems = _shoppingCartService.GetShoppingCart().ShoppingCartItems?.Where(x => x.Product.RestaurantId == restaurantId.Value);
+        var cartItems = _shoppingCartService.GetShoppingCart().ShoppingCartItems
+            ?.Where(x => x.Product.RestaurantId == restaurantId.Value);
         if(cartItems is null || !cartItems.Any())
         {
             throw new BadRequestException("Empty cart or wrong restaurantId");
@@ -165,41 +164,29 @@ public class OrderService : IOrderService
         order.Status = status.Value;
         await _orderRepository.SaveChangesAsync();
     }
-
-    private async Task<AuthorizationResult> Authorize(IAuthorizationRequirement requirement)
-    {
-        var user = _userContextAccessor.User;
-        if(user is null)
-        {
-            throw new Exception();
-        }
-
-        var authResult = await _authorizationService.AuthorizeAsync(user, null, requirement);
-        return authResult;
-    }
-
+    
     private async Task AuthorizeUser(Guid userId)
     {
-        var result = await Authorize(new AccountOwnerRequirement(userId));
+        var result = await _requirementService.AuthorizeAsync(new AccountOwnerRequirement(userId));
         if(!result.Succeeded)
         {
             throw new ForbiddenException();
         }
     }
-
+    
     private async Task AuthorizeRestaurantManager(int restaurantId)
     {
-        var result = await Authorize(new RestaurantManagerRequirement(restaurantId));
+        var result = await _requirementService.AuthorizeAsync(new RestaurantManagerRequirement(restaurantId));
         if (!result.Succeeded)
         {
             throw new ForbiddenException();
         }
     }
-
+    
     private async Task AuthorizeUserAndRestaurantManager(Guid userId, int restaurantId)
     {
-        var userResult = await Authorize(new AccountOwnerRequirement(userId));
-        var managerResult = await Authorize(new RestaurantManagerRequirement(restaurantId));
+        var userResult = await _requirementService.AuthorizeAsync(new AccountOwnerRequirement(userId));
+        var managerResult = await _requirementService.AuthorizeAsync(new RestaurantManagerRequirement(restaurantId));
         if (!userResult.Succeeded && !managerResult.Succeeded)
         {
             throw new ForbiddenException();

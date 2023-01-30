@@ -14,16 +14,14 @@ public class ProductService : IProductService
     private readonly IRestaurantRepository _restaurantRepository;
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
-    private readonly IAuthorizationService _authorizationService;
-    private readonly IUserContextAccessor _userContextAccessor;
+    private readonly IRequirementService _requirementService;
 
-    public ProductService(IRestaurantRepository restaurantRepository, IProductRepository productRepository, IMapper mapper, IAuthorizationService authorizationService, IUserContextAccessor userContextAccessor)
+    public ProductService(IRestaurantRepository restaurantRepository, IProductRepository productRepository, IMapper mapper, IRequirementService requirementService)
     {
         _restaurantRepository = restaurantRepository;
         _productRepository = productRepository;
         _mapper = mapper;
-        _authorizationService = authorizationService;
-        _userContextAccessor = userContextAccessor;
+        _requirementService = requirementService;
     }
 
     public async Task CreateProductAsync(int restaurantId, ProductForUpdateDto dto)
@@ -72,24 +70,7 @@ public class ProductService : IProductService
         _productRepository.DeleteProduct(product);
         await _productRepository.SaveChangesAsync();
     }
-
-    private async Task AuthorizeManager(Restaurant restaurant)
-    {
-        var user = _userContextAccessor.User;
-        if (user is null)
-        {
-            throw new Exception();
-        }
-
-        var authorizationResult = await
-            _authorizationService.AuthorizeAsync(user, null, new RestaurantManagerRequirement(restaurant.Id));
-
-        if (!authorizationResult.Succeeded)
-        {
-            throw new ForbiddenException();
-        }
-    }
-
+    
     public async Task<List<ProductDto>> GetProductsAsync(int restaurantId)
     {
         var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
@@ -101,5 +82,17 @@ public class ProductService : IProductService
         var products = await _productRepository.GetRestaurantProductsAsync(restaurantId);
         var productDtos = _mapper.Map<List<ProductDto>>(products);
         return productDtos;
+    }
+    
+    private async Task AuthorizeManager(Restaurant restaurant)
+    {
+
+        var authorizationResult =
+            await _requirementService.AuthorizeAsync(new RestaurantManagerRequirement(restaurant.Id));
+
+        if (!authorizationResult.Succeeded)
+        {
+            throw new ForbiddenException();
+        }
     }
 }

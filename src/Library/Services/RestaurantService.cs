@@ -6,7 +6,6 @@ using Library.Models;
 using Library.Models.RestaurantDtos;
 using Library.Repositories.Interfaces;
 using Library.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services;
@@ -16,17 +15,16 @@ public class RestaurantService : IRestaurantService
     private readonly IRestaurantRepository _restaurantRepository;
     private readonly IRestaurantCategoryRepository _restaurantCategoryRepository;
     private readonly IMapper _mapper;
-    private readonly IAuthorizationService _authorizationService;
-    private readonly IUserContextAccessor _userContextAccessor;
+    private readonly IRequirementService _requirementService;
 
     private const int MaxPageSize = 50;
 
-    public RestaurantService(IRestaurantRepository restaurantRepository, IMapper mapper, IRestaurantCategoryRepository restaurantCategoryRepository, IAuthorizationService authorizationService, IUserContextAccessor userContextAccessor)
+    public RestaurantService(IRestaurantRepository restaurantRepository, IMapper mapper, IRestaurantCategoryRepository restaurantCategoryRepository, IRequirementService requirementService)
     {
         _restaurantRepository = restaurantRepository;
         _restaurantCategoryRepository = restaurantCategoryRepository;
-        _authorizationService = authorizationService;
-        _userContextAccessor = userContextAccessor;
+        _requirementService = requirementService;
+
         _mapper = mapper;
     }
 
@@ -147,27 +145,21 @@ public class RestaurantService : IRestaurantService
 
         await _restaurantRepository.SaveChangesAsync();
     }
-
-    private async Task AuthorizeManager(int restaurantId)
-    {
-        var user = _userContextAccessor.User;
-        if (user is null)
-        {
-            throw new Exception();
-        }
-
-        var authorizationResult = await
-            _authorizationService.AuthorizeAsync(user, null, new RestaurantManagerRequirement(restaurantId));
-        if (!authorizationResult.Succeeded)
-        {
-            throw new ForbiddenException();
-        }
-    }
-
+    
     public IEnumerable<RestaurantCategoryDto> GetRestaurantCategories()
     {
         var categories = _restaurantCategoryRepository.Categories;
         var categoryDtos = _mapper.Map<IEnumerable<RestaurantCategoryDto>>(categories);
         return categoryDtos;
+    }
+    
+    private async Task AuthorizeManager(int restaurantId)
+    {
+        var authorizationResult =
+            await _requirementService.AuthorizeAsync(new RestaurantManagerRequirement(restaurantId));
+        if (!authorizationResult.Succeeded)
+        {
+            throw new ForbiddenException();
+        }
     }
 }

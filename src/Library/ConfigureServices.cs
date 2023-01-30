@@ -33,6 +33,7 @@ public static class ConfigureServices
         services.AddScoped<IAuthorizationHandler, RestaurantManagerRequirementHandler>();
         services.AddScoped<IAuthorizationHandler, AccountOwnerRequirementHandler>();
         services.AddScoped<IUserContextAccessor, UserContextAccessor>();
+        services.AddScoped<IRequirementService, RequirementService>();
         
         services.AddAuthenticationAndAuthorization(configuration);
         
