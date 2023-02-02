@@ -1,0 +1,17 @@
+﻿<ul class="list-group list-group-horizontal-sm ">
+    <li class="list-group-item"><button type="button" class="btn" @onclick="@(() => @OnPageSizeClicked(10))" >10</button></li>
+    <li class="list-group-item"><button type="button" @onclick="@(() => @OnPageSizeClicked(25))">25</button></li>
+    <li class="list-group-item"><button type="button" @onclick="@(() => @OnPageSizeClicked(50))">50</button></li>
+</ul>
+
+
+<h2>@CurrentPageSize</h2>
+
+@code {
+    protected int CurrentPageSize { get; set; } = 10;
+
+    public void OnPageSizeClicked(int pageSize)
+    {
+        CurrentPageSize = pageSize;
+    }
+}
