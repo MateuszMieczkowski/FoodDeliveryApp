@@ -1,17 +1,14 @@
-﻿<ul class="list-group list-group-horizontal-sm ">
-    <li class="list-group-item"><button type="button" class="btn" @onclick="@(() => @OnPageSizeClicked(10))" >10</button></li>
-    <li class="list-group-item"><button type="button" @onclick="@(() => @OnPageSizeClicked(25))">25</button></li>
-    <li class="list-group-item"><button type="button" @onclick="@(() => @OnPageSizeClicked(50))">50</button></li>
+﻿
+<ul class="list-inline">
+	<li class="list-inline-item m-0"><button type="button" class="btn-sm btn-outline-primary" @onclick="@(async () => await @OnPageSizeChanged(10))">10</button></li>
+	<li class="list-inline-item  m-0">/</li>
+	<li class="list-inline-item m-0"><button type="button" class="btn-sm btn-outline-primary" @onclick="@(async () => await @OnPageSizeChanged(20))">20</button></li>
+	<li class="list-inline-item m-0">/</li>
+	<li class="list-inline-item m-0"><button type="button" class="btn-sm btn-outline-primary" @onclick="@(async () => await @OnPageSizeChanged(50))">30</button></li>
 </ul>
 
 
-<h2>@CurrentPageSize</h2>
-
 @code {
-    protected int CurrentPageSize { get; set; } = 10;
-
-    public void OnPageSizeClicked(int pageSize)
-    {
-        CurrentPageSize = pageSize;
-    }
+	[Parameter]
+	public Func<int, Task> OnPageSizeChanged { get; set; } = default!;
 }
