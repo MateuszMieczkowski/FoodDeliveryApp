@@ -18,4 +18,7 @@ builder.Services.AddSingleton(apiSettings);
 builder.Services.AddRefitClient<IRestaurantApi>()
     .ConfigureHttpClient(client => client.BaseAddress = new Uri(apiSettings.BaseURL));
 
+builder.Services.AddRefitClient<IFilterApi>()
+	.ConfigureHttpClient(client => client.BaseAddress = new Uri(apiSettings.BaseURL));
+
 await builder.Build().RunAsync();
