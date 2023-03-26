@@ -32,10 +32,10 @@
     public string Href { get; set; } = default!;
 
     private string PreviousDisabled => PreviousExists ? "" : "disabled";
-    private bool PreviousExists => CurrentPage > 1;
+    private bool PreviousExists => CurrentPage > 1 && CurrentPage != PagesCount && PagesCount != 0;
     private int PreviousPage => CurrentPage - 1;
 
     private string NextDisabled => NextExists ? "" : "disabled";
-    private bool NextExists => CurrentPage != PagesCount;
+    private bool NextExists => CurrentPage != PagesCount && PagesCount != 0;
     private int NextPage => CurrentPage + 1;
 }
