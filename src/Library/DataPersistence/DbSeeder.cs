@@ -10,11 +10,13 @@ public class DbSeeder
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly UserManager<User> _userManager;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
     private Random _random;
-    public DbSeeder(ApplicationDbContext dbContext, UserManager<User> userManager)
+    public DbSeeder(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager)
     {
         _dbContext = dbContext;
         _userManager = userManager;
+        _roleManager = roleManager;
         _random = new Random();
     }
     public void Seed()
@@ -50,8 +52,10 @@ public class DbSeeder
         if (!_dbContext.Roles.Any())
         {
             var roles = GetRoles();
-            _dbContext.Roles.AddRange(roles);
-            _dbContext.SaveChanges();
+            foreach (var identityRole in roles)
+            {
+                _roleManager.CreateAsync(identityRole).GetAwaiter().GetResult();
+            }
         }
         if(!_userManager.GetUsersInRoleAsync("admin").Result.Any())
         {
@@ -63,7 +67,7 @@ public class DbSeeder
                 UserName = "admin"
             };
             _userManager.CreateAsync(adminUser, "administrator").GetAwaiter().GetResult();
-            _userManager.AddToRoleAsync(adminUser, "admin").GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(adminUser, "ADMIN").GetAwaiter().GetResult();
         }
     }
 
