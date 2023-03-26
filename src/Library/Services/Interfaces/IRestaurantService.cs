@@ -17,4 +17,6 @@ public interface IRestaurantService
     Task UpdateRestaurantAsync(int restaurantId, RestaurantForUpdateDto dto);
 
     IEnumerable<RestaurantCategoryDto> GetRestaurantCategories();
+
+    Task<List<string>> GetCities();
 }

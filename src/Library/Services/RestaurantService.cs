@@ -162,4 +162,12 @@ public class RestaurantService : IRestaurantService
             throw new ForbiddenException();
         }
     }
+
+	public async Task<List<string>> GetCities()
+	{
+        var cities = await _restaurantRepository.Restaurants
+                                                .Select(x => x.City)
+                                                .ToListAsync();
+        return cities;
+	}
 }
