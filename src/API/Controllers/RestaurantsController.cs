@@ -62,4 +62,11 @@ public class RestaurantsController : ControllerBase
         var categoryDtos = _restaurantService.GetRestaurantCategories().ToList();
         return Ok(categoryDtos);
     }
+
+	[HttpGet("cities")]
+	public ActionResult<List<string>> GetCities()
+	{
+        var cities = _restaurantService.GetCities();
+		return Ok(cities);
+	}
 }
