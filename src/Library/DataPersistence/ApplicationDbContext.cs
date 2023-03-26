@@ -18,7 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
     public DbSet<RestaurantCategory> RestaurantCategories { get; set; } = default!;
     public DbSet<RestaurantReview> RestaurantReviews { get; set; } = default!;
     public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; } = default!;
-
+    public DbSet<Discount> Discounts { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

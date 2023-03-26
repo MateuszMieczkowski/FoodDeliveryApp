@@ -4,6 +4,7 @@ using Library.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Library.DataPersistence;
 using Library.Services;
+using Library.Services.DiscountCalculator;
 using Library.Services.Interfaces;
 using Library.Services.ShoppingCart;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +35,10 @@ public static class ConfigureServices
         services.AddScoped<IAuthorizationHandler, AccountOwnerRequirementHandler>();
         services.AddScoped<IUserContextAccessor, UserContextAccessor>();
         services.AddScoped<IRequirementService, RequirementService>();
+
+        services.AddTransient<IDiscountCalculator, PercentageDiscountCalculator>();
+        services.AddTransient<IDiscountCalculator, AmountDiscountCalculator>();
+        services.AddTransient<IDiscountCalculatorFactory, DiscountCalculatorFactory>();
         
         services.AddAuthenticationAndAuthorization(configuration);
         

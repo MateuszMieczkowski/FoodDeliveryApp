@@ -31,6 +31,7 @@ public class OrderRepository : IOrderRepository
     {
         return await _dbContext.Orders
                                .Include(x => x.OrderItems)
+                               .Include(x=>x.Discount)
                                .ToListAsync();
     }
 
@@ -38,6 +39,7 @@ public class OrderRepository : IOrderRepository
     {
         return await _dbContext.Orders
                                .Include(x => x.OrderItems)
+                               .Include(x=>x.Discount)
                                .SingleOrDefaultAsync(x => x.Id == orderId);
     }
 
@@ -46,6 +48,7 @@ public class OrderRepository : IOrderRepository
         return await _dbContext.Orders
                                .Where(x => x.RestaurantId == restaurantId)
                                .Include(x => x.OrderItems)
+                               .Include(x=>x.Discount)
                                .ToListAsync();
     }
 
@@ -54,6 +57,7 @@ public class OrderRepository : IOrderRepository
         return await _dbContext.Orders
                                .Where(x => x.UserId == userId)
                                .Include(x => x.OrderItems)
+                               .Include(x=>x.Discount)
                                .ToListAsync();
     }
 

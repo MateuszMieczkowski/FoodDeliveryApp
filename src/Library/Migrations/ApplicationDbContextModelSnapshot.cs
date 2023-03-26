@@ -22,6 +22,30 @@ namespace Library.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Library.Entities.Discount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("DiscountCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Discounts");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Discount");
+                });
+
             modelBuilder.Entity("Library.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -32,6 +56,9 @@ namespace Library.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
+
+                    b.Property<int?>("DiscountId")
+                        .HasColumnType("int");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
@@ -47,6 +74,8 @@ namespace Library.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DiscountId");
 
                     b.HasIndex("RestaurantId");
 
@@ -241,9 +270,6 @@ namespace Library.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RestaurantId")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("ShoppingCartId")
                         .HasColumnType("uniqueidentifier");
 
@@ -253,8 +279,6 @@ namespace Library.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("RestaurantId");
 
                     b.ToTable("ShoppingCartItems");
                 });
@@ -466,8 +490,35 @@ namespace Library.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Library.Entities.AmountDiscount", b =>
+                {
+                    b.HasBaseType("Library.Entities.Discount");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasDiscriminator().HasValue("AmountDiscount");
+                });
+
+            modelBuilder.Entity("Library.Entities.PercentageDiscount", b =>
+                {
+                    b.HasBaseType("Library.Entities.Discount");
+
+                    b.Property<decimal>("Percentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasDiscriminator().HasValue("PercentageDiscount");
+
+                    b.HasCheckConstraint("Percentage_Check", "Percentage BETWEEN 0.0 AND 1.0");
+                });
+
             modelBuilder.Entity("Library.Entities.Order", b =>
                 {
+                    b.HasOne("Library.Entities.Discount", "Discount")
+                        .WithMany("Orders")
+                        .HasForeignKey("DiscountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Library.Entities.Restaurant", "Restaurant")
                         .WithMany("Orders")
                         .HasForeignKey("RestaurantId")
@@ -515,6 +566,8 @@ namespace Library.Migrations
                         });
 
                     b.Navigation("Address");
+
+                    b.Navigation("Discount");
 
                     b.Navigation("Restaurant");
 
@@ -589,10 +642,6 @@ namespace Library.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Library.Entities.Restaurant", null)
-                        .WithMany("ShoppingCartItems")
-                        .HasForeignKey("RestaurantId");
-
                     b.Navigation("Product");
                 });
 
@@ -647,6 +696,11 @@ namespace Library.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Library.Entities.Discount", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("Library.Entities.Order", b =>
                 {
                     b.Navigation("OrderItems");
@@ -671,8 +725,6 @@ namespace Library.Migrations
                     b.Navigation("Products");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("ShoppingCartItems");
                 });
 
             modelBuilder.Entity("Library.Entities.RestaurantCategory", b =>

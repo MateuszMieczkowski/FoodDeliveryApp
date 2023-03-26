@@ -2,6 +2,8 @@ using API;
 using API.Middlewares;
 using Library;
 using Library.DataPersistence;
+using Library.Entities;
+using Library.Services.DiscountCalculator;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
 
@@ -39,7 +41,6 @@ app.UseAuthorization();
 app.UseSession();
 
 app.UseEndpoints(endpoints => endpoints.MapControllers());
-
 
 using (var scope = app.Services.CreateScope())
 {

@@ -54,8 +54,9 @@ public class OrderService : IOrderService
             throw new NotFoundException($"There's no such restaurant with id: {restaurantId.Value}");
         }
 
-        var cartItems = _shoppingCartService.GetShoppingCart().ShoppingCartItems
-            ?.Where(x => x.Product.RestaurantId == restaurantId.Value);
+        var cartItems = _shoppingCartService.GetShoppingCart()
+            .ShoppingCartItems?
+            .Where(x => x.Product.RestaurantId == restaurantId.Value);
         if(cartItems is null || !cartItems.Any())
         {
             throw new BadRequestException("Empty cart or wrong restaurantId");
@@ -73,7 +74,6 @@ public class OrderService : IOrderService
             OrderItems = orderItems,
             UserId = userId.Value,
             Status = OrderStatus.InPreparation,
-            Total = cartItems.Sum(x=>x.Total),
         };
         if(addressDto is not null)
         {
