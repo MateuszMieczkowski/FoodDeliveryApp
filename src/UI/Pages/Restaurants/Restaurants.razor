@@ -1,71 +1,94 @@
 ﻿@page "/restaurants"
 @page "/restaurants/{pageNumber:int}"
 @inject IRestaurantApi RestaurantApi
-@using UI.API
-@using UI.API.Responses
 
-
-@if (PagedResult is null)
+@if (vm.PagedResult is null)
 {
-    <div class="row mt-5">
-        <Spinner></Spinner>
-    </div>
+	<div class="row mt-5">
+		<Spinner></Spinner>
+	</div>
 }
 else
 {
-    <div class="row">
-        <h3 class="text-center">Restaurants</h3>
-    </div>
-    <div class="row mt-3 justify-content-end">
-        <div class="col">
-            <p class="text-end" style="font-size:12px;">@PagedResult.TotalCount Restaurants</p>
-        </div>
-        <div class="col">
-           <PageSize OnPageSizeChanged="@OnPageSizeChangedAsync"></PageSize>
-        </div>
-        
-    </div>
-    foreach (var restaurant in PagedResult.Result)
-    {
-        <RestaurantCard Restaurant="@restaurant"></RestaurantCard>
-    }
-    <div class="row mt-3 justify-content-center">
-         <Pagination CurrentPage="@PagedResult.CurrentPageNumber" PagesCount="@PagedResult.PageCount" Href="/restaurants"></Pagination>
-    </div>
-    
-   
+	<div class="row">
+		<Search SearchHandler="@OnSearchAsync"></Search>
+	</div>
+	<div class="row">
+		<h3 class="text-center">Restaurants</h3>
+	</div>
+	<FilterBox FilterHandler="@OnFilterAsync"></FilterBox>
+	<div class="row">
+		<div class="col">
+			<div class="row">
+				<div class="col mt-1">
+					<p class="text-end" style="font-size:12px;">@vm.PagedResult.TotalCount Restaurants</p>
+				</div>
+				<div class="col">
+					<PageSize OnPageSizeChanged="@OnPageSizeChangedAsync"></PageSize>
+				</div>
+
+			</div>
+
+			@foreach (var restaurant in vm.PagedResult.Result)
+			{
+				<RestaurantCard Restaurant="@restaurant"></RestaurantCard>
+			}
+		</div>
+	</div>
+	<div class="row mt-3 justify-content-center">
+		<Pagination CurrentPage="@vm.PagedResult.CurrentPageNumber" PagesCount="@vm.PagedResult.PageCount" Href="/restaurants"></Pagination>
+	</div>
 }
 
 @code {
 
-    [Parameter]
-    public int? PageNumber { get; set; }
+	[Parameter]
+	public int? PageNumber { get; set; }
+	private RestaurantsViewModel vm = new();
 
-    public int PageSize { get; set; } = 10;
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		vm.PagedResult = await RestaurantApi.GetRestaurants(pageNumber: 1, pageSize: vm.PageSize);
+	}
 
-    private PagedResult<Restaurant>? PagedResult { get; set; }
+	public override async Task SetParametersAsync(ParameterView parameters)
+	{
+		await base.SetParametersAsync(parameters);
+		PageNumber = PageNumber ?? 1;
+		await GetRestaurants();
+		StateHasChanged();
+	}
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        PagedResult = await RestaurantApi.GetRestaurants(null, null, null, null, 1, PageSize);
-    }
+	private async Task OnPageSizeChangedAsync(int pageSize)
+	{
+		vm.PageSize = pageSize;
+		PageNumber = 1;
+		await GetRestaurants();
+		StateHasChanged();
+	}
 
-    public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        await base.SetParametersAsync(parameters);
-        PageNumber = PageNumber ?? 1;
-        PagedResult = await RestaurantApi.GetRestaurants(null, null, null, null, PageNumber.Value, PageSize);
-        StateHasChanged();
-    }
+	private async Task OnSearchAsync(string searchQuery)
+	{
+		PageNumber = 1;
+		vm.SearchQuery = searchQuery;
+		vm.PagedResult = await RestaurantApi.GetRestaurants(searchQuery: searchQuery, pageNumber: 1, pageSize: vm.PageSize);
+		StateHasChanged();
+	}
 
-    protected async Task OnPageSizeChangedAsync(int pageSize)
-    {
-        PageSize = pageSize;
-        PageNumber = 1;
-        PagedResult = await RestaurantApi.GetRestaurants(null, null, null, null, PageNumber.Value, PageSize);
-        StateHasChanged();
-    }
+	private async Task OnFilterAsync(string? city, string? restaurantCategoryName)
+	{
+		PageNumber = 1;
+		vm.City = city;
+		vm.RestaurantCategoryName = restaurantCategoryName;
+		await GetRestaurants();
+		StateHasChanged();
+	}
 
+	private async Task GetRestaurants()
+	{
+		vm.PagedResult = await RestaurantApi
+		.GetRestaurants(city: vm.City, category: vm.RestaurantCategoryName, searchQuery: vm.SearchQuery, pageNumber: 1, pageSize: vm.PageSize);
+	}
 }
 
