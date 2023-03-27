@@ -64,9 +64,9 @@ public class RestaurantsController : ControllerBase
     }
 
 	[HttpGet("cities")]
-	public ActionResult<List<string>> GetCities()
+	public async Task<ActionResult<List<string>>> GetCities()
 	{
-        var cities = _restaurantService.GetCities();
+        var cities = await _restaurantService.GetCities();
 		return Ok(cities);
 	}
 }
