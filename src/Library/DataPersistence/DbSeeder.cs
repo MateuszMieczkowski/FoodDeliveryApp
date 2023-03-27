@@ -11,13 +11,11 @@ public class DbSeeder
     private readonly ApplicationDbContext _dbContext;
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private Random _random;
     public DbSeeder(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole<Guid>> roleManager)
     {
         _dbContext = dbContext;
         _userManager = userManager;
         _roleManager = roleManager;
-        _random = new Random();
     }
     public void Seed()
     {
@@ -49,6 +47,14 @@ public class DbSeeder
             _dbContext.SaveChanges();
         }
 
+       
+        if(! _dbContext.RestaurantReviews.Any())
+        {
+            var reviews = GetRestaurantReviews();
+            _dbContext.RestaurantReviews.AddRange(reviews);
+            _dbContext.SaveChanges();
+        }
+
         if (!_dbContext.Roles.Any())
         {
             var roles = GetRoles();
@@ -57,7 +63,8 @@ public class DbSeeder
                 _roleManager.CreateAsync(identityRole).GetAwaiter().GetResult();
             }
         }
-        if(!_userManager.GetUsersInRoleAsync("admin").Result.Any())
+
+        if (!_userManager.GetUsersInRoleAsync("admin").Result.Any())
         {
             var adminUser = new User
             {
@@ -71,7 +78,7 @@ public class DbSeeder
         }
     }
 
-    private ProductCategory[] GetProductCategories()
+    private static ProductCategory[] GetProductCategories()
     {
         var categories = new ProductCategory[] {
             new() { Name= "Pizza"},
@@ -85,7 +92,7 @@ public class DbSeeder
         return categories;
     }
 
-    private RestaurantCategory[] GetRestaurantCategories()
+    private static RestaurantCategory[] GetRestaurantCategories()
     {
         var categories = new RestaurantCategory[] {
             new() { Name= "Pizza"},
@@ -133,7 +140,7 @@ public class DbSeeder
 
         faker.RuleFor(r => r.Title, f => f.Lorem.Sentence(1))
             .RuleFor(r => r.Description, f => f.Lorem.Sentence(5))
-            .RuleFor(r => r.Rating, f => f.Random.Int(0, 5))
+            .RuleFor(r => r.Rating, f => f.Random.Int(1, 5))
             .RuleFor(r => r.Restaurant, f => f.PickRandom(_dbContext.Restaurants.ToArray()));
 
         return faker.Generate(10000).ToArray();
@@ -171,7 +178,7 @@ public class DbSeeder
         return faker.GenerateBetween(1, 6).ToArray();
     }
 
-    private IdentityRole<Guid>[] GetRoles()
+    private static IdentityRole<Guid>[] GetRoles()
     {
         IdentityRole<Guid>[] roles = new[]
         {
