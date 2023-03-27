@@ -1,4 +1,4 @@
-﻿<div class="input-group mb-3">
+﻿<div class="input-group mb-3 w-75 mx-auto">
     <input type="text" class="form-control" @bind-value="@searchQuery" />
     <div class="input-group-append">
         <button class="btn btn-outline-dark" type="button" @onclick="@(async () => await SearchHandler(searchQuery))">Search</button>
@@ -7,7 +7,7 @@
 
 @code {
     [Parameter]
-    public Func<string?, Task> SearchHandler { get; set; }
+    public Func<string?, Task> SearchHandler { get; set; } = default!;
 
     private string? searchQuery;
 
