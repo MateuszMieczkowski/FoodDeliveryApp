@@ -1,0 +1,20 @@
+﻿<div class="card m-2" style="width: 18rem;">
+    <img src="@Product.ImageUrl" class="card-img-top" alt="product image">
+    <div class="card-body">
+        <h5 class="card-title text-truncate">@Product.Name</h5>
+        <p class="card-text">@Product.Description</p>
+        <p>@Product.Price.ToString("C")</p>
+        <button class="btn btn-outline-primary @addToCardDisabled">@buttonText</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Product Product { get; set; } = default!;
+
+    private bool isAddToCardDisabled => !Product.InStock;
+
+    private string addToCardDisabled => isAddToCardDisabled ? "disabled" : "";
+
+    private string buttonText => isAddToCardDisabled ? "Out of stock" : "Add to Card";
+}

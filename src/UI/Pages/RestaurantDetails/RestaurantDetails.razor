@@ -1,0 +1,47 @@
+﻿@page "/restaurants/{restaurantId:int}/details"
+@inject IProductAPI ProductAPI
+@inject IRestaurantApi RestaurantAPI
+
+@if (vm is null)
+{
+	<Spinner></Spinner>
+}
+else
+{
+	<div class="row">
+		<h2>@vm.Restaurant.Name</h2>
+	</div>
+	<div class="row">
+		<p>@vm.Restaurant.Description</p>
+	</div>
+
+	<div class="row row-cols-auto justify-content-around">
+		@foreach (var product in vm.Products)
+		{
+			<div class="col">
+				<ProductCard Product="@product"></ProductCard>
+			</div>
+		}
+	</div>
+}
+
+
+@code {
+	[Parameter]
+	public int RestaurantId { get; set; }
+
+	private RestaurantDetailsViewModel? vm;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var restaurantTask = RestaurantAPI.GetRestaurant(RestaurantId);
+		var productsTask = ProductAPI.GetProducts(RestaurantId);
+		vm = new RestaurantDetailsViewModel
+		{
+			Restaurant = await restaurantTask,
+			Products = await productsTask
+		};
+		await base.OnInitializedAsync();
+	}
+
+}

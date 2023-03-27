@@ -3,7 +3,7 @@ using UI.API.Responses;
 
 namespace UI.API
 {
-	public interface IFilterApi
+	public interface IFilterAPI
 	{
 		[Get("/restaurants/categories")]
 		Task<List<RestaurantCategory>> GetRestaurantCategories();
