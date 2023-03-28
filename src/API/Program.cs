@@ -2,8 +2,6 @@ using API;
 using API.Middlewares;
 using Library;
 using Library.DataPersistence;
-using Library.Entities;
-using Library.Services.DiscountCalculator;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
 
@@ -20,6 +18,16 @@ builder.Host.UseSerilog();
 builder.Services.AddApiServices();
 builder.Services.AddLibraryServices(builder.Configuration);
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+	app.UseSwagger();
+	app.UseSwaggerUI(options =>
+	{
+		options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+		options.RoutePrefix = string.Empty;
+	});
+}
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

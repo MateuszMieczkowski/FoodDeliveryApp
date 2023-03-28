@@ -8,5 +8,5 @@ public interface IShoppingCartService
 
     Task DeleteFromCartAsync(int productId);
 
-    ShoppingCartDto GetShoppingCart();
+    ShoppingCartDto GetShoppingCart(int restaurantId);
 }

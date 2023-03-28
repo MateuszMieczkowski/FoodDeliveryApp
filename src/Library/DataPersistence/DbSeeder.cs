@@ -2,6 +2,7 @@
 using Bogus.Extensions;
 using Library.Entities;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using static Library.Enums.Enums;
 
 namespace Library.DataPersistence;
@@ -75,7 +76,18 @@ public class DbSeeder
             };
             _userManager.CreateAsync(adminUser, "administrator").GetAwaiter().GetResult();
             _userManager.AddToRoleAsync(adminUser, "ADMIN").GetAwaiter().GetResult();
-        }
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.NameIdentifier, adminUser.Id.ToString()),
+				new Claim(ClaimTypes.Name, $"{adminUser.FirstName} {adminUser.LastName}")
+			};
+			var roles = _userManager.GetRolesAsync(adminUser).GetAwaiter().GetResult();
+			foreach (var role in roles)
+			{
+				claims.Add(new Claim(ClaimTypes.Role, role));
+			}
+            _userManager.AddClaimsAsync(adminUser, claims);
+		}
     }
 
     private static ProductCategory[] GetProductCategories()

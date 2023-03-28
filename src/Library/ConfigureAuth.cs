@@ -49,12 +49,6 @@ namespace Library
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.JwtKey))
                 };
             });
-
-            services.AddAuthorization(options =>
-            {
-                
-            });
-
         }
     }
 }

@@ -11,88 +11,68 @@ namespace Library.Services;
 
 public class ProductService : IProductService
 {
-    private readonly IRestaurantRepository _restaurantRepository;
-    private readonly IProductRepository _productRepository;
-    private readonly IMapper _mapper;
-    private readonly IRequirementService _requirementService;
+	private readonly IRestaurantRepository _restaurantRepository;
+	private readonly IProductRepository _productRepository;
+	private readonly IMapper _mapper;
+	private readonly IRequirementService _requirementService;
 
-    public ProductService(IRestaurantRepository restaurantRepository, IProductRepository productRepository, IMapper mapper, IRequirementService requirementService)
-    {
-        _restaurantRepository = restaurantRepository;
-        _productRepository = productRepository;
-        _mapper = mapper;
-        _requirementService = requirementService;
-    }
+	public ProductService(IRestaurantRepository restaurantRepository, IProductRepository productRepository, IMapper mapper, IRequirementService requirementService)
+	{
+		_restaurantRepository = restaurantRepository;
+		_productRepository = productRepository;
+		_mapper = mapper;
+		_requirementService = requirementService;
+	}
 
-    public async Task CreateProductAsync(int restaurantId, ProductForUpdateDto dto)
-    {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
-        }
+	public async Task CreateProductAsync(int restaurantId, ProductForUpdateDto dto)
+	{
+		var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId)
+			?? throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
+		await AuthorizeManager(restaurant);
 
-        await AuthorizeManager(restaurant);
+		var productCategory = _productRepository.GetCategories().SingleOrDefault(r => r.Id == dto.ProductCategoryId)
+			?? throw new BadRequestException($"There's not such productCategory with id: {dto.ProductCategoryId}");
+		var newProduct = _mapper.Map<Product>(dto);
 
-        var productCategory = _productRepository.GetCategories().SingleOrDefault(r => r.Id == dto.ProductCategoryId);
-        if (productCategory is null)
-        {
-            throw new BadRequestException($"There's not such productCategory with id: {dto.ProductCategoryId}");
-        }
+		await _productRepository.AddProductAsync(newProduct);
+		await _productRepository.SaveChangesAsync();
+	}
 
-        var newProduct = _mapper.Map<Product>(dto);
+	public async Task DeleteProductAsync(int restaurantId, int productId)
+	{
+		var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId)
+			?? throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
+		await AuthorizeManager(restaurant);
 
-        await _productRepository.AddProductAsync(newProduct);
-        await _productRepository.SaveChangesAsync();
-    }
+		var product = await _productRepository.GetProductAsync(productId)
+			?? throw new NotFoundException($"There's no such product with id: {productId}.");
+		if (product.RestaurantId != restaurantId)
+		{
+			throw new BadRequestException("Wrong restaurant id or product id.");
+		}
 
-    public async Task DeleteProductAsync(int restaurantId, int productId)
-    {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
-        }
+		_productRepository.DeleteProduct(product);
+		await _productRepository.SaveChangesAsync();
+	}
 
-        await AuthorizeManager(restaurant);
+	public async Task<List<ProductDto>> GetProductsAsync(int restaurantId)
+	{
+		_ = await _restaurantRepository.GetRestaurantAsync(restaurantId)
+			?? throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
+		var products = await _productRepository.GetRestaurantProductsAsync(restaurantId);
+		var productDtos = _mapper.Map<List<ProductDto>>(products);
+		return productDtos;
+	}
 
-        var product = await _productRepository.GetProductAsync(productId);
-        if (product is null)
-        {
-            throw new NotFoundException($"There's no such product with id: {productId}.");
-        }
+	private async Task AuthorizeManager(Restaurant restaurant)
+	{
 
-        if (product.RestaurantId != restaurantId)
-        {
-            throw new BadRequestException("Wrong restaurant id or product id.");
-        }
+		var authorizationResult =
+			await _requirementService.AuthorizeAsync(new RestaurantManagerRequirement(restaurant.Id));
 
-        _productRepository.DeleteProduct(product);
-        await _productRepository.SaveChangesAsync();
-    }
-    
-    public async Task<List<ProductDto>> GetProductsAsync(int restaurantId)
-    {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
-        }
-
-        var products = await _productRepository.GetRestaurantProductsAsync(restaurantId);
-        var productDtos = _mapper.Map<List<ProductDto>>(products);
-        return productDtos;
-    }
-    
-    private async Task AuthorizeManager(Restaurant restaurant)
-    {
-
-        var authorizationResult =
-            await _requirementService.AuthorizeAsync(new RestaurantManagerRequirement(restaurant.Id));
-
-        if (!authorizationResult.Succeeded)
-        {
-            throw new ForbiddenException();
-        }
-    }
+		if (!authorizationResult.Succeeded)
+		{
+			throw new ForbiddenException();
+		}
+	}
 }

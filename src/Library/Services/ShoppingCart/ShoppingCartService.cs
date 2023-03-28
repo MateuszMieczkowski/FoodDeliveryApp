@@ -46,13 +46,9 @@ public class ShoppingCartService : IShoppingCartService
 
     public async Task AddToCartAsync(int productId)
     {
-        var product = await _productRepository.GetProductAsync(productId);
-        if (product is null)
-        {
-            throw new NotFoundException($"Product with id {productId} does not exists");
-        }
-
-        var shoppingCartItem = _shoppingCart.ShoppingCartItems!.SingleOrDefault(r => r.ProductId == productId);
+        var product = await _productRepository.GetProductAsync(productId)
+            ?? throw new NotFoundException($"Product with id {productId} does not exists");
+		var shoppingCartItem = _shoppingCart.ShoppingCartItems.SingleOrDefault(r => r.ProductId == productId);
         if (shoppingCartItem is null)
         {
             
@@ -76,19 +72,11 @@ public class ShoppingCartService : IShoppingCartService
     }
     public async Task DeleteFromCartAsync(int productId)
     {
-        var product = await _productRepository.GetProductAsync(productId);
-        if (product is null)
-        {
-            throw new NotFoundException($"Product with id {productId} does not exists");
-        }
-
-        var shoppingCartItem = _shoppingCart.ShoppingCartItems!.SingleOrDefault(r => r.ProductId == productId);
-        if (shoppingCartItem is null)
-        {
-            throw new NotFoundException($"There's no such product with id: {productId} in shopping cart");
-        }
-
-        if (shoppingCartItem.Quantity == 1)
+        var product = await _productRepository.GetProductAsync(productId)
+            ?? throw new NotFoundException($"Product with id {productId} does not exists");
+		var shoppingCartItem = _shoppingCart.ShoppingCartItems.SingleOrDefault(r => r.ProductId == productId)
+            ?? throw new NotFoundException($"There's no such product with id: {productId} in shopping cart");
+		if (shoppingCartItem.Quantity == 1)
         {
             _shoppingCartItemRepository.DeleteShoppingCartItem(shoppingCartItem);
             await _shoppingCartItemRepository.SaveChangesAsync();
@@ -100,8 +88,13 @@ public class ShoppingCartService : IShoppingCartService
         await _shoppingCartItemRepository.SaveChangesAsync();
     }
 
-    public ShoppingCartDto GetShoppingCart()
+    public ShoppingCartDto GetShoppingCart(int restaurantId)
     {
+        _shoppingCart.ShoppingCartItems = _shoppingCart
+            .ShoppingCartItems
+            .Where(x => x.Product.RestaurantId == restaurantId)
+            .ToList();
+
         var dto = _mapper.Map<ShoppingCartDto>(_shoppingCart);
         return dto;
     }

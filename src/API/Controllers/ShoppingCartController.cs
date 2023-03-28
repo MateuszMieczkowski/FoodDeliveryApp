@@ -15,10 +15,10 @@ public class ShoppingCartController : ControllerBase
         _shoppingCartService = shoppingCartService;
     }
 
-    [HttpGet]
-    public ActionResult<ShoppingCartDto> GetCart()
+    [HttpGet("{restaurantId:int}")]
+    public ActionResult<ShoppingCartDto> GetCart(int restaurantId)
     {
-        var cart = _shoppingCartService.GetShoppingCart();
+        var cart = _shoppingCartService.GetShoppingCart(restaurantId);
         return Ok(cart);
     }
 

@@ -16,13 +16,8 @@ public class RequirementService : IRequirementService
 
     public async Task<AuthorizationResult> AuthorizeAsync(IAuthorizationRequirement requirement)
     {
-        var user = _userContextAccessor.User;
-        if (user is null)
-        {
-            throw new Exception();
-        }
-
-        var authResult = await _authorizationService.AuthorizeAsync(user, null, requirement);
+        var user = _userContextAccessor.User ?? throw new Exception();
+		var authResult = await _authorizationService.AuthorizeAsync(user, null, requirement);
         return authResult;
     }
 }

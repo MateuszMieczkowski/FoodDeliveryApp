@@ -26,13 +26,9 @@ public class RestaurantReviewService : IRestaurantReviewService
 
     public async Task AddReviewAsync(int restaurantId, RestaurantReviewForUpdateDto dto)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
-        }
-
-        var newReview = _mapper.Map<RestaurantReview>(dto);
+        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId)
+            ?? throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
+		var newReview = _mapper.Map<RestaurantReview>(dto);
         newReview.Restaurant = restaurant;
 
         await _reviewRepository.AddReviewAsync(newReview);
@@ -41,19 +37,11 @@ public class RestaurantReviewService : IRestaurantReviewService
 
     public async Task DeleteReviewAsync(int restaurantId, int reviewId)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
-        }
-
-        var review = await _reviewRepository.GetReviewAsync(reviewId);
-        if (review is null)
-        {
-            throw new NotFoundException($"There's no such review with id: {reviewId}.");
-        }
-
-        if (review.RestaurantId != restaurantId)
+		_ = await _restaurantRepository.GetRestaurantAsync(restaurantId)
+			?? throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
+		var review = await _reviewRepository.GetReviewAsync(reviewId)
+            ?? throw new NotFoundException($"There's no such review with id: {reviewId}.");
+		if (review.RestaurantId != restaurantId)
         {
             throw new BadRequestException($"Review with id: {reviewId} does not belong to restaurant with id: {restaurantId}.");
         }
@@ -64,13 +52,9 @@ public class RestaurantReviewService : IRestaurantReviewService
 
     public async Task<PagedResult<RestaurantReviewDto>> GetReviewsAsync(int restaurantId, int pageNumber, int pageSize)
     {
-        var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId);
-        if (restaurant is null)
-        {
-            throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
-        }
-
-        if (pageSize > MaxPageSize || pageSize <= 0 || pageNumber <= 0)
+		_ = await _restaurantRepository.GetRestaurantAsync(restaurantId)
+			?? throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
+		if (pageSize > MaxPageSize || pageSize <= 0 || pageNumber <= 0)
         {
             throw new BadRequestException("Wrong page size or page number.");
         }
