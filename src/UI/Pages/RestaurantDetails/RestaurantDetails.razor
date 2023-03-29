@@ -1,7 +1,8 @@
 ﻿@page "/restaurants/{restaurantId:int}/details"
+@using UI.Pages.Restaurants
 @inject IProductAPI ProductAPI
 @inject IRestaurantApi RestaurantAPI
-
+@inject IShoppingCartAPI ShoppingCartAPI
 @if (vm is null)
 {
 	<Spinner></Spinner>
@@ -19,7 +20,7 @@ else
 		@foreach (var product in vm.Products)
 		{
 			<div class="col">
-				<ProductCard Product="@product"></ProductCard>
+				<ProductCard OnItemAddedHandler="@OnItemToCardAdded"  Product="@product"></ProductCard>
 			</div>
 		}
 	</div>
@@ -43,5 +44,12 @@ else
 		};
 		await base.OnInitializedAsync();
 	}
+	private async Task OnItemToCardAdded(int productId)
+	{
+		await ShoppingCartAPI.AddToCartAsync(productId);
+		StateHasChanged();
+	}
 
 }
+
+

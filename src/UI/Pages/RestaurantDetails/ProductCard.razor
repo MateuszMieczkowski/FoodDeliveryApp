@@ -4,13 +4,16 @@
         <h5 class="card-title text-truncate">@Product.Name</h5>
         <p class="card-text">@Product.Description</p>
         <p>@Product.Price.ToString("C")</p>
-        <button class="btn btn-outline-primary @addToCardDisabled">@buttonText</button>
+        <button class="btn btn-outline-primary @addToCardDisabled" onclick="@(async () => await OnItemAddedHandler(Product.Id))">@buttonText</button>
     </div>
 </div>
 
 @code {
     [Parameter]
     public Product Product { get; set; } = default!;
+
+    [Parameter]
+    public Func<int, Task> OnItemAddedHandler { get; set; } = default!;
 
     private bool isAddToCardDisabled => !Product.InStock;
 

@@ -65,7 +65,8 @@ else
 	{
 		vm.PageSize = pageSize;
 		PageNumber = 1;
-		await GetRestaurants();
+		vm.PagedResult = await RestaurantApi
+			.GetRestaurants(city: vm.City, category: vm.RestaurantCategoryName, searchQuery: vm.SearchQuery, pageNumber: 1, pageSize: vm.PageSize);
 		StateHasChanged();
 	}
 
@@ -82,14 +83,9 @@ else
 		PageNumber = 1;
 		vm.City = city;
 		vm.RestaurantCategoryName = restaurantCategoryName;
-		await GetRestaurants();
-		StateHasChanged();
-	}
-
-	private async Task GetRestaurants()
-	{
 		vm.PagedResult = await RestaurantApi
-		.GetRestaurants(city: vm.City, category: vm.RestaurantCategoryName, searchQuery: vm.SearchQuery, pageNumber: 1, pageSize: vm.PageSize);
+			.GetRestaurants(city: vm.City, category: vm.RestaurantCategoryName, searchQuery: vm.SearchQuery, pageNumber: 1, pageSize: vm.PageSize);
+		StateHasChanged();
 	}
 }
 

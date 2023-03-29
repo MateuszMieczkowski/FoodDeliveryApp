@@ -6,5 +6,5 @@ public class ShoppingCart
 {
     public Guid ShoppingCartId { get; set; }
 
-    public ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = default!;
+    public List<ShoppingCartItem> ShoppingCartItems { get; set; } = default!;
 }
