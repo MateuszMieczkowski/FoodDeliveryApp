@@ -52,12 +52,13 @@ public class OrderService : IOrderService
         {
             throw new BadRequestException("Empty cart or wrong restaurantId");
         }
-
+       
         var orderItems = shoppingCart.ShoppingCartItems
 			.Select(x => new OrderItem
             {
                 ProductId = x.ProductId,
-                ProductQuantity = x.Quantity
+                ProductQuantity = x.Quantity,
+                Price = x.Product.Price
             }).ToList();
 
         var order = new Order
@@ -75,7 +76,7 @@ public class OrderService : IOrderService
 
         await _orderRepository.AddOrderAsync(order);
         await _orderRepository.SaveChangesAsync();
-    }
+	}
 
     public async Task DeleteOrder(Guid orderId)
     {

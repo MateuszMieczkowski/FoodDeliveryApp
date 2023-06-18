@@ -15,7 +15,7 @@ public class OrderCostCalculator : IOrderCostCalculator
     public void CalculateCost(Order order)
     {
         order.DiscountAmount = CalculateDiscountAmount(order);
-        order.Total = order.OrderItems.Sum(x => x.ProductQuantity * x.Product.Price);
+        order.Total = order.OrderItems.Sum(x => x.ProductQuantity * x.Price);
         order.DiscountedTotal = order.Total - order.DiscountAmount;
     }
 
