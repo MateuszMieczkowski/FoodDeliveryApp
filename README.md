@@ -13,3 +13,4 @@ Project that simulates food delivery platforms such as Uber eats. The applicatio
 - Serilog
 - Bogus
 - Front-end with Blazor WASM (Not finished)
+- Refit
