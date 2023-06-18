@@ -12,9 +12,4 @@ Project that simulates food delivery platforms such as Uber eats. The applicatio
 - AutoMapper
 - Serilog
 - Bogus
-
-### TODO
-
-- Front-end with Blazor WASM
-- Tests
-- Caching
+- Front-end with Blazor WASM (Not finished)
