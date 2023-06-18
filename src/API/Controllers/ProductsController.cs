@@ -16,7 +16,7 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
 
-    [HttpGet("{restaurantId}")]
+    [HttpGet]
     public async Task<ActionResult<List<ProductDto>>> GetProducts([FromRoute] int restaurantId)
     {
         var productDtos = await _productService.GetProductsAsync(restaurantId);

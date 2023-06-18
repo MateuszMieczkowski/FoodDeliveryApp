@@ -6,6 +6,7 @@ using Library.Models;
 using Library.Models.OrderDtos;
 using Library.Repositories.Interfaces;
 using Library.Services.Interfaces;
+using Library.Services.OrderCostCalculator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,22 +21,25 @@ public class OrderService : IOrderService
     private readonly IShoppingCartService _shoppingCartService;
     private readonly IRestaurantRepository _restaurantRepository;
     private readonly IRequirementService _requirementService;
+    private readonly IOrderCostCalculator _orderCostCalculator;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
     private const int MaxPageSize = 50;
 
-    public OrderService(IOrderRepository orderRepository, IShoppingCartService shoppingCartService,
-        UserManager<User> userManager, IRestaurantRepository restaurantRepository, IMapper mapper, IRequirementService requirementService)
-    {
-        _orderRepository = orderRepository;
-        _shoppingCartService = shoppingCartService;
-        _userManager = userManager;
-        _restaurantRepository = restaurantRepository;
-        _mapper = mapper;
-        _requirementService = requirementService;
-    }
+	public OrderService(IOrderRepository orderRepository, IShoppingCartService shoppingCartService,
+		UserManager<User> userManager, IRestaurantRepository restaurantRepository, IMapper mapper,
+        IRequirementService requirementService, IOrderCostCalculator orderCostCalculator)
+	{
+		_orderRepository = orderRepository;
+		_shoppingCartService = shoppingCartService;
+		_userManager = userManager;
+		_restaurantRepository = restaurantRepository;
+		_mapper = mapper;
+		_requirementService = requirementService;
+		_orderCostCalculator = orderCostCalculator;
+	}
 
-    public async Task CreateOrderAsync(Guid userId, int restaurantId, Guid shoppingCartId, AddressDto? addressDto)
+	public async Task CreateOrderAsync(Guid userId, int restaurantId, Guid shoppingCartId, AddressDto? addressDto)
     {
         await AuthorizeUserAndRestaurantManager(userId, restaurantId);
 
@@ -63,6 +67,7 @@ public class OrderService : IOrderService
             UserId = userId,
             Status = OrderStatus.InPreparation,
         };
+        _orderCostCalculator.CalculateCost(order);
         if (addressDto is not null)
         {
             order.Address = _mapper.Map<Address>(addressDto);

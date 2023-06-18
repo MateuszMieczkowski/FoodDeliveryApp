@@ -10,6 +10,7 @@ using Library.Services.ShoppingCart;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Library.Services.OrderCostCalculator;
 
 namespace Library;
 
@@ -39,6 +40,7 @@ public static class ConfigureServices
         services.AddTransient<IDiscountCalculator, PercentageDiscountCalculator>();
         services.AddTransient<IDiscountCalculator, AmountDiscountCalculator>();
         services.AddTransient<IDiscountCalculatorFactory, DiscountCalculatorFactory>();
+        services.AddTransient<IOrderCostCalculator, OrderCostCalculator>();
         
         services.AddAuthenticationAndAuthorization(configuration);
         
