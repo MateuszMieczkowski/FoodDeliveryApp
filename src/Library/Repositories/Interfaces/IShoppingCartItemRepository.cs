@@ -8,7 +8,9 @@ public interface IShoppingCartItemRepository
 
     void DeleteShoppingCartItem (ShoppingCartItem shoppingCartItem);
 
-    List<ShoppingCartItem> GetShoppingCartItems(Guid shoppingCartId);
+    Task<List<ShoppingCartItem>> GetShoppingCartItemsAsync(Guid shoppingCartId, int restaurantId);
+
+    Task<ShoppingCartItem?> GetShoppingCartItemAsync(Guid shoppingCartId, int productId);
 
     Task<int> SaveChangesAsync();
 }

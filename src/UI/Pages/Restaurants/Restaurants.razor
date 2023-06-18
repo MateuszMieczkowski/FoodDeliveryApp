@@ -1,7 +1,10 @@
 ﻿@page "/restaurants"
 @page "/restaurants/{pageNumber:int}"
+@using Microsoft.AspNetCore.Authorization;
 @inject IRestaurantApi RestaurantApi
 @inject ILogger<Restaurants> logger
+@attribute [Authorize(Roles = "admin")]
+
 @if (vm.PagedResult is null)
 {
 	<div class="row mt-5">

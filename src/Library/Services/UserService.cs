@@ -18,6 +18,7 @@ public class UserService : IUserService
 	private readonly IMapper _mapper;
 	private readonly JwtSettings _jwtSettings;
 
+
 	public UserService(UserManager<User> userManager, IMapper mapper, JwtSettings jwtSettings)
 	{
 		_userManager = userManager;
@@ -107,6 +108,11 @@ public class UserService : IUserService
 		}
 
 		var claims = await _userManager.GetClaimsAsync(user);
+		if(!claims.Any())
+		{
+			claims = await CreateClaimsAsync(user);
+			await _userManager.AddClaimsAsync(user, claims);
+		}
 		var token = CreateToken(claims);
 		var tokenHandler = new JwtSecurityTokenHandler();
 

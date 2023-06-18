@@ -1,0 +1,88 @@
+﻿@page "/login"
+@using System.Diagnostics;
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject StateContainer StateContainer
+
+<div class="container" style="margin-top: 200px">
+    <h3 class="text-center">Login</h3>
+
+    <div class="login-form">
+        <EditForm Model="@loginModel" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group text-center">
+                <div class="input-group">
+                    <InputText id="email" class="form-control" @bind-Value="@loginModel.Email" placeholder="Email" />
+                </div>
+                <ValidationMessage For="@(() => loginModel.Email)" />
+            </div>
+
+            <div class="form-group text-center m-2">
+                <div class="input-group">
+                    <InputText id="password" type="password" class="form-control" @bind-Value="@loginModel.Password" placeholder="Password"/>
+                </div>
+                <ValidationMessage For="@(() => loginModel.Password)" />
+            </div>
+
+            <div class="text-center mt-2">
+                <span class="text-danger @LoginSpanHidden">Wrong email or password</span>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-outline-primary">Login</button>
+            </div>
+           
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+    bool hasLoginFailed = false;
+    private string LoginSpanHidden => hasLoginFailed ? "" : "visually-hidden";
+    private async Task HandleValidSubmit()
+    { 
+        try
+        {
+            await UserService.LoginAsync(loginModel.Email, loginModel.Password);
+            hasLoginFailed = false;
+            NavigationManager.NavigateTo("/");
+
+        }
+        catch (Exception)
+        {
+            hasLoginFailed = true;
+        }
+        finally
+        {
+            StateContainer.NotifyStateChanged();
+        }
+    }
+
+    public class LoginModel
+    {
+        [EmailAddress]
+        [Required(ErrorMessage = "Email is required")]
+        public string Email { get; set; }
+
+        [MinLength(8), MaxLength(40)]
+        [Required(ErrorMessage = "Password is required")]
+        public string Password { get; set; }
+    }
+}
+
+<style>
+    .login-form {
+        padding: 20px;
+    }
+
+    .input-group {
+        display: flex;
+        justify-content: center;
+    }
+
+    .form-control {
+        max-width: 200px;
+    }
+</style>

@@ -10,7 +10,7 @@ public class BackgroundUpdateRestaurantsRatingService : BackgroundService
 {
     private readonly ILogger<BackgroundUpdateRestaurantsRatingService> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly TimeSpan _updateInterval = new TimeSpan(1, 0, 0);
+	private readonly TimeSpan _updateInterval = new(1, 0, 0);
 
     public BackgroundUpdateRestaurantsRatingService(ILogger<BackgroundUpdateRestaurantsRatingService> logger, IServiceProvider serviceProvider)
     {

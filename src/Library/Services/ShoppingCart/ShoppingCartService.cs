@@ -4,59 +4,39 @@ using Library.Exceptions;
 using Library.Models.ShoppingCartDtos;
 using Library.Repositories.Interfaces;
 using Library.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Library.Services.ShoppingCart;
 
 public class ShoppingCartService : IShoppingCartService
 {
     private readonly IShoppingCartItemRepository _shoppingCartItemRepository;
-    private readonly IServiceProvider _serviceProvider;
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
-    private readonly ShoppingCart _shoppingCart;
 
-    public ShoppingCartService(IServiceProvider serviceProvider, IShoppingCartItemRepository shoppingCartItemRepository, IProductRepository productRepository, IMapper mapper)
+    public ShoppingCartService(IShoppingCartItemRepository shoppingCartItemRepository, IProductRepository productRepository, IMapper mapper)
     {
-        _serviceProvider = serviceProvider;
         _shoppingCartItemRepository = shoppingCartItemRepository;
         _productRepository = productRepository;
         _mapper = mapper;
-        _shoppingCart = InitializeShoppingCart();
     }
 
-    private ShoppingCart InitializeShoppingCart()
-    {
-        var httpContext = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-
-        var shoppingCartIdFromSession = httpContext?.Session.GetString("shoppingCartId");
-        if (!Guid.TryParse(shoppingCartIdFromSession, out var shoppingCartId))
-        {
-            shoppingCartId = Guid.NewGuid();
-        }
-
-        httpContext?.Session.SetString("shoppingCartId", shoppingCartId.ToString());
-
-        var shoppingCartItems = _shoppingCartItemRepository.GetShoppingCartItems(shoppingCartId);
-
-        return new ShoppingCart { ShoppingCartId = shoppingCartId, ShoppingCartItems = shoppingCartItems };
-
-    }
-
-    public async Task AddToCartAsync(int productId)
+    public async Task AddToCartAsync(int productId, Guid shoppingCartId)
     {
         var product = await _productRepository.GetProductAsync(productId)
             ?? throw new NotFoundException($"Product with id {productId} does not exists");
-		var shoppingCartItem = _shoppingCart.ShoppingCartItems.SingleOrDefault(r => r.ProductId == productId);
+
+        if(!product.InStock)
+        {
+            throw new BadRequestException("Product is out of stock.");
+        }
+        var shoppingCartItem = await _shoppingCartItemRepository.GetShoppingCartItemAsync(shoppingCartId, productId);
+
         if (shoppingCartItem is null)
         {
-            
-
             var newItem = new ShoppingCartItem()
             {
                 Product = product,
-                ShoppingCartId = _shoppingCart.ShoppingCartId,
+                ShoppingCartId = shoppingCartId,
                 Quantity = 1,
                 Total = product.Price
             };
@@ -70,13 +50,13 @@ public class ShoppingCartService : IShoppingCartService
         shoppingCartItem.Quantity++;
         await _shoppingCartItemRepository.SaveChangesAsync();
     }
-    public async Task DeleteFromCartAsync(int productId)
+    public async Task DeleteFromCartAsync(int productId, Guid shoppingCartId)
     {
         var product = await _productRepository.GetProductAsync(productId)
             ?? throw new NotFoundException($"Product with id {productId} does not exists");
-		var shoppingCartItem = _shoppingCart.ShoppingCartItems.SingleOrDefault(r => r.ProductId == productId)
+        var shoppingCartItem = await _shoppingCartItemRepository.GetShoppingCartItemAsync(shoppingCartId, productId)
             ?? throw new NotFoundException($"There's no such product with id: {productId} in shopping cart");
-		if (shoppingCartItem.Quantity == 1)
+        if (shoppingCartItem.Quantity == 1)
         {
             _shoppingCartItemRepository.DeleteShoppingCartItem(shoppingCartItem);
             await _shoppingCartItemRepository.SaveChangesAsync();
@@ -88,14 +68,16 @@ public class ShoppingCartService : IShoppingCartService
         await _shoppingCartItemRepository.SaveChangesAsync();
     }
 
-    public ShoppingCartDto GetShoppingCart(int restaurantId)
+    public async Task<ShoppingCartDto> GetShoppingCartAsync(int restaurantId, Guid shoppingCartId)
     {
-        _shoppingCart.ShoppingCartItems = _shoppingCart
-            .ShoppingCartItems
-            .Where(x => x.Product.RestaurantId == restaurantId)
-            .ToList();
+        var items = await _shoppingCartItemRepository
+            .GetShoppingCartItemsAsync(shoppingCartId, restaurantId);
+        var shoppingCart = new ShoppingCart
+        {
+            ShoppingCartId = shoppingCartId,
+            ShoppingCartItems = items
+        };
 
-        var dto = _mapper.Map<ShoppingCartDto>(_shoppingCart);
-        return dto;
+        return _mapper.Map<ShoppingCartDto>(shoppingCart);
     }
 }

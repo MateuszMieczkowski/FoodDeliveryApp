@@ -18,9 +18,9 @@ public class OrdersController : ControllerBase
 
 	[HttpPost]
 	[Authorize(Roles = "admin,manager,user")]
-	public async Task<ActionResult> CreateOrder([FromQuery] Guid? userId, [FromQuery] int? restaurantId, [FromBody] AddressDto? addressDto)
+	public async Task<ActionResult> CreateOrder([FromQuery] Guid userId, [FromQuery] int restaurantId, [FromQuery] Guid shoppingCarId, [FromBody] AddressDto? addressDto)
 	{
-		await _orderService.CreateOrderAsync(userId, restaurantId, addressDto);
+		await _orderService.CreateOrderAsync(userId, restaurantId, shoppingCarId,  addressDto);
 
 		return NoContent();
 	}
@@ -47,8 +47,8 @@ public class OrdersController : ControllerBase
 	[Authorize(Roles = "admin,manager")]
 	public async Task<ActionResult> UpdateOrderStatus([FromRoute] Guid orderId, [FromQuery] OrderStatus? status)
 	{
-
 		await _orderService.UpdateOrderStatusAsync(orderId, status);
+
 		return Ok();
 	}
 

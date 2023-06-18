@@ -4,9 +4,10 @@ namespace Library.Services.Interfaces;
 
 public interface IShoppingCartService
 {
-    Task AddToCartAsync(int productId);
 
-    Task DeleteFromCartAsync(int productId);
+    Task AddToCartAsync(int productId, Guid shoppingCartId);
 
-    ShoppingCartDto GetShoppingCart(int restaurantId);
+    Task DeleteFromCartAsync(int productId, Guid shoppingCartId);
+
+    Task<ShoppingCartDto> GetShoppingCartAsync(int restaurantId, Guid shoppingCartId);
 }

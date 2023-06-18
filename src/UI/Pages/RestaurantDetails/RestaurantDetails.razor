@@ -1,8 +1,8 @@
 ﻿@page "/restaurants/{restaurantId:int}/details"
-@using UI.Pages.Restaurants
-@inject IProductAPI ProductAPI
+@inject IProductApi ProductAPI
 @inject IRestaurantApi RestaurantAPI
-@inject IShoppingCartAPI ShoppingCartAPI
+@inject IShoppingCartService ShoppingCartService
+@inject StateContainer StateContainer
 @if (vm is null)
 {
 	<Spinner></Spinner>
@@ -46,8 +46,8 @@ else
 	}
 	private async Task OnItemToCardAdded(int productId)
 	{
-		await ShoppingCartAPI.AddToCartAsync(productId);
-		StateHasChanged();
+		await ShoppingCartService.Add(productId);
+		StateContainer.NotifyStateChanged();
 	}
 
 }

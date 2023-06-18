@@ -16,7 +16,7 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
 
-    [HttpGet]
+    [HttpGet("{restaurantId}")]
     public async Task<ActionResult<List<ProductDto>>> GetProducts([FromRoute] int restaurantId)
     {
         var productDtos = await _productService.GetProductsAsync(restaurantId);
@@ -33,9 +33,9 @@ public class ProductsController : ControllerBase
 
     [HttpDelete("{productId:int}")]
     [Authorize(Roles="manager, admin")]
-    public async Task<ActionResult> DeleteProduct([FromRoute] int restaurantId, [FromRoute] int productId)
+    public async Task<ActionResult> DeleteProduct([FromRoute] int productId)
     {
-        await _productService.DeleteProductAsync(restaurantId, productId);
+        await _productService.DeleteProductAsync(productId);
         return Ok();
     }
 }

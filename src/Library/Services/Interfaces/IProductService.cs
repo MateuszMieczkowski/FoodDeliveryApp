@@ -8,5 +8,5 @@ public interface IProductService
 
     Task CreateProductAsync(int restaurantId, ProductForUpdateDto dto);
 
-    Task DeleteProductAsync(int restaurantId, int productId);
+    Task DeleteProductAsync(int productId);
 }

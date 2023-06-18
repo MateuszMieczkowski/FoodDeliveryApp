@@ -24,11 +24,20 @@ public class ShoppingCartItemRepository : IShoppingCartItemRepository
         _dbContext.ShoppingCartItems.Remove(shoppingCartItem);
     }
 
-    public List<ShoppingCartItem> GetShoppingCartItems(Guid shoppingCartId)
+    public async Task<ShoppingCartItem?> GetShoppingCartItemAsync(Guid shoppingCartId, int productId)
     {
-        var shoppingCartItems = _dbContext.ShoppingCartItems.Include(r => r.Product)
-                                                            .Where(r => r.ShoppingCartId.Equals(shoppingCartId))
-                                                            .ToList();
+        var item =  await _dbContext.ShoppingCartItems
+            .FirstOrDefaultAsync(x => x.ShoppingCartId == shoppingCartId && x.ProductId == productId);
+        return item;
+    }
+
+    public async Task<List<ShoppingCartItem>> GetShoppingCartItemsAsync(Guid shoppingCartId, int restaurantId)
+    {
+        var shoppingCartItems = await _dbContext.ShoppingCartItems
+            .Include(r => r.Product)
+            .Where(r => r.ShoppingCartId == shoppingCartId && r.Product.RestaurantId == restaurantId)
+            .ToListAsync();
+
         return shoppingCartItems;
     }
 

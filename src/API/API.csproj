@@ -24,4 +24,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

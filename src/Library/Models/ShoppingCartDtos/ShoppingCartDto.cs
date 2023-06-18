@@ -4,5 +4,5 @@ public class ShoppingCartDto
 {
     public Guid ShoppingCartId { get; set; }
 
-    public ICollection<ShoppingCartItemDto>? ShoppingCartItems { get; set; }
+    public IEnumerable<ShoppingCartItemDto> ShoppingCartItems { get; set; } = Enumerable.Empty<ShoppingCartItemDto>();
 }

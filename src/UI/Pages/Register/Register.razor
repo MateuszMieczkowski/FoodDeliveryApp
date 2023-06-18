@@ -1,0 +1,117 @@
+﻿@page "/register"
+@using Newtonsoft.Json;
+@using Refit;
+@inject IAuthApi AuthApi
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<div class="container" style="margin-top: 200px">
+    <h3 class="text-center">Register</h3>
+    <div class="register-form">
+        <EditForm Model="@registrationModel" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group text-center">
+                <div class="input-group">
+                    <InputText id="firstName" class="form-control" @bind-Value="registrationModel.FirstName" placeholder="First Name"/>
+                </div>
+                <ValidationMessage For="@(() => registrationModel.FirstName)" />
+            </div>
+
+            <div class="form-group text-center m-2">
+                <div class="input-group">
+                    <InputText id="lastName" class="form-control" @bind-Value="registrationModel.LastName" placeholder="Last Name" />
+                </div>
+                <ValidationMessage For="@(() => registrationModel.LastName)" />
+            </div>
+
+            <div class="form-group text-center m-2">
+                <div class="input-group">
+                    <InputText id="email" class="form-control" @bind-Value="registrationModel.Email" placeholder="Email" />
+                </div>
+                <ValidationMessage For="@(() => registrationModel.Email)" />
+            </div>
+
+            <div class="form-group text-center m-2">
+                <div class="input-group">
+                    <InputText id="password" class="form-control" type="password" @bind-Value="registrationModel.Password" placeholder="Password" />
+                </div>
+                <ValidationMessage For="@(() => registrationModel.Password)" class="m-2"/>
+                @foreach(var error in registrationFailedMessages)
+                {
+                    <span class="text-danger m-2">@error</span>
+                }
+            </div>
+           
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-outline-primary">Register</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private RegistrationModel registrationModel = new();
+    private bool registrationSuccessful = false;
+    private List<string> registrationFailedMessages = new();
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            registrationFailedMessages = new();
+            var registerRequest = new RegisterRequest(registrationModel.FirstName, registrationModel.LastName,
+                registrationModel.Email, registrationModel.Password);
+
+            await AuthApi.RegisterUserAsync(registerRequest);
+            NavigationManager.NavigateTo("/login");
+        }
+        catch (ApiException ex)
+        {
+            var registerResponse = JsonConvert.DeserializeObject<IEnumerable<RegisterError>>(ex.Content!);
+            if(registerResponse is not null)
+            {
+                var errors = registerResponse
+                    .Select(x => x.Description);
+                registrationFailedMessages.AddRange(errors);
+            }
+            else
+            {
+                registrationFailedMessages.Add("Registration failed.");
+            }
+        }
+    }
+
+    private class RegistrationModel
+    {
+        [Required]
+        [MaxLength(30)]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(30)]
+        public string LastName { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        [MaxLength(80)]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(100)]
+        public string Password { get; set; } = string.Empty;
+    }
+}
+<style>
+    .register-form {
+        padding: 20px;
+    }
+    .input-group {
+        display: flex;
+        justify-content: center;
+    }
+
+    .form-control {
+        max-width: 200px;
+    }
+</style>
+

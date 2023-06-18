@@ -43,10 +43,9 @@ public static class ConfigureServices
         services.AddAuthenticationAndAuthorization(configuration);
         
         services.AddHostedService<BackgroundUpdateRestaurantsRatingService>();
-        
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration["ConnectionStrings:DefaultConnection"]);
+            options.UseSqlServer(configuration["ConnectionStrings:AzureDb"]);
         });
 
     }

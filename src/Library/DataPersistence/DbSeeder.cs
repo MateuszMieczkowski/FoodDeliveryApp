@@ -48,7 +48,6 @@ public class DbSeeder
             _dbContext.SaveChanges();
         }
 
-       
         if(! _dbContext.RestaurantReviews.Any())
         {
             var reviews = GetRestaurantReviews();
@@ -75,18 +74,15 @@ public class DbSeeder
                 UserName = "admin"
             };
             _userManager.CreateAsync(adminUser, "administrator").GetAwaiter().GetResult();
-            _userManager.AddToRoleAsync(adminUser, "ADMIN").GetAwaiter().GetResult();
-			var claims = new List<Claim>
-			{
-				new Claim(ClaimTypes.NameIdentifier, adminUser.Id.ToString()),
-				new Claim(ClaimTypes.Name, $"{adminUser.FirstName} {adminUser.LastName}")
+
+            _userManager.AddToRoleAsync(adminUser, "admin").GetAwaiter().GetResult();
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, adminUser.Id.ToString()),
+                new Claim(ClaimTypes.Name, $"{adminUser.FirstName} {adminUser.LastName}"),
+                new Claim(ClaimTypes.Role, "admin")
 			};
-			var roles = _userManager.GetRolesAsync(adminUser).GetAwaiter().GetResult();
-			foreach (var role in roles)
-			{
-				claims.Add(new Claim(ClaimTypes.Role, role));
-			}
-            _userManager.AddClaimsAsync(adminUser, claims);
+            _userManager.AddClaimsAsync(adminUser, claims).GetAwaiter().GetResult();
 		}
     }
 
@@ -135,12 +131,14 @@ public class DbSeeder
     private Product[] GetProducts()
     {
         var faker = new Faker<Product>();
+        var productCategories = _dbContext.ProductCategories.ToArray();
+        var restaurants = _dbContext.Restaurants.ToArray();
         faker.RuleFor(r => r.Name, f => f.Commerce.ProductName())
             .RuleFor(r => r.Description, f => f.Lorem.Sentence(2))
             .RuleFor(r => r.Price, f => f.Random.Decimal2() * 50)
             .RuleFor(r => r.InStock, f => f.Random.Bool())
-            .RuleFor(r => r.Category, f => f.PickRandom(_dbContext.ProductCategories.ToArray()))
-            .RuleFor(r => r.Restaurant, f => f.PickRandom(_dbContext.Restaurants.ToArray()))
+            .RuleFor(r => r.Category, f => f.PickRandom(productCategories))
+            .RuleFor(r => r.Restaurant, f => f.PickRandom(restaurants))
             .RuleFor(r => r.ImageUrl, f => f.Image.LoremFlickrUrl(keywords: "food"));
 
         return faker.Generate(1000).ToArray();
@@ -149,11 +147,11 @@ public class DbSeeder
     private RestaurantReview[] GetRestaurantReviews()
     {
         var faker = new Faker<RestaurantReview>();
-
+        var restaurants = _dbContext.Restaurants.ToArray();
         faker.RuleFor(r => r.Title, f => f.Lorem.Sentence(1))
             .RuleFor(r => r.Description, f => f.Lorem.Sentence(5))
-            .RuleFor(r => r.Rating, f => f.Random.Int(1, 5))
-            .RuleFor(r => r.Restaurant, f => f.PickRandom(_dbContext.Restaurants.ToArray()));
+            .RuleFor(r => r.Rating, f => f.Random.Int(3, 5))
+            .RuleFor(r => r.Restaurant, f => f.PickRandom(restaurants));
 
         return faker.Generate(10000).ToArray();
     }
@@ -162,10 +160,10 @@ public class DbSeeder
     private Order[] GetOrders()
     {
         var faker = new Faker<Order>();
-
+        var restaurants = _dbContext.Restaurants.ToArray();
         faker.RuleFor(r => r.Created, f => f.Date.Recent(30))
             .RuleFor(r => r.Status, f => f.PickRandom<OrderStatus>())
-            .RuleFor(r => r.Restaurant, f => f.PickRandom(_dbContext.Restaurants.ToArray()));
+            .RuleFor(r => r.Restaurant, f => f.PickRandom(restaurants));
 
         var orders = faker.Generate(1000);
 

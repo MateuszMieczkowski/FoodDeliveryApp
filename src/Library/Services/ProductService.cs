@@ -38,18 +38,13 @@ public class ProductService : IProductService
 		await _productRepository.SaveChangesAsync();
 	}
 
-	public async Task DeleteProductAsync(int restaurantId, int productId)
+	public async Task DeleteProductAsync(int productId)
 	{
-		var restaurant = await _restaurantRepository.GetRestaurantAsync(restaurantId)
-			?? throw new NotFoundException($"There's no such restaurant with id: {restaurantId}.");
-		await AuthorizeManager(restaurant);
-
 		var product = await _productRepository.GetProductAsync(productId)
 			?? throw new NotFoundException($"There's no such product with id: {productId}.");
-		if (product.RestaurantId != restaurantId)
-		{
-			throw new BadRequestException("Wrong restaurant id or product id.");
-		}
+
+		var restaurant = await _restaurantRepository.GetRestaurantAsync(product.RestaurantId);
+		await AuthorizeManager(restaurant!);
 
 		_productRepository.DeleteProduct(product);
 		await _productRepository.SaveChangesAsync();

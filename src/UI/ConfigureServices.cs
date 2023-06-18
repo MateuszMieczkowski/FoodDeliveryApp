@@ -1,5 +1,11 @@
 ﻿using Refit;
+using System.Reflection;
 using UI.API;
+using UI.Services;
+using UI.Services.LocalStorage;
+using UI.Services.ShoppingCart;
+using UI.Services.StateContainer;
+using UI.Services.UserService;
 using UI.Settings;
 
 namespace UI
@@ -13,18 +19,32 @@ namespace UI
 			configuration.GetSection("APISettings").Bind(apiSettings);
 			services.AddSingleton(apiSettings);
 
-			services.AddRefitClient<IRestaurantApi>()
-				.ConfigureHttpClient(client => client.BaseAddress = new Uri(apiSettings.BaseURL));
-
-			services.AddRefitClient<IFilterAPI>()
-				.ConfigureHttpClient(client => client.BaseAddress = new Uri(apiSettings.BaseURL));
-
-			services.AddRefitClient<IProductAPI>()
-				.ConfigureHttpClient(client => client.BaseAddress = new Uri(apiSettings.BaseURL));
-
-			services.AddRefitClient<IShoppingCartAPI>()
-				.ConfigureHttpClient(client => client.BaseAddress = new Uri(apiSettings.BaseURL));
-			return services;
+			services.AddSingleton<ILocalStorageAccessor, LocalStorageAccessor>();
+			services.AddSingleton<IUserService, UserService>();
+			services.AddSingleton<IShoppingCartService, ShoppingCartService>();
+			services.AddSingleton<StateContainer>();
+            services.AddSingleton<AuthHeaderHandler>();
+            services.RegisterRefitClients(apiSettings);
+            return services;
 		}
+
+		public static IServiceCollection RegisterRefitClients(this IServiceCollection services, ApiSettings apiSettings)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var refitTypesInfo = assembly.DefinedTypes
+				.Where(x => x.Name.EndsWith("Api")  && x.Namespace == "UI.API");
+
+			var refitSettings = new RefitSettings()
+			{
+
+			};
+			foreach (var refitTypeInfo  in refitTypesInfo)
+			{
+				var type = refitTypeInfo.AsType();
+				services.AddRefitClient(type)
+					.ConfigureHttpClient(client => client.BaseAddress = new Uri(apiSettings.BaseURL));
+            }
+			return services;
+        }
 	}
 }

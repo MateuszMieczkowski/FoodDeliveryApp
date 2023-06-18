@@ -15,32 +15,24 @@ public class ShoppingCartController : ControllerBase
         _shoppingCartService = shoppingCartService;
     }
 
-    [HttpGet("{restaurantId:int}")]
-    public ActionResult<ShoppingCartDto> GetCart(int restaurantId)
+    [HttpGet]
+    public async Task<ActionResult<ShoppingCartDto>> GetCart([FromQuery] int restaurantId, [FromQuery] Guid shoppingCartId)
     {
-        var cart = _shoppingCartService.GetShoppingCart(restaurantId);
+        var cart = await _shoppingCartService.GetShoppingCartAsync(restaurantId, shoppingCartId);
         return Ok(cart);
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddToCart([FromQuery] int? productId)
+    public async Task<ActionResult> AddToCart([FromQuery] int productId, [FromQuery] Guid shoppingCartId)
     {
-        if (!productId.HasValue)
-        {
-            return BadRequest();
-        }
-        await _shoppingCartService.AddToCartAsync(productId.Value);
+        await _shoppingCartService.AddToCartAsync(productId, shoppingCartId);
         return Ok();
     }
 
     [HttpDelete]
-    public async Task<ActionResult> DeleteFromCart([FromQuery] int? productId)
+    public async Task<ActionResult> DeleteFromCart([FromQuery] int productId, [FromQuery] Guid shoppingCartId)
     {
-        if (!productId.HasValue)
-        {
-            return BadRequest();
-        }
-        await _shoppingCartService.DeleteFromCartAsync(productId.Value);
+        await _shoppingCartService.DeleteFromCartAsync(productId, shoppingCartId);
         return Ok();
     }
 

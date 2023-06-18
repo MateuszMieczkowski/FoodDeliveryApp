@@ -54,7 +54,7 @@ internal static class ConfigureServices
 		services.AddSession();
 		services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 		services.AddHttpContextAccessor();
-		services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin()));
+		services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("https://localhost:7287").AllowAnyHeader()));
 		services.AddTransient<ExceptionHandlingMiddleware>();
 	}
 }

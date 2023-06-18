@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
         dto.RoleName = "user";
         var result = await _userService.RegisterUserAsync(dto);
 
-        return Ok(result);
+        return result.Succeeded ? Ok(result) : BadRequest(result.Errors);
     }
 
     [HttpPost("register-manager")]
@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
         dto.RoleName = "manager";
         var result = await _userService.RegisterUserAsync(dto);
 
-        return Ok(result);
+        return result.Succeeded ? Ok(result) : BadRequest(result.Errors);
     }
 
     [HttpPost("login")]

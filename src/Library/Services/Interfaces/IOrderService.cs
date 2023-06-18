@@ -6,7 +6,7 @@ namespace Library.Services.Interfaces;
 
 public interface IOrderService
 {
-    Task CreateOrderAsync(Guid? userId, int? restaurantId, AddressDto? addressDto);
+    Task CreateOrderAsync(Guid userId, int restaurantId, Guid shoppingCartId, AddressDto? addressDto);
 
     Task DeleteOrder(Guid orderId);
     
